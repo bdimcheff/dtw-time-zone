@@ -60,7 +60,7 @@ const ms = (iso: string): number => {
 };
 
 /** Newest first, so the feed skeleton is a prefix of this array. */
-const byNewest = (a: StoredPost, b: StoredPost) => ms(sortAt(b)) - ms(sortAt(a));
+export const byNewest = (a: StoredPost, b: StoredPost) => ms(sortAt(b)) - ms(sortAt(a));
 
 export const writePosts = (posts: StoredPost[]) =>
   writeJson(postsPath, [...posts].sort(byNewest));
