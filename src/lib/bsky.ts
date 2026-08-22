@@ -92,11 +92,21 @@ function searcher(agent: AtpAgent): Searcher {
     let truncated = false;
 
     for (let page = 0; page < MAX_PAGES; page++) {
-      const res = await withRetry(() =>
-        agent.app.bsky.feed.searchPosts({
-          q, limit: 100, sort: "latest", ...(since ? { since } : {}), cursor,
-        }),
-      );
+      let res;
+      try {
+        res = await withRetry(() =>
+          agent.app.bsky.feed.searchPosts({
+            q, limit: 100, sort: "latest", ...(since ? { since } : {}), cursor,
+          }),
+        );
+      } catch (err) {
+        // Keep what earlier pages already returned. Letting this escape would
+        // discard them along with the requests that fetched them, and the caller
+        // treats a thrown query as having covered nothing.
+        if (page === 0) throw err;
+        console.warn(`  ${q}: failed after ${page} page(s), keeping ${posts.length} post(s)`);
+        return { posts, truncated: true };
+      }
       const data = res.data as unknown as SearchResponse;
       const found = data.posts ?? [];
       posts.push(...found);

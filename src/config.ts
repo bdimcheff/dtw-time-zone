@@ -45,10 +45,17 @@ export const APPVIEW = "https://api.bsky.app";
 export const USER_AGENT = `dtw-time-zone (+${SERVICE_ENDPOINT})`;
 
 /**
- * The canonical phrase, normalized. Search ignores punctuation, so the
- * comma and no-comma spellings return identical result sets.
+ * The canonical phrase. Search ignores punctuation, so the comma and no-comma
+ * spellings return identical result sets.
  */
-export const EXACT_QUERY = '"Detroit, Michigan is in the Eastern Time Zone"';
+export const EXACT_QUERIES = [
+  '"Detroit, Michigan is in the Eastern Time Zone"',
+  // classify() accepts the abbreviated spellings too, so they get the same
+  // unwindowed sweep. Without this they arrive only via the windowed variant
+  // query, which would miss an older post outside the window until the next full
+  // sweep.
+  '"Detroit, MI is in the Eastern Time Zone"',
+];
 
 /**
  * Broader query used to surface variants for manual review. It paginates through
@@ -66,6 +73,10 @@ export const EXACT_QUERY = '"Detroit, Michigan is in the Eastern Time Zone"';
  */
 export const VARIANT_QUERIES = ['"is in the Eastern Time Zone"'];
 
+/**
+ * Entries written to the skeleton. The AppView slices this to the client's own
+ * limit, which caps at 100, so serving more would never reach anyone.
+ */
 export const FEED_LIMIT = 100;
 
 /**

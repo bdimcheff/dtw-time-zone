@@ -1,5 +1,5 @@
 import {
-  EXACT_QUERY,
+  EXACT_QUERIES,
   VARIANT_QUERIES,
   WINDOW_OVERLAP_DAYS,
   FULL_SWEEP_INTERVAL_DAYS,
@@ -71,22 +71,38 @@ const pendingByUri = new Map(
 // runs windowed -- so loosening the matcher (as adding "MI" did) would strand
 // older queued posts it now accepts. The text is stored, so this costs nothing.
 let promoted = 0;
+let dropped = 0;
 for (const [uri, queued] of pendingByUri) {
-  if (classify(queued.text) !== "exact") continue;
+  const kind = classify(queued.text);
+  if (kind === "variant") continue;
+
   pendingByUri.delete(uri);
+  if (kind === "ignore") {
+    // A tightened matcher would otherwise strand an entry here permanently:
+    // nothing else removes it, and the queue-holds-only-variants invariant would
+    // fail on every run afterwards.
+    dropped++;
+    continue;
+  }
   if (byUri.has(uri)) continue;
   const { matchedQuery: _matchedQuery, ...post } = queued;
   byUri.set(uri, post);
   promoted++;
 }
 if (promoted > 0) console.log(`promoted ${promoted} queued post(s) under the current matcher`);
+if (dropped > 0) console.log(`dropped ${dropped} queued post(s) the matcher no longer accepts`);
 
 // Swept fully every run rather than windowed: it is a couple of requests and it
 // self-heals, picking up posts that were briefly private, late to index, or from
 // since-unblocked accounts without any special case.
-const results: Array<{ query: string; posts: SearchPostView[]; truncated: boolean }> = [];
-console.log(`exact sweep: ${EXACT_QUERY}`);
-results.push({ query: EXACT_QUERY, ...(await runQuery(search, EXACT_QUERY)) });
+const results: Array<{ query: string; posts: SearchPostView[] }> = [];
+for (const query of EXACT_QUERIES) {
+  console.log(`exact sweep: ${query}`);
+  // `truncated` is deliberately ignored: these queries are unwindowed, so they
+  // cannot invalidate a watermark, and the next run re-sweeps them in full.
+  const { posts: found } = await runQuery(search, query);
+  results.push({ query, posts: found });
+}
 
 // Variant queries paginate through years of sincere timezone discussion, so
 // they run windowed except during a periodic full sweep.
@@ -105,9 +121,9 @@ const since = fullSweep || !state.lastRunAt
 let windowTruncated = false;
 console.log(fullSweep ? "variant queries: FULL sweep" : `variant queries: since ${since}`);
 for (const query of VARIANT_QUERIES) {
-  const result = await runQuery(search, query, { since });
-  if (result.truncated) windowTruncated = true;
-  results.push({ query, ...result });
+  const { posts: found, truncated } = await runQuery(search, query, { since });
+  if (truncated) windowTruncated = true;
+  results.push({ query, posts: found });
 }
 
 let newExact = 0;
@@ -149,8 +165,7 @@ await Promise.all([
   // A truncated query means posts inside the window were never examined.
   // Advancing the watermark past them moves the next run's `since` beyond posts
   // nothing ever read, and the output looks identical to a clean run. Hold it
-  // instead. On the anonymous path, where every query is capped at page 1, this
-  // is the normal case rather than an edge case.
+  // instead.
   writeState({
     lastRunAt: windowTruncated ? state.lastRunAt : nowIso,
     lastFullSweepAt: fullSweep && !windowTruncated ? nowIso : state.lastFullSweepAt,
@@ -158,7 +173,7 @@ await Promise.all([
 ]);
 
 console.log(
-  `\n${byUri.size} posts (+${newExact}), ${pendingByUri.size} pending (+${newPending})`,
+  `\n${byUri.size} posts (+${newExact + promoted}), ${pendingByUri.size} pending (+${newPending})`,
 );
 if (windowTruncated) {
   console.warn("  window not fully covered; holding lastRunAt so the next run re-reads it");
@@ -170,6 +185,6 @@ if (process.env.GITHUB_OUTPUT) {
   const { appendFileSync } = await import("node:fs");
   appendFileSync(
     process.env.GITHUB_OUTPUT,
-    `new_pending=${newPending}\nnew_posts=${newExact}\ntotal_pending=${pendingByUri.size}\n`,
+    `new_pending=${newPending}\nnew_posts=${newExact + promoted}\ntotal_pending=${pendingByUri.size}\n`,
   );
 }
