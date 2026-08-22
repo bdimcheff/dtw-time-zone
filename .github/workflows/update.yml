@@ -46,24 +46,42 @@ jobs:
       # were found. state.json changes every run, so this commits every run --
       # accepted as an audit trail rather than adding cache plumbing.
       - name: Commit data
+        env:
+          BSKY_IDENTIFIER: ${{ secrets.BSKY_IDENTIFIER }}
+          BSKY_APP_PASSWORD: ${{ secrets.BSKY_APP_PASSWORD }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          if git diff --quiet -- data/; then
-            echo "no data changes"
-            exit 0
-          fi
-          git add data/
-          git commit -m "Update archive: ${{ steps.collect.outputs.new_posts }} new post(s), ${{ steps.collect.outputs.new_pending }} new candidate(s)"
+          commit_data() {
+            git add data/
+            if git diff --cached --quiet; then
+              echo "no data changes"
+              return 1
+            fi
+            git commit -q -m "$1"
+          }
+
+          commit_data "Update archive: ${{ steps.collect.outputs.new_posts }} new post(s), ${{ steps.collect.outputs.new_pending }} new candidate(s)" || exit 0
 
           # A review PR merging while this job runs would otherwise fail the push
-          # and skip the deploy entirely.
+          # and skip the deploy entirely. The plain rebase is the fast path, but
+          # it cannot be the only one: a review PR rewrites the same JSON arrays
+          # this run did, so it conflicts, and a conflicted rebase is left in
+          # progress -- every later attempt would then die on the stale
+          # rebase-merge directory instead of retrying anything. data/ is derived,
+          # so the correct resolution is always to re-collect against the newer
+          # base rather than to merge two versions of a generated file.
           for attempt in 1 2 3; do
             if git pull --rebase --autostash origin main && git push; then
               exit 0
             fi
-            echo "push attempt $attempt failed; retrying"
+            echo "push attempt $attempt failed; re-collecting on top of origin/main"
+            git rebase --abort 2>/dev/null || true
+            git fetch origin main
+            git reset --hard FETCH_HEAD
+            npm run collect
+            commit_data "Update archive (re-collected on $(git rev-parse --short HEAD))" || exit 0
             sleep 5
           done
           echo "could not push after 3 attempts"
