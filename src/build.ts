@@ -36,14 +36,12 @@ async function main(): Promise<void> {
   const feed = posts.slice(0, FEED_LIMIT).map((p) => ({ post: p.uri }));
   await writePublic("xrpc/app.bsky.feed.getFeedSkeleton", { feed });
 
-  const truncated = posts.length - feed.length;
   console.log(`built ${feed.length} skeleton entries from ${posts.length} archived posts`);
-  if (truncated > 0) {
-    console.warn(
-      `  WARNING: ${truncated} post(s) fall outside the single-page window and are ` +
-      `not reachable via the feed. Time to move the serviceEndpoint to a paginating host.`,
-    );
-  }
+  // The AppView slices this to the client's `limit` and stops, since we return no
+  // cursor, so subscribers see far fewer than we serve. See TODO.md.
+  console.log(
+    `  note: subscribers see only the newest ~30-50 of these until the feed paginates`,
+  );
   console.log(`  did:      ${FEED_DID}`);
   console.log(`  feed uri: ${FEED_URI}`);
   console.log(`  host:     https://${HOSTNAME}`);

@@ -105,14 +105,16 @@ credentials are present and falls back to anonymous single-page access when they
 are not. The exact query currently returns 71 results, so it fits either way — but
 it will start silently truncating above 100 without auth.
 
-**The feed serves a single page.** Static hosting cannot read the `cursor` query
-param, so the feed is the newest 100 posts. `data/posts.json` keeps the full archive
-regardless, and `npm run build` warns once posts fall outside the window.
+**The feed shows only the newest ~30-50 posts.** Static hosting can't read the
+`cursor` query param, so the skeleton is a single page with no cursor. The AppView
+slices whatever we return down to the client's requested `limit` and treats a
+missing cursor as end-of-feed, so serving more entries doesn't help — subscribers
+see one page and stop.
 
-The fix, when that happens, is to point the DID document's `serviceEndpoint` at a
-host that can paginate — a Cloudflare Worker is about 30 lines. Because
-`serviceEndpoint` may name a different host than the DID itself, this changes where
-the feed is served without changing its identity, so no subscriber is affected.
+`data/posts.json` keeps the complete archive regardless. Fixing this means moving
+the skeleton endpoint to something that can paginate; see [TODO.md](TODO.md#1-real-pagination-via-firebase-functions).
+Because the DID document's `serviceEndpoint` may name a different host than the DID,
+that change doesn't affect the feed's identity or its subscribers.
 
 **`.well-known` and Firebase.** Firebase's default `ignore` list contains `**/.*`,
 which excludes `.well-known` and makes `did:web` resolution 404. `firebase.json`

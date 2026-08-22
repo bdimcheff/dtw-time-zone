@@ -84,16 +84,19 @@ design:
 Steady-state cost is ~2-3 requests per run, well clear of the rate limit that tripped
 at ~6 paginated queries.
 
-## Known constraint: the 100-post window
+## Known constraint: the feed renders one page
 
-Static hosting cannot read the `cursor` query parameter, so the feed serves exactly
-one page — the newest ~100 posts. At 71 posts and ~35/year, this becomes binding in
-roughly a year.
+Static hosting cannot read the `cursor` query parameter, so the skeleton is a single
+page with no cursor. The AppView's `getFeed` slices the skeleton to the client's
+requested `limit` and treats a returned cursor equal to the request's — including
+absent on a first call — as end-of-feed. Subscribers therefore see **the newest
+`limit` posts, typically 30-50**, regardless of how many entries we serve.
 
-This is a *window*, not data loss: `data/posts.json` retains the complete archive
-permanently. When the cap binds, the fix is a Cloudflare Worker (free tier, ~30
-lines) serving the skeleton with real pagination — a `serviceEndpoint` change in the
-DID document, not a migration.
+This is a *rendering* limit, not data loss: `data/posts.json` retains the complete
+archive permanently. Lifting it requires a paginating endpoint, planned in
+[TODO.md](TODO.md#1-real-pagination-via-firebase-functions). Because the DID's
+`serviceEndpoint` is indirect, that swap changes where the skeleton is served
+without changing the feed's identity.
 
 ## Build sequence
 
