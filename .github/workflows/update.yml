@@ -4,8 +4,9 @@ on:
   # Review PRs edit data/ by hand, and the invariants in the corpus tests are
   # exactly what a half-finished edit breaks. Catching it here is the difference
   # between a red PR and a scheduled run that wedges silently.
+  # No paths filter: the job is ~30s, and a filtered-out PR reports no checks at
+  # all, which in the UI is indistinguishable from a PR that passed.
   pull_request:
-    paths: ["data/**", "src/**", "package.json", ".github/workflows/**"]
   schedule:
     # Every half hour. The skeleton is a static file, so this cadence *is* the
     # feed's latency: a post does not appear until a run collects and deploys it.
