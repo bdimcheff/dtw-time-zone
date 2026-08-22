@@ -77,17 +77,6 @@
     "matchedQuery": "\"is in the Eastern Time Zone\""
   },
   {
-    "uri": "at://did:plc:eivbq4tgt66s63vvksj3bugz/app.bsky.feed.post/3k6jqme6dga2u",
-    "cid": "bafyreicj5lukkn7gocbecgedcpvlwby4ysmgjxoku6zkpro3vmet4aiahe",
-    "authorDid": "did:plc:eivbq4tgt66s63vvksj3bugz",
-    "authorHandle": "jonmatthews.com",
-    "text": "T-minus 9 days until I can say “Detroit, MI is in the Eastern time zone”",
-    "createdAt": "2023-09-04T00:32:19.511Z",
-    "indexedAt": "2023-09-04T00:32:19.511Z",
-    "firstSeenAt": "2026-08-22T21:03:38.173Z",
-    "matchedQuery": "\"is in the Eastern Time Zone\""
-  },
-  {
     "uri": "at://did:plc:o6qikgurzkb6yfvj6xof53io/app.bsky.feed.post/3k3ubuzlglh2i",
     "cid": "bafyreihxyjpokdf3d7upvzkwez4nqi6llqqjop4ikhlzjiviokjfp4juci",
     "authorDid": "did:plc:o6qikgurzkb6yfvj6xof53io",

@@ -66,9 +66,24 @@ const pendingByUri = new Map(
   pending.filter((p) => !denied.has(p.uri)).map((p) => [p.uri, p]),
 );
 
-// The exact query returns a single page, so sweeping it fully every run costs
-// one request and is self-healing: posts that were briefly private, late to
-// index, or from since-unblocked accounts get picked up without special cases.
+// Reclassify the queue against the current matcher before searching. Promotion
+// otherwise only happens when a query re-surfaces the post, and the variant query
+// runs windowed -- so loosening the matcher (as adding "MI" did) would strand
+// older queued posts it now accepts. The text is stored, so this costs nothing.
+let promoted = 0;
+for (const [uri, queued] of pendingByUri) {
+  if (classify(queued.text) !== "exact") continue;
+  pendingByUri.delete(uri);
+  if (byUri.has(uri)) continue;
+  const { matchedQuery: _matchedQuery, ...post } = queued;
+  byUri.set(uri, post);
+  promoted++;
+}
+if (promoted > 0) console.log(`promoted ${promoted} queued post(s) under the current matcher`);
+
+// Swept fully every run rather than windowed: it is a couple of requests and it
+// self-heals, picking up posts that were briefly private, late to index, or from
+// since-unblocked accounts without any special case.
 const results: Array<{ query: string; posts: SearchPostView[]; truncated: boolean }> = [];
 console.log(`exact sweep: ${EXACT_QUERY}`);
 results.push({ query: EXACT_QUERY, ...(await runQuery(search, EXACT_QUERY)) });

@@ -15,8 +15,12 @@ export function normalize(text: string): string {
     .trim();
 }
 
-/** The canonical phrase, already normalized. */
-const EXACT = "detroit michigan is in the eastern time zone";
+/**
+ * The canonical phrase. The state is written out, abbreviated, or clipped
+ * newspaper-style, and all three are the same joke: the archive already holds
+ * "Detroit, MI is in the Eastern Time Zone" posts that only got in by hand.
+ */
+const EXACT = /\bdetroit (?:michigan|mich|mi) is in the eastern time zone\b/;
 
 /** The phrase with the place name removed — the shape variants share. */
 const FRAME = "is in the eastern time zone";
@@ -25,8 +29,15 @@ const FRAME = "is in the eastern time zone";
  * Terms that make a loose match plausibly about DTW rather than sincere
  * geography. Without this gate, real posts like "most of Indiana is in the
  * eastern time zone" would flood the review queue.
+ *
+ * Matched on word boundaries, not as substrings: "mi" appears inside "admit",
+ * "midwest" and "miles", and would otherwise admit most of the sincere posts
+ * this list exists to exclude.
  */
-const LOCAL_TERMS = ["detroit", "michigan", "dtw", "metro airport", "motor city"];
+const LOCAL_TERMS = [
+  "detroit", "michigan", "mich", "mi", "dtw", "metro airport", "motor city",
+];
+const LOCAL = new RegExp(`\\b(?:${LOCAL_TERMS.join("|")})\\b`);
 
 export type Classification = "exact" | "variant" | "ignore";
 
@@ -37,8 +48,8 @@ export type Classification = "exact" | "variant" | "ignore";
  */
 export function classify(text: string): Classification {
   const n = normalize(text);
-  if (n.includes(EXACT)) return "exact";
-  if (n.includes(FRAME) && LOCAL_TERMS.some((t) => n.includes(t))) return "variant";
+  if (EXACT.test(n)) return "exact";
+  if (n.includes(FRAME) && LOCAL.test(n)) return "variant";
   return "ignore";
 }
 

@@ -740,6 +740,16 @@
     "firstSeenAt": "2026-08-22T18:05:40.750Z"
   },
   {
+    "uri": "at://did:plc:eivbq4tgt66s63vvksj3bugz/app.bsky.feed.post/3k6jqme6dga2u",
+    "cid": "bafyreicj5lukkn7gocbecgedcpvlwby4ysmgjxoku6zkpro3vmet4aiahe",
+    "authorDid": "did:plc:eivbq4tgt66s63vvksj3bugz",
+    "authorHandle": "jonmatthews.com",
+    "text": "T-minus 9 days until I can say “Detroit, MI is in the Eastern time zone”",
+    "createdAt": "2023-09-04T00:32:19.511Z",
+    "indexedAt": "2023-09-04T00:32:19.511Z",
+    "firstSeenAt": "2026-08-22T21:03:38.173Z"
+  },
+  {
     "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3k62lnyalbb2o",
     "cid": "bafyreiecinyo4y22ahecdtfdjgzv2d45zqnhx3o5dckxho2oinucecwf3y",
     "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
