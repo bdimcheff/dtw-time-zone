@@ -54,7 +54,7 @@ export const sortAt = (p: StoredPost): string =>
  * the epoch, which puts a malformed record at the bottom of the feed instead of
  * making the comparator non-transitive with NaN.
  */
-const ms = (iso: string): number => {
+export const ms = (iso: string): number => {
   const t = Date.parse(iso);
   return Number.isNaN(t) ? 0 : t;
 };

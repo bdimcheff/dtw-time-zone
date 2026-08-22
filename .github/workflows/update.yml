@@ -17,14 +17,6 @@ on:
         type: boolean
         default: false
 
-concurrency:
-  group: update-feed
-  cancel-in-progress: false
-
-permissions:
-  contents: write
-  issues: write
-
 jobs:
   # Runs on pull requests only. A review PR hand-edits data/, and the corpus
   # invariants are exactly what a half-finished edit breaks -- a denied URI added
@@ -33,6 +25,15 @@ jobs:
   check:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Keyed to the PR, so a push supersedes its own earlier check and nothing
+    # else. Sharing a group with `update` would have them cancel each other:
+    # GitHub cancels a pending run when a newer one queues in the same group.
+    concurrency:
+      group: check-${{ github.ref }}
+      cancel-in-progress: true
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -45,6 +46,16 @@ jobs:
   update:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    # Bounded well under GitHub's 6-hour default: the retry schedule can stall for
+    # a long time under sustained rate limiting, and a run wedged for hours would
+    # block the next scheduled window without producing anything.
+    timeout-minutes: 45
+    concurrency:
+      group: update-feed
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      issues: write
     steps:
       - uses: actions/checkout@v4
 
@@ -101,16 +112,27 @@ jobs:
           # Derived from the commit rather than from the collect step's outputs:
           # the re-collect below writes to this step's GITHUB_OUTPUT, not that
           # one, so those counts go stale the moment a push race happens.
+          # Counts URIs added to the queue by this commit, not merely whether the
+          # file changed: a run that only promotes or drops entries would
+          # otherwise open an issue titled "(0 awaiting)" reading "No posts are
+          # awaiting review". Derived from the commit rather than the collect
+          # step's outputs, which the re-collect below cannot update -- it writes
+          # to this step's GITHUB_OUTPUT, not that one.
           report() {
-            # An if, not `grep -q ... && changed=true`: steps run under `bash -e`,
-            # where a failing && chain at statement level exits the step -- and
-            # grep finding nothing is the normal case.
-            local changed=false
-            if git show --name-only --format= HEAD | grep -qx 'data/pending.json'; then
-              changed=true
-            fi
+            local added
+            added=$(node -e '
+              const cp = require("child_process");
+              const at = (rev) => {
+                try {
+                  return JSON.parse(cp.execSync("git show " + rev + ":data/pending.json",
+                    {encoding: "utf8", stdio: ["ignore", "pipe", "ignore"]}));
+                } catch { return []; }
+              };
+              const before = new Set(at("HEAD^").map((p) => p.uri));
+              console.log(at("HEAD").filter((p) => !before.has(p.uri)).length);
+            ')
             {
-              echo "pending_changed=$changed"
+              echo "added_pending=$added"
               echo "total_pending=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("data/pending.json","utf8")).length)')"
             } >> "$GITHUB_OUTPUT"
           }
@@ -125,7 +147,7 @@ jobs:
           }
 
           if ! commit_data "Update archive: ${{ steps.collect.outputs.new_posts }} new post(s), ${{ steps.collect.outputs.new_pending }} new candidate(s)"; then
-            echo "pending_changed=false" >> "$GITHUB_OUTPUT"
+            echo "added_pending=0" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           report
@@ -152,9 +174,13 @@ jobs:
               npm run collect
             fi
             if ! commit_data "Update archive (re-collected on $(git rev-parse --short HEAD))"; then
-              echo "pending_changed=false" >> "$GITHUB_OUTPUT"
+              echo "added_pending=0" >> "$GITHUB_OUTPUT"
               exit 0
             fi
+            # Re-collected after the Check step ran, so re-assert the invariants
+            # here; otherwise the one path that regenerates data/ mid-job is the
+            # one path that ships it ungated.
+            npm run check
             report
             sleep 5
           done
@@ -174,7 +200,7 @@ jobs:
       # whether the built skeleton should ship, and this step sits between the
       # data commit and the deploy.
       - name: Open review issue for pending variants
-        if: steps.commit.outputs.pending_changed == 'true'
+        if: steps.commit.outputs.added_pending != '0'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

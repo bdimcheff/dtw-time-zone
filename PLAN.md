@@ -90,7 +90,7 @@ absent on a first call — as end-of-feed. Subscribers therefore see **the newes
 
 This is a *rendering* limit, not data loss: `data/posts.json` retains the complete
 archive permanently. Lifting it requires a paginating endpoint, planned in
-[TODO.md](TODO.md#1-real-pagination-via-firebase-functions). Because the DID's
+[#2](https://github.com/bdimcheff/dtw-time-zone/issues/2). Because the DID's
 `serviceEndpoint` is indirect, that swap changes where the skeleton is served
 without changing the feed's identity.
 

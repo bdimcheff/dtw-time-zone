@@ -34,9 +34,11 @@ describe("archive", () => {
     assert.deepEqual(pending.filter((p) => denied.has(p.uri)).map((p) => p.uri), []);
   });
 
-  test("is stored newest first, so the skeleton is a prefix", () => {
-    assert.deepEqual([...posts].sort(byNewest).map((p) => p.uri), posts.map((p) => p.uri));
-  });
+  // Deliberately not asserted: file order. The documented way to admit a post is
+  // to move its entry into data/posts.json, which does not produce sorted output,
+  // and enforcing order on pull requests would fail reviewers for following the
+  // instructions. Nothing depends on it -- writePosts sorts on every write and
+  // build.ts sorts again before rendering.
 });
 
 describe("review queue", () => {

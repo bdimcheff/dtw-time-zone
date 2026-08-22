@@ -47,7 +47,9 @@ sort key — the two places where a plausible-looking change quietly reshapes a
 permanent archive. Cases come from the real corpus, and `src/lib/corpus.test.ts`
 asserts invariants against the committed data itself: every archived post still
 matches, nothing denied reappears, and the queue holds nothing the matcher would
-auto-admit. CI runs them before collecting.
+auto-admit. CI runs them on pull requests, and again after collecting —
+before anything is committed or deployed — since collect is what repairs those
+invariants.
 
 ## Reviewing variants
 
@@ -122,7 +124,8 @@ missing cursor as end-of-feed, so serving more entries doesn't help — subscrib
 see one page and stop.
 
 `data/posts.json` keeps the complete archive regardless. Fixing this means moving
-the skeleton endpoint to something that can paginate; see [TODO.md](TODO.md#1-real-pagination-via-firebase-functions).
+the skeleton endpoint to something that can paginate; see
+[#2](https://github.com/bdimcheff/dtw-time-zone/issues/2).
 Because the DID document's `serviceEndpoint` may name a different host than the DID,
 that change doesn't affect the feed's identity or its subscribers.
 

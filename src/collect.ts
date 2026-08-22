@@ -8,7 +8,7 @@ import { createSearcher } from "./lib/bsky.ts";
 import type { Searcher, SearchOptions, SearchResult } from "./lib/bsky.ts";
 import { classify, postText } from "./lib/match.ts";
 import {
-  readPosts, readPending, readDenied, readState,
+  ms, readPosts, readPending, readDenied, readState,
   writePosts, writePending, writeState,
 } from "./lib/store.ts";
 import type { StoredPost, PendingPost, SearchPostView } from "./lib/types.ts";
@@ -106,15 +106,20 @@ for (const query of EXACT_QUERIES) {
 
 // Variant queries paginate through years of sincere timezone discussion, so
 // they run windowed except during a periodic full sweep.
-const lastSweep = state.lastFullSweepAt ? Date.parse(state.lastFullSweepAt) : 0;
+// data/state.json is written by CI and rebased on every push, which makes it a
+// frequent merge-conflict target. An unparseable value used to fail two ways at
+// once: NaN here left sweepDue false forever, silently disabling full sweeps,
+// while the `since` computation below threw RangeError. Both now read as absent.
+const lastSweep = ms(state.lastFullSweepAt ?? "");
 const sweepDue = now.getTime() - lastSweep > FULL_SWEEP_INTERVAL_DAYS * DAY_MS;
 const fullSweep = forceFullSweep || sweepDue;
 
 // Widened rather than trusted exactly: since/until filter on `sortAt`, which
 // the lexicon warns may not match `createdAt`. Dedupe makes the overlap free.
-const since = fullSweep || !state.lastRunAt
+const lastRun = ms(state.lastRunAt ?? "");
+const since = fullSweep || !lastRun
   ? undefined
-  : new Date(Date.parse(state.lastRunAt) - WINDOW_OVERLAP_DAYS * DAY_MS).toISOString();
+  : new Date(lastRun - WINDOW_OVERLAP_DAYS * DAY_MS).toISOString();
 
 // Only the variant queries read `since`, so only their truncation can invalidate
 // the watermark; the exact query re-sweeps unwindowed every run regardless.
@@ -185,6 +190,6 @@ if (process.env.GITHUB_OUTPUT) {
   const { appendFileSync } = await import("node:fs");
   appendFileSync(
     process.env.GITHUB_OUTPUT,
-    `new_pending=${newPending}\nnew_posts=${newExact + promoted}\ntotal_pending=${pendingByUri.size}\n`,
+    `new_pending=${newPending}\nnew_posts=${newExact + promoted}\n`,
   );
 }

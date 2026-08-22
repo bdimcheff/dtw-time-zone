@@ -7,12 +7,16 @@ import { readPending } from "./lib/store.ts";
  */
 
 /**
- * GitHub rejects a body over 65536 characters. Capped by entry count rather than
- * measured bytes: entries run a couple hundred characters, so this stays well
- * under the limit while remaining obvious. Newest first, so the tail that drops
- * is the oldest.
+ * GitHub rejects a body over 65536 characters, and the step that posts it runs
+ * with continue-on-error, so exceeding the limit loses the notification silently.
+ *
+ * Bounded by construction rather than by assertion: a post's text is capped at
+ * 3000 bytes by the lexicon, so an entry count alone does not bound the body --
+ * 100 maximal posts would be ~315,000 characters. Truncating each excerpt first
+ * puts the worst case at roughly 100 x 450, comfortably inside the limit.
  */
 const MAX_ENTRIES = 100;
+const MAX_EXCERPT = 300;
 
 const FENCE = "```";
 
@@ -32,7 +36,8 @@ if (posts.length === 0) {
     // blockquote, an `@handle` or `#123` inside someone's post would mention that
     // account or cross-link that issue on every run that surfaces the post. A code
     // fence renders neither, and the only sequence that escapes a fence is a fence.
-    const text = p.text.replace(/\s+/g, " ").trim().replaceAll(FENCE, "'''");
+    const full = p.text.replace(/\s+/g, " ").trim().replaceAll(FENCE, "'''");
+    const text = full.length > MAX_EXCERPT ? `${full.slice(0, MAX_EXCERPT)}…` : full;
     console.log(
       `- [@${p.authorHandle}](${url}) · ${p.createdAt.slice(0, 10)}\n\n` +
       `  ${FENCE}text\n  ${text}\n  ${FENCE}\n`,
