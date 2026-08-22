@@ -1,6 +1,7 @@
 import { AtpAgent } from "@atproto/api";
 import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   FEED_DID, FEED_DESCRIPTION, FEED_NAME, FEED_RKEY,
   HOSTNAME, PUBLISHER_DID, PUBLISHER_HANDLE, USER_AGENT,
@@ -43,11 +44,14 @@ const AVATAR_CANDIDATES = [
 
 const AVATAR_MAX_BYTES = 1_000_000;
 
+/** Resolved from the module, not cwd, so the script works from any directory. */
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+
 async function uploadAvatar(agent: AtpAgent): Promise<unknown | undefined> {
   for (const [relPath, mimeType] of AVATAR_CANDIDATES) {
     let bytes: Buffer;
     try {
-      bytes = await readFile(join(process.cwd(), relPath));
+      bytes = await readFile(join(ROOT, relPath));
     } catch (err) {
       if ((err as NodeJS.ErrnoException).code === "ENOENT") continue;
       throw err;

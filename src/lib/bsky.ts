@@ -20,46 +20,76 @@ export interface SearchOptions {
 
 export type Searcher = (q: string, opts?: SearchOptions) => Promise<SearchPostView[]>;
 
-class Forbidden extends Error {}
+/** The hard single-page cap on unauthenticated search, not a transient failure. */
+class PaginationCapped extends Error {}
 
-/**
- * Unauthenticated searchPosts serves exactly one page: api.bsky.app returns
- * "403 Request forbidden by administrative rules" for any cursor request, even
- * with a fresh cursor after a delay. Authenticated calls proxy through the PDS
- * instead, which is expected to lift the cap.
- *
- * The exact-phrase query currently returns 71 results, so it fits in a single
- * page and works unauthenticated — but it will start silently truncating once
- * it crosses 100.
- */
-async function fetchPage(url: string): Promise<SearchResponse> {
-  let delay = 1_000;
-  for (let attempt = 1; ; attempt++) {
-    const res = await fetch(url, { headers: { "user-agent": USER_AGENT } });
-    if (res.ok) return (await res.json()) as SearchResponse;
-
-    const retryable = res.status === 429 || res.status === 403 || res.status >= 500;
-    if (!retryable || attempt >= MAX_ATTEMPTS) {
-      if (res.status === 403) throw new Forbidden("403");
-      throw new Error(`searchPosts ${res.status} ${res.statusText}`);
-    }
-
-    const reset = Number(res.headers.get("ratelimit-reset"));
-    const waitMs = Number.isFinite(reset) && reset > 0
-      ? Math.max(0, reset * 1000 - Date.now())
-      : delay;
-    await sleep(Math.min(waitMs, 60_000));
-    delay *= 2;
+class HttpError extends Error {
+  constructor(readonly status: number, readonly resetAt?: number) {
+    super(`HTTP ${status}`);
   }
 }
 
+/** Both transports surface a status: fetch via HttpError, the agent via XRPCError. */
+function statusOf(err: unknown): number | undefined {
+  if (err instanceof HttpError) return err.status;
+  const status = (err as { status?: unknown })?.status;
+  return typeof status === "number" ? status : undefined;
+}
+
+function resetAtOf(err: unknown): number | undefined {
+  if (err instanceof HttpError) return err.resetAt;
+  const headers = (err as { headers?: Record<string, string> })?.headers;
+  const reset = Number(headers?.["ratelimit-reset"]);
+  return Number.isFinite(reset) && reset > 0 ? reset : undefined;
+}
+
 /**
- * Paginate a query. A mid-pagination refusal keeps the pages already collected
+ * Retry/backoff shared by both transports. Previously only the anonymous path had
+ * it, which left CI — the authenticated path — with no rate-limit handling at all.
+ *
+ * A 403 on a cursor request is the unauthenticated single-page cap and is
+ * permanent: api.bsky.app refuses it even with a fresh cursor after a delay. It is
+ * surfaced immediately rather than burning the full backoff schedule on a request
+ * that cannot succeed. A 403 on a first page, by contrast, has been observed to
+ * clear on retry, so it stays retryable there.
+ */
+async function withRetry<T>(
+  isCursorPage: boolean,
+  fn: () => Promise<T>,
+): Promise<T> {
+  let delay = 1_000;
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      const status = statusOf(err);
+      if (status === 403 && isCursorPage) throw new PaginationCapped();
+
+      const retryable = status === 429 || status === 403 || (status ?? 0) >= 500;
+      if (!retryable || attempt >= MAX_ATTEMPTS) throw err;
+
+      const resetAt = resetAtOf(err);
+      const waitMs = resetAt ? Math.max(0, resetAt * 1000 - Date.now()) : delay;
+      console.warn(`  ${status}; retrying in ${Math.round(waitMs / 1000)}s (${attempt}/${MAX_ATTEMPTS})`);
+      await sleep(Math.min(waitMs, 60_000));
+      delay *= 2;
+    }
+  }
+}
+
+async function fetchPage(url: string): Promise<SearchResponse> {
+  const res = await fetch(url, { headers: { "user-agent": USER_AGENT } });
+  if (res.ok) return (await res.json()) as SearchResponse;
+  const reset = Number(res.headers.get("ratelimit-reset"));
+  throw new HttpError(res.status, Number.isFinite(reset) ? reset : undefined);
+}
+
+/**
+ * Paginate a query. A refusal mid-pagination keeps the pages already collected
  * rather than failing the run — one capped query must not abort collection.
  */
 async function paginate(
   q: string,
-  { since }: SearchOptions,
   getPage: (cursor?: string) => Promise<SearchResponse>,
 ): Promise<SearchPostView[]> {
   const out: SearchPostView[] = [];
@@ -68,9 +98,9 @@ async function paginate(
   for (let page = 0; page < MAX_PAGES; page++) {
     let data: SearchResponse;
     try {
-      data = await getPage(cursor);
+      data = await withRetry(page > 0, () => getPage(cursor));
     } catch (err) {
-      if (err instanceof Forbidden && page > 0) {
+      if (err instanceof PaginationCapped && page > 0) {
         console.warn(`  pagination capped after ${page} page(s) for ${q}`);
         break;
       }
@@ -81,6 +111,15 @@ async function paginate(
     out.push(...posts);
     cursor = data.cursor;
     if (!cursor || posts.length === 0) break;
+
+    // Exiting with a live cursor means results were dropped; say so rather than
+    // letting a partial sweep look complete.
+    if (page === MAX_PAGES - 1) {
+      console.warn(
+        `  stopped at the ${MAX_PAGES}-page limit for ${q} with more results available; ` +
+        `narrow the query or raise MAX_PAGES`,
+      );
+    }
     await sleep(500);
   }
 
@@ -90,7 +129,7 @@ async function paginate(
 /** Anonymous searcher. Works, but capped at one page per query. */
 function publicSearcher(): Searcher {
   return (q, opts = {}) =>
-    paginate(q, opts, (cursor) => {
+    paginate(q, (cursor) => {
       const params = new URLSearchParams({ q, limit: "100", sort: "latest" });
       if (opts.since) params.set("since", opts.since);
       if (cursor) params.set("cursor", cursor);
@@ -101,7 +140,7 @@ function publicSearcher(): Searcher {
 /** Authenticated searcher, proxied through the PDS. */
 function authedSearcher(agent: AtpAgent): Searcher {
   return (q, opts = {}) =>
-    paginate(q, opts, async (cursor) => {
+    paginate(q, async (cursor) => {
       const res = await agent.app.bsky.feed.searchPosts({
         q, limit: 100, sort: "latest", ...(opts.since ? { since: opts.since } : {}), cursor,
       });

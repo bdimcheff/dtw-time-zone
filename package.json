@@ -10,7 +10,8 @@
     "update": "npm run collect && npm run build",
     "publish-record": "tsx src/publish-record.ts",
     "typecheck": "tsc --noEmit",
-    "verify": "tsx src/verify.ts"
+    "verify": "tsx src/verify.ts",
+    "pending-report": "tsx src/report-pending.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

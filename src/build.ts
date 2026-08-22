@@ -1,14 +1,18 @@
 import {
   FEED_DID, FEED_LIMIT, FEED_RKEY, HOSTNAME, PUBLISHER_DID, SERVICE_ENDPOINT,
 } from "./config.ts";
-import { readPosts } from "./lib/store.ts";
-import { writePublic } from "./lib/store.ts";
+import { readPosts, sortAt, writePublic } from "./lib/store.ts";
 
 /** AT-URI of the app.bsky.feed.generator record clients subscribe to. */
 export const FEED_URI = `at://${PUBLISHER_DID}/app.bsky.feed.generator/${FEED_RKEY}`;
 
 async function main(): Promise<void> {
-  const posts = await readPosts();
+  // Sorted here rather than trusted: data/posts.json is hand-edited during
+  // variant review, and a misplaced entry would otherwise silently reorder the feed.
+  const posts = (await readPosts()).sort((a, b) => {
+    const [x, y] = [sortAt(a), sortAt(b)];
+    return x < y ? 1 : x > y ? -1 : 0;
+  });
 
   // did:web resolution reads exactly this path. The serviceEndpoint is allowed
   // to name a different host than the DID, which is what lets the serving layer

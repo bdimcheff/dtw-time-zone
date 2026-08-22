@@ -73,6 +73,14 @@ async function main(): Promise<void> {
       const kind = classify(postText(p));
       if (kind === "ignore") continue;
 
+      // denied is a moderation escape hatch and must outrank an exact match:
+      // otherwise a post you removed is re-added by the next sweep, forever.
+      if (denied.has(p.uri)) {
+        pendingByUri.delete(p.uri);
+        byUri.delete(p.uri);
+        continue;
+      }
+
       if (kind === "exact") {
         // A post promoted to exact leaves the review queue; re-running the
         // matcher over stored text can reclassify without re-querying.
@@ -84,7 +92,7 @@ async function main(): Promise<void> {
       }
 
       // variant
-      if (byUri.has(p.uri) || pendingByUri.has(p.uri) || denied.has(p.uri)) continue;
+      if (byUri.has(p.uri) || pendingByUri.has(p.uri)) continue;
       pendingByUri.set(p.uri, { ...toStored(p, nowIso), matchedQuery: query });
       newPending++;
     }

@@ -47,7 +47,10 @@ export const sortAt = (p: StoredPost): string =>
   p.createdAt < p.indexedAt ? p.createdAt : p.indexedAt;
 
 /** Newest first, so the feed skeleton is a prefix of this array. */
-const byNewest = (a: StoredPost, b: StoredPost) => sortAt(b).localeCompare(sortAt(a));
+const byNewest = (a: StoredPost, b: StoredPost) => {
+  const [x, y] = [sortAt(a), sortAt(b)];
+  return x < y ? 1 : x > y ? -1 : 0;
+};
 
 export const writePosts = (posts: StoredPost[]) =>
   writeJson(postsPath, [...posts].sort(byNewest));

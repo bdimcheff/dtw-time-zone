@@ -54,6 +54,15 @@ export const EXACT_QUERY = '"Detroit, Michigan is in the Eastern Time Zone"';
  * Broader queries used to surface variants for manual review. These paginate
  * through years of sincere timezone discussion, so they run windowed rather
  * than as full sweeps. See collect.ts.
+ *
+ * The narrower queries look redundant — classify() only accepts a variant if it
+ * contains the frame, which the first query searches for directly — but that
+ * holds only for an unbounded search. Each query hits the single-page cap and
+ * returns a different newest-100 window, so the narrow ones reach posts the
+ * broad one cannot. Measured unauthenticated: "detroit" contributed 27 relevant
+ * posts and "dtw" 2 that the broad query alone missed. "michigan" contributed
+ * none at that moment, and is kept because the balance shifts once
+ * authentication lifts the cap.
  */
 export const VARIANT_QUERIES = [
   '"is in the Eastern Time Zone"',
