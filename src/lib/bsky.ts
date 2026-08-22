@@ -189,8 +189,10 @@ function authedSearcher(agent: AtpAgent): Searcher {
 }
 
 /**
- * Authenticates when BSKY_IDENTIFIER/BSKY_APP_PASSWORD are set, falling back to
- * anonymous access so the collector keeps working if the credential lapses.
+ * Authenticates when BSKY_IDENTIFIER/BSKY_APP_PASSWORD are set. Missing
+ * credentials fall back to anonymous access; a credential that is present but
+ * rejected is fatal, so a revoked app password surfaces instead of silently
+ * halving what the collector can see.
  */
 export async function createSearcher(): Promise<Searcher> {
   const identifier = process.env.BSKY_IDENTIFIER;
@@ -205,11 +207,16 @@ export async function createSearcher(): Promise<Searcher> {
   try {
     await agent.login({ identifier, password });
   } catch (err) {
-    // The lapsed credential this function documents: a revoked or expired app
-    // password throws here, and letting that propagate would fail the run rather
-    // than degrade to the anonymous path.
-    console.warn(`login failed (${(err as Error).message}); falling back to anonymous search`);
-    return publicSearcher();
+    // Deliberately fatal. Credentials being present means authenticated
+    // collection was intended, and authentication exists solely to lift the
+    // single-page search cap. Degrading to the anonymous path here would keep
+    // the run green while quietly collecting a fraction of the results, so a
+    // revoked app password could go unnoticed for months. Absent credentials
+    // still fall back above; a broken one stops the run.
+    throw new Error(
+      `login failed for ${identifier}: ${(err as Error).message}. ` +
+      `Check the BSKY_APP_PASSWORD secret; unset it to collect anonymously.`,
+    );
   }
   console.log(`searching as ${identifier}`);
   return authedSearcher(agent);
