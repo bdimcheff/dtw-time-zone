@@ -1,0 +1,90 @@
+[
+  {
+    "uri": "at://did:plc:c6vdjihfz4obux3yhqzvb642/app.bsky.feed.post/3mljjacgas22y",
+    "cid": "bafyreictwf7xksysmi6gmj7gy723n5ykkmyg2qpjv46jjx7usr76vqj22a",
+    "authorDid": "did:plc:c6vdjihfz4obux3yhqzvb642",
+    "authorHandle": "danielmwarwick.bsky.social",
+    "text": "\"Detroit is in the Eastern time zone\"\n\nHave some time in Detroit - what should I check out? Any cool real estate?",
+    "createdAt": "2026-05-10T19:40:14.433Z",
+    "indexedAt": "2026-05-10T19:40:13.360Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:prgirpu6za2df777ziwui4bj/app.bsky.feed.post/3m6v3nvnjtu2z",
+    "cid": "bafyreihqs6awbnrdbvr5cqhpbidpgqon3obirnmlifym6tuillucj4625e",
+    "authorDid": "did:plc:prgirpu6za2df777ziwui4bj",
+    "authorHandle": "drmikewiser.bsky.social",
+    "text": "I'm just a guy.\nIn December.\nReminding you that it is absurd that Michigan is in the Eastern time zone.",
+    "createdAt": "2025-11-30T23:41:44.112Z",
+    "indexedAt": "2025-11-30T23:41:43.932Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:25vtkmtjwva4yvay7qkoms2t/app.bsky.feed.post/3l7h5x2itxm25",
+    "cid": "bafyreihm6rujqwqmi4nycb7zkuiqdnc4agxcnhry5aw3v3s3pzz5nhuo3y",
+    "authorDid": "did:plc:25vtkmtjwva4yvay7qkoms2t",
+    "authorHandle": "claireskies.bsky.social",
+    "text": "Kinda bonkers how Michigan is considered part of the Midwest but is in the eastern time zone",
+    "createdAt": "2024-10-26T22:44:22.454Z",
+    "indexedAt": "2024-10-26T22:44:22.010Z",
+    "firstSeenAt": "2026-08-22T21:03:38.173Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:savltyoxhe4cc3sxqyspvvpy/app.bsky.feed.post/3l2bz4657kg2x",
+    "cid": "bafyreic5opo5bbujaehnblvexiscgh743rdvazq5zw3j3hljek4opjfpuu",
+    "authorDid": "did:plc:savltyoxhe4cc3sxqyspvvpy",
+    "authorHandle": "pomegranateyum57.bsky.social",
+    "text": "Michigan is in the Eastern Time Zone",
+    "createdAt": "2024-08-22T06:28:27.625Z",
+    "indexedAt": "2024-08-22T06:28:27.625Z",
+    "firstSeenAt": "2026-08-22T21:03:38.173Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:umlrtpyqgvf5u4q3gpel26do/app.bsky.feed.post/3kup5j2egek27",
+    "cid": "bafyreigrqvizoikuzlakebxz26ved5ikf2jmqmmgc33xjghlljimhec7ea",
+    "authorDid": "did:plc:umlrtpyqgvf5u4q3gpel26do",
+    "authorHandle": "diygeochemist.bsky.social",
+    "text": "Time Zones are weird, y'all.\n\nI live in the Upper Peninsula of Michigan. My town is in the Eastern Time zone. This is kind of strange because everything south of the U.P. is Central Time Zone.",
+    "createdAt": "2024-06-12T03:20:41.823Z",
+    "indexedAt": "2024-06-12T03:20:41.823Z",
+    "firstSeenAt": "2026-08-22T21:03:38.173Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:lexzlufqhfpr72ydhfzlgs4r/app.bsky.feed.post/3kdpcfnehsi2e",
+    "cid": "bafyreid2lkxv6qljsc2owhw7f72ug2zvwj2axpt6oodvvo6tbgrzyjrggu",
+    "authorDid": "did:plc:lexzlufqhfpr72ydhfzlgs4r",
+    "authorHandle": "lriddy.bsky.social",
+    "text": "blowing a new yorker's mind by telling them michigan is in the eastern time zone",
+    "createdAt": "2023-11-08T20:39:58.367Z",
+    "indexedAt": "2023-11-08T20:39:58.367Z",
+    "firstSeenAt": "2026-08-22T21:03:38.173Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:56oe4lt3sbgdhpbbf6bntsxa/app.bsky.feed.post/3k7bqypkowt2y",
+    "cid": "bafyreieydafqafbk525lsmruoalpytybtgnzidvmfuxjkwszjhwcwsvzwu",
+    "authorDid": "did:plc:56oe4lt3sbgdhpbbf6bntsxa",
+    "authorHandle": "rockshrimp.bsky.social",
+    "text": "For the midwesterners On Here, I feel the need to remind you all that it's in my wedding vows that I will never let my husband trick me with his weird joke that Michigan is in the Eastern time zone.",
+    "createdAt": "2023-09-13T13:43:07.652Z",
+    "indexedAt": "2023-09-13T13:43:07.652Z",
+    "firstSeenAt": "2026-08-22T21:03:38.173Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:o6qikgurzkb6yfvj6xof53io/app.bsky.feed.post/3k3ubuzlglh2i",
+    "cid": "bafyreihxyjpokdf3d7upvzkwez4nqi6llqqjop4ikhlzjiviokjfp4juci",
+    "authorDid": "did:plc:o6qikgurzkb6yfvj6xof53io",
+    "authorHandle": "benhead.bsky.social",
+    "text": "I'm always surprised when Detroit is in the Eastern time zone. (With apologies, I guess?)",
+    "createdAt": "2023-08-01T00:52:26.294Z",
+    "indexedAt": "2023-08-01T00:52:26.294Z",
+    "firstSeenAt": "2026-08-22T21:03:38.173Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  }
+]

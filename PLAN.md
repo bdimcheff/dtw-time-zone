@@ -26,8 +26,10 @@ repo makes the feed discoverable.
   2023: 13 · 2024: 9 · 2025: 42 · 2026: 25 YTD. Roughly 25 distinct authors.
 - Search indexes the full history, so a **one-time backfill captures everything**.
 - `app.bsky.feed.searchPosts` returns **403 on `public.api.bsky.app`** (blocked at
-  the CDN) but **200 unauthenticated on `api.bsky.app`**. Rate limits trip after
-  ~6 paginated queries; needs backoff.
+  the CDN). It answered unauthenticated on `api.bsky.app` but only for a single
+  page, and later refused first pages too. **Collection therefore authenticates**;
+  measured, anonymous returned nothing where authenticated returned all 170 results
+  across 2 pages.
 - Search **ignores punctuation** — comma and no-comma queries return identical sets.
 - Loose matching produces convincing false positives ("most of Indiana is in the
   eastern time zone") — hence the review gate below.
@@ -42,7 +44,7 @@ repo makes the feed discoverable.
 GitHub Action (cron)
   └─ collect  → query api.bsky.app/searchPosts, paginate, dedupe
   └─ classify → exact match → data/posts.json      (auto-admitted)
-                variant     → data/pending.json    (opens a PR)
+                variant     → data/pending.json    (opens a review issue)
   └─ build    → render static artifacts into public/
   └─ deploy   → firebase deploy --only hosting:dtw
 ```
@@ -57,43 +59,40 @@ enter the feed. Nothing ambiguous reaches the feed unreviewed.
 
 ## Lookback strategy
 
-Cost per run is dominated by *pagination depth*, not history depth, so the two query
-classes are handled differently:
+> **Superseded.** This described working around the anonymous single-page cap.
+> Authentication lifts that cap, so the collector now authenticates and the
+> workaround is largely obsolete — see
+> [#3](https://github.com/bdimcheff/dtw-time-zone/issues/3), which proposes
+> removing the windowing entirely. Kept for the reasoning below, which still
+> explains why the watermark is widened rather than trusted.
 
-| Query | Strategy | Requests/run |
-|---|---|---|
-| Exact phrase | Full sweep every run | 1 |
-| Broad variants | `since` window with overlap | 1-2 |
-| Full variant sweep | Monthly, or via manual flag | ~10 |
+Cost per run is dominated by *pagination depth*, not history depth, so the exact
+query sweeps fully every run — cheap, and **self-healing**: posts that were briefly
+private, late-indexed, or from since-unblocked accounts get picked up without a
+special case. The broader variant query runs against a `since` watermark.
 
-The exact-phrase query returns 71 results — a single page. Sweeping it fully every
-run costs one request and is **self-healing**: posts that were briefly private,
-late-indexed, or from since-unblocked accounts get picked up automatically.
-
-The broad variant queries are the expensive ones, paginating through years of
-unrelated timezone chatter; these get a `since` window. Two caveats drive the
-design:
+Two caveats drove the window's design:
 
 - `since`/`until` filter on **`sortAt`, not `createdAt`** — the lexicon states these
   may not match. The window is therefore set to `last_run - 7 days`, not `last_run`;
   dedupe by AT-URI makes the overlap free.
 - `cursor` is documented as "may not necessarily allow scrolling through entire
-  result set," so deep pagination is not treated as reliable. The periodic full
-  variant sweep exists to catch what windowing drops.
+  result set," so deep pagination is not treated as reliable. A query that stops
+  early holds the watermark rather than advancing past results nothing examined.
 
-Steady-state cost is ~2-3 requests per run, well clear of the rate limit that tripped
-at ~6 paginated queries.
+## Known constraint: the feed renders one page
 
-## Known constraint: the 100-post window
+Static hosting cannot read the `cursor` query parameter, so the skeleton is a single
+page with no cursor. The AppView's `getFeed` slices the skeleton to the client's
+requested `limit` and treats a returned cursor equal to the request's — including
+absent on a first call — as end-of-feed. Subscribers therefore see **the newest
+`limit` posts, typically 30-50**, regardless of how many entries we serve.
 
-Static hosting cannot read the `cursor` query parameter, so the feed serves exactly
-one page — the newest ~100 posts. At 71 posts and ~35/year, this becomes binding in
-roughly a year.
-
-This is a *window*, not data loss: `data/posts.json` retains the complete archive
-permanently. When the cap binds, the fix is a Cloudflare Worker (free tier, ~30
-lines) serving the skeleton with real pagination — a `serviceEndpoint` change in the
-DID document, not a migration.
+This is a *rendering* limit, not data loss: `data/posts.json` retains the complete
+archive permanently. Lifting it requires a paginating endpoint, planned in
+[#2](https://github.com/bdimcheff/dtw-time-zone/issues/2). Because the DID's
+`serviceEndpoint` is indirect, that swap changes where the skeleton is served
+without changing the feed's identity.
 
 ## Build sequence
 
@@ -102,20 +101,23 @@ DID document, not a migration.
 2. **`src/collect.ts`** — paginated `searchPosts` with backoff; merges into
    `data/posts.json` keyed by AT-URI. Query strategy differs per query type (see
    *Lookback strategy* below).
-3. **`src/classify.ts`** — normalizes text (case, punctuation, whitespace) and
-   applies the exact matcher; everything else routes to `data/pending.json`.
+3. **`src/lib/match.ts`** — normalizes text (case, accents, punctuation,
+   whitespace) and applies the exact matcher; anything looser routes to
+   `data/pending.json`.
 4. **`src/build.ts`** — emits `public/.well-known/did.json`,
    `public/xrpc/app.bsky.feed.describeFeedGenerator`, and
    `public/xrpc/app.bsky.feed.getFeedSkeleton` (newest 100, no cursor).
-5. **`firebase.json`** — hosting target `dtw`, plus `headers` forcing
-   `Content-Type: application/json` on `/xrpc/**` and `/.well-known/did.json`.
+5. **`firebase.json`** — `headers` forcing `Content-Type: application/json` on
+   `/xrpc/**` and `/.well-known/did.json`. Hosting lives in its own
+   `dtw-time-zone` Firebase project, so no hosting target is needed.
    The default `ignore` glob `**/.*` excludes `.well-known` and is replaced with an
    explicit exclusion list, or the DID document silently 404s.
 6. **`src/publish-record.ts`** — one-time script writing the
    `app.bsky.feed.generator` record to **`dimcheff.wtf`**, which becomes the feed's
-   listed creator. Requires a Bluesky app password (unlike collection).
-7. **`.github/workflows/update.yml`** — cron; runs collect → classify → build,
-   commits changed data, deploys, and opens a PR when `pending.json` grows.
+   listed creator.
+7. **`.github/workflows/update.yml`** — cron; typechecks and tests, then runs
+   collect → build, commits the data files, deploys, and opens (or comments on) a
+   review issue when `pending.json` grows.
 8. **Verification** — confirm `Content-Type` on the deployed endpoints, resolve the
    DID, and subscribe to the feed in the Bluesky app.
 
@@ -135,6 +137,6 @@ DID document, not a migration.
   allowlist plus a generalized `<place> is in the <X> Time Zone` matcher, and its
   own review gate. Deliberately out of scope until the base feed is running.
 - **Archive web page** — HTML listing every captured post. Gains importance once
-  the 100-post window binds.
+  the feed's single page binds.
 - **Stats / leaderboard** — posts per year, top posters, first sighting.
 - **RSS/JSON syndication.**

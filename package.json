@@ -1,0 +1,26 @@
+{
+  "name": "dtw-time-zone",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A Bluesky feed of people skeeting that Detroit, Michigan is in the Eastern Time Zone",
+  "scripts": {
+    "collect": "tsx src/collect.ts",
+    "build": "tsx src/build.ts",
+    "update": "npm run collect && npm run build",
+    "publish-record": "tsx src/publish-record.ts",
+    "typecheck": "tsc --noEmit",
+    "verify": "tsx src/verify.ts",
+    "pending-report": "tsx src/report-pending.ts",
+    "test": "node --import tsx --test \"src/**/*.test.ts\"",
+    "check": "npm run typecheck && npm run test"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@atproto/api": "^0.13.35"
+  }
+}

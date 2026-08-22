@@ -1,0 +1,109 @@
+import { AtpAgent } from "@atproto/api";
+import { readFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import {
+  FEED_DID, FEED_DESCRIPTION, FEED_NAME, FEED_RKEY,
+  HOSTNAME, PUBLISHER_DID, PUBLISHER_HANDLE,
+} from "./config.ts";
+import { getJson, isJson } from "./lib/http.ts";
+
+/**
+ * One-time (and idempotent) publication of the app.bsky.feed.generator record.
+ * This is what makes the feed discoverable and subscribable; it points at
+ * FEED_DID, which must already resolve.
+ */
+
+/** The record is inert until did:web resolution works, so check first. */
+async function preflight(): Promise<void> {
+  const url = `https://${HOSTNAME}/.well-known/did.json`;
+  const { status, type, body } = await getJson(url);
+  if (status !== 200) throw new Error(`${url} returned ${status} — deploy the site first`);
+  if (!isJson(type)) {
+    throw new Error(`${url} served as "${type}" — check the headers block in firebase.json`);
+  }
+
+  const doc = body as { id?: string; service?: Array<{ type?: string }> };
+  if (doc.id !== FEED_DID) throw new Error(`DID document declares ${doc.id}, expected ${FEED_DID}`);
+  if (!doc.service?.some((svc) => svc.type === "BskyFeedGenerator")) {
+    throw new Error("DID document has no BskyFeedGenerator service entry");
+  }
+  console.log(`✓ ${FEED_DID} resolves`);
+}
+
+/** Resolved from the module, not cwd, so the script works from any directory. */
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+
+/** The generator lexicon accepts only PNG and JPEG, capped at 1MB. */
+const AVATAR_MAX_BYTES = 1_000_000;
+
+async function uploadAvatar(agent: AtpAgent): Promise<unknown | undefined> {
+  for (const rel of ["assets/avatar.png", "assets/avatar.jpg", "assets/avatar.jpeg"]) {
+    let bytes: Buffer;
+    try {
+      bytes = await readFile(join(ROOT, rel));
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === "ENOENT") continue;
+      throw err;
+    }
+    if (bytes.byteLength > AVATAR_MAX_BYTES) {
+      throw new Error(`${rel} is ${bytes.byteLength} bytes; the lexicon caps avatars at ${AVATAR_MAX_BYTES}`);
+    }
+    const upload = await agent.uploadBlob(bytes, {
+      encoding: rel.endsWith(".png") ? "image/png" : "image/jpeg",
+    });
+    console.log(`✓ avatar uploaded from ${rel}`);
+    return upload.data.blob;
+  }
+  console.log("no avatar found in assets/; publishing without one");
+  return undefined;
+}
+
+async function main(): Promise<void> {
+  const identifier = process.env.BSKY_IDENTIFIER;
+  const password = process.env.BSKY_APP_PASSWORD;
+  if (!identifier || !password) {
+    throw new Error("BSKY_IDENTIFIER and BSKY_APP_PASSWORD are required");
+  }
+
+  if (process.argv.includes("--skip-preflight")) {
+    console.warn("skipping preflight — the feed will not work until the host is live");
+  } else {
+    await preflight();
+  }
+
+  const agent = new AtpAgent({ service: process.env.BSKY_SERVICE ?? "https://bsky.social" });
+  await agent.login({ identifier, password });
+
+  // The record's repo determines who is credited as the feed's creator, so a
+  // wrong login would publish under the wrong identity.
+  if (agent.session?.did !== PUBLISHER_DID) {
+    throw new Error(
+      `logged in as ${agent.session?.did}, expected ${PUBLISHER_DID} (${PUBLISHER_HANDLE})`,
+    );
+  }
+
+  const avatar = await uploadAvatar(agent);
+
+  await agent.com.atproto.repo.putRecord({
+    repo: agent.session.did,
+    collection: "app.bsky.feed.generator",
+    rkey: FEED_RKEY,
+    record: {
+      did: FEED_DID,
+      displayName: FEED_NAME,
+      description: FEED_DESCRIPTION,
+      ...(avatar ? { avatar } : {}),
+      createdAt: new Date().toISOString(),
+    },
+  });
+
+  const uri = `at://${agent.session.did}/app.bsky.feed.generator/${FEED_RKEY}`;
+  console.log(`\n✓ published ${uri}`);
+  console.log(`  https://bsky.app/profile/${PUBLISHER_HANDLE}/feed/${FEED_RKEY}`);
+}
+
+main().catch((err) => {
+  console.error(`\n${err instanceof Error ? err.message : err}`);
+  process.exit(1);
+});
