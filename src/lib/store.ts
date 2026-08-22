@@ -44,13 +44,23 @@ export const readDenied = async () => new Set(await readJson<string[]>(deniedPat
  * network actually saw it, which is how the AppView derives its own sort key.
  */
 export const sortAt = (p: StoredPost): string =>
-  p.createdAt < p.indexedAt ? p.createdAt : p.indexedAt;
+  ms(p.createdAt) < ms(p.indexedAt) ? p.createdAt : p.indexedAt;
+
+/**
+ * Milliseconds for an ISO timestamp. These are compared numerically rather than
+ * lexicographically because `createdAt` is client-supplied: it may carry a UTC
+ * offset ("…T00:30:00-05:00") or omit milliseconds, either of which sorts wrong
+ * as a string against the Z-normalized `indexedAt`. An unparseable value pins to
+ * the epoch, which puts a malformed record at the bottom of the feed instead of
+ * making the comparator non-transitive with NaN.
+ */
+const ms = (iso: string): number => {
+  const t = Date.parse(iso);
+  return Number.isNaN(t) ? 0 : t;
+};
 
 /** Newest first, so the feed skeleton is a prefix of this array. */
-const byNewest = (a: StoredPost, b: StoredPost) => {
-  const [x, y] = [sortAt(a), sortAt(b)];
-  return x < y ? 1 : x > y ? -1 : 0;
-};
+const byNewest = (a: StoredPost, b: StoredPost) => ms(sortAt(b)) - ms(sortAt(a));
 
 export const writePosts = (posts: StoredPost[]) =>
   writeJson(postsPath, [...posts].sort(byNewest));
