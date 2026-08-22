@@ -36,8 +36,18 @@ export const readState = () =>
 /** URIs manually rejected; never re-enter pending. Hand-edited. */
 export const readDenied = async () => new Set(await readJson<string[]>(deniedPath, []));
 
+/**
+ * `createdAt` is client-supplied and unverified: the archive already contains a
+ * post dated 2009, years before Bluesky existed. Sorting on it alone would let
+ * anyone pin themselves to the top of the feed forever by posting a future date.
+ * Taking the earlier of createdAt and indexedAt caps a post at the moment the
+ * network actually saw it, which is how the AppView derives its own sort key.
+ */
+export const sortAt = (p: StoredPost): string =>
+  p.createdAt < p.indexedAt ? p.createdAt : p.indexedAt;
+
 /** Newest first, so the feed skeleton is a prefix of this array. */
-const byNewest = (a: StoredPost, b: StoredPost) => b.createdAt.localeCompare(a.createdAt);
+const byNewest = (a: StoredPost, b: StoredPost) => sortAt(b).localeCompare(sortAt(a));
 
 export const writePosts = (posts: StoredPost[]) =>
   writeJson(postsPath, [...posts].sort(byNewest));
