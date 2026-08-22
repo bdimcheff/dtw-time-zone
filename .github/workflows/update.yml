@@ -40,9 +40,6 @@ jobs:
           BSKY_APP_PASSWORD: ${{ secrets.BSKY_APP_PASSWORD }}
         run: npm run collect -- ${{ inputs.full_sweep && '--full' || '' }}
 
-      - name: Build feed
-        run: npm run build
-
       # All three data files are committed to main together. An earlier version
       # routed pending.json through a bot branch, which force-pushed over any
       # review commits and silently discarded removals when no new candidates
@@ -71,6 +68,13 @@ jobs:
           done
           echo "could not push after 3 attempts"
           exit 1
+
+      # After the push, not before: the rebase can bring in a review PR that
+      # admitted posts, and building first would deploy a skeleton missing them
+      # while the commit log claimed they were live. public/ is gitignored, so
+      # nothing here needs committing.
+      - name: Build feed
+        run: npm run build
 
       # An issue, not a PR: the collector rewrites pending.json every run, so a
       # bot branch would clobber whatever a reviewer committed to it.
