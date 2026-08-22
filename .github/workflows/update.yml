@@ -1,0 +1,88 @@
+name: Update feed
+
+on:
+  schedule:
+    # Four times a day. GitHub disables scheduled workflows after 60 days
+    # without repository activity; re-enable from the Actions tab when it does.
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      full_sweep:
+        description: "Run an unwindowed sweep of the variant queries"
+        type: boolean
+        default: false
+
+concurrency:
+  group: update-feed
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Collect posts
+        id: collect
+        env:
+          BSKY_IDENTIFIER: ${{ secrets.BSKY_IDENTIFIER }}
+          BSKY_APP_PASSWORD: ${{ secrets.BSKY_APP_PASSWORD }}
+        run: npm run collect -- ${{ inputs.full_sweep && '--full' || '' }}
+
+      - name: Build feed
+        run: npm run build
+
+      # Committed separately from the pending queue so the feed updates without
+      # waiting on review, while variants still require a merged PR.
+      - name: Commit archive
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- data/posts.json data/state.json; then
+            echo "no archive changes"
+          else
+            git add data/posts.json data/state.json
+            git commit -m "Update archive ($(git diff --cached --numstat | wc -l) file(s) changed)"
+            git push
+          fi
+
+      - name: Open review PR for pending variants
+        if: steps.collect.outputs.new_pending != '0'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          add-paths: data/pending.json
+          branch: bot/pending-variants
+          title: "Review ${{ steps.collect.outputs.new_pending }} candidate variant post(s)"
+          body: |
+            The collector found posts that carry the phrase plus a local term but
+            are not exact matches. They are **not** in the feed yet.
+
+            To admit one, move its entry from `data/pending.json` into
+            `data/posts.json`. To reject it, delete the entry and add its `uri`
+            to `data/denied.json` so it is not re-queued.
+          commit-message: "Add candidate variant posts for review"
+
+      - name: Deploy to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: bdimcheff
+          target: dtw
+          channelId: live
+
+      # The feed fails in a confusing way if these regress: the DID stops
+      # resolving, or the AppView rejects the skeleton's content type.
+      - name: Verify deployment
+        run: npm run verify

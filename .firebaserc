@@ -1,0 +1,12 @@
+{
+  "projects": {
+    "default": "bdimcheff"
+  },
+  "targets": {
+    "bdimcheff": {
+      "hosting": {
+        "dtw": ["dtw-time-zone"]
+      }
+    }
+  }
+}

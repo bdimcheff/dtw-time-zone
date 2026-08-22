@@ -20,6 +20,13 @@ export const SERVICE_ENDPOINT = `https://${HOSTNAME}`;
 /** Account whose repo holds the app.bsky.feed.generator record. */
 export const PUBLISHER_HANDLE = "dimcheff.wtf";
 
+/**
+ * Resolved DID for PUBLISHER_HANDLE. Hardcoded rather than resolved at build
+ * time so builds don't depend on the network; PLC DIDs are stable even when the
+ * handle changes. publish-record.ts re-resolves and fails loudly on a mismatch.
+ */
+export const PUBLISHER_DID = "did:plc:2zwqewi6t7coiohtmpfzz2wd";
+
 /** Record key; the feed's AT-URI is at://<publisher-did>/app.bsky.feed.generator/<key> */
 export const FEED_RKEY = "dtw-time-zone";
 

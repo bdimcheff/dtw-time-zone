@@ -9,7 +9,8 @@
     "build": "tsx src/build.ts",
     "update": "npm run collect && npm run build",
     "publish-record": "tsx src/publish-record.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "verify": "tsx src/verify.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

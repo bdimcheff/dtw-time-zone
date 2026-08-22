@@ -1,0 +1,33 @@
+{
+  "hosting": {
+    "target": "dtw",
+    "public": "public",
+    "//": "Firebase's default ignore list contains '**/.*', which silently excludes .well-known and would make did:web resolution 404. Exclusions are enumerated explicitly instead.",
+    "ignore": [
+      "firebase.json",
+      "**/node_modules/**",
+      "**/.DS_Store"
+    ],
+    "cleanUrls": false,
+    "trailingSlash": false,
+    "headers": [
+      {
+        "//": "XRPC endpoints are extensionless, so Firebase would infer application/octet-stream and the AppView's client would reject them.",
+        "source": "/xrpc/**",
+        "headers": [
+          { "key": "Content-Type", "value": "application/json; charset=utf-8" },
+          { "key": "Access-Control-Allow-Origin", "value": "*" },
+          { "key": "Cache-Control", "value": "public, max-age=300" }
+        ]
+      },
+      {
+        "source": "/.well-known/did.json",
+        "headers": [
+          { "key": "Content-Type", "value": "application/json; charset=utf-8" },
+          { "key": "Access-Control-Allow-Origin", "value": "*" },
+          { "key": "Cache-Control", "value": "public, max-age=3600" }
+        ]
+      }
+    ]
+  }
+}
