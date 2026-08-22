@@ -50,7 +50,9 @@ The Action opens a PR when new candidates appear. For each entry in
 
 ## Setup
 
-Required once.
+Required once. **[SETUP.md](SETUP.md) has the same steps as copy-pasteable CLI
+commands**, including creating the custom domain via the Hosting REST API, which the
+`firebase` CLI cannot do.
 
 **1. Firebase Hosting.** The feed lives in its own Firebase project, `dtw-time-zone`,
 rather than alongside the blog in `bdimcheff`. This keeps the CI service account
