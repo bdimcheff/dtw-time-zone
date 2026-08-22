@@ -149,7 +149,8 @@ async function main(): Promise<void> {
     console.warn("  window not fully covered; holding lastRunAt so the next run re-reads it");
   }
 
-  // Consumed by the workflow to decide whether to open a review PR.
+  // Consumed by the workflow to decide whether to open a review issue, and to
+  // title it.
   if (process.env.GITHUB_OUTPUT) {
     const { appendFileSync } = await import("node:fs");
     appendFileSync(

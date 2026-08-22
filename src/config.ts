@@ -63,6 +63,13 @@ export const EXACT_QUERY = '"Detroit, Michigan is in the Eastern Time Zone"';
  * posts and "dtw" 2 that the broad query alone missed. "michigan" contributed
  * none at that moment, and is kept because the balance shifts once
  * authentication lifts the cap.
+ *
+ * Note that the measurement expires with the cap. Lifting it is the entire point
+ * of authenticating, and once pagination works the first query is unbounded --
+ * at which point classify()'s FRAME requirement does make these strictly
+ * redundant, by the same argument that makes them useful today. Re-measure once
+ * a run completes without reporting truncation, and drop them if they contribute
+ * nothing then.
  */
 export const VARIANT_QUERIES = [
   '"is in the Eastern Time Zone"',
