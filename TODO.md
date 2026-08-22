@@ -25,10 +25,20 @@ The first truncates our skeleton to the client's requested `limit`. The second
 treats the feed as ended when the returned cursor matches the request's — which,
 for a response with no cursor at all, is true on the very first call.
 
-So the feed renders **the newest `limit` posts and stops** — 30 to 50 in practice,
-not the 100 the lexicon's maximum suggests, and not the 85 we currently serve. The
-extra entries are dead weight. The archive is already larger than what any
-subscriber can reach.
+So the feed renders **the newest `limit` posts and stops**. Measured against the
+live feed with `app.bsky.feed.getFeed`:
+
+| Requested `limit` | Posts returned | Cursor returned |
+|---:|---:|:---|
+| *(none, defaults to 50)* | 50 | no |
+| 10 | 10 | no |
+| 30 | 30 | no |
+| 50 | 50 | no |
+| 100 | 85 (all we have) | no |
+
+The window is exactly the client's `limit`, and no request ever yields a cursor, so
+page two is unreachable. The Bluesky app requests 30. With 85 posts archived, 55 are
+already unreachable by subscribers — the constraint is binding today, not eventually.
 
 ### Design
 
