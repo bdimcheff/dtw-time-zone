@@ -60,35 +60,45 @@ SITE=projects/dtw-time-zone/sites/dtw-time-zone
 curl -s -X POST \
   "https://firebasehosting.googleapis.com/v1beta1/${SITE}/customDomains?customDomainId=dtw.dimcheff.wtf" \
   -H "Authorization: Bearer ${TOKEN}" \
+  -H "x-goog-user-project: dtw-time-zone" \
   -H "Content-Type: application/json" \
   -d '{}' | python3 -m json.tool
 ```
 
-Then read back the exact DNS records to create. `requiredDnsUpdates` is the
-authoritative source — do not copy the blog's records, which point at older
-Hosting IPs:
+The `x-goog-user-project` header is required with user credentials from
+`gcloud auth print-access-token`; without it the API returns 403 asking for a
+quota project.
+
+**This domain has already been created.** It asked for a single record — a CNAME,
+not the A records the older `brandon.dimcheff.com` uses:
+
+| Type | Host | Answer |
+|---|---|---|
+| `CNAME` | `dtw` | `dtw-time-zone.web.app` |
+
+Add it at **Porkbun** (`dimcheff.wtf` lives there; `dimcheff.com` is on Google Cloud
+DNS). Porkbun's Host field takes only the subdomain part. No TXT record is needed —
+ownership is proven by the CNAME itself.
+
+Poll until ownership and host go active:
 
 ```sh
 curl -s "https://firebasehosting.googleapis.com/v1beta1/${SITE}/customDomains/dtw.dimcheff.wtf" \
-  -H "Authorization: Bearer ${TOKEN}" \
+  -H "Authorization: Bearer ${TOKEN}" -H "x-goog-user-project: dtw-time-zone" \
   | python3 -c "
 import json,sys
 d=json.load(sys.stdin)
-print('ownership:', d.get('ownershipState'), '| host:', d.get('hostState'))
+print('ownership:', d.get('ownershipState'), '| host:', d.get('hostState'), '| cert:', (d.get('cert') or {}).get('state'))
 for grp in (d.get('requiredDnsUpdates') or {}).get('desired') or []:
-    print(' ', grp.get('domainName'))
     for r in grp.get('records') or []:
-        print(f\"    {r.get('type'):6s} {r.get('rdata')}\")
+        print(f\"  {r.get('type'):6s} {r.get('rdata')} ({r.get('requiredAction')})\")
 for i in d.get('issues') or []:
-    print('issue:', i.get('detail','')[:200])
+    print('issue:', (i.get('detail') or '')[:200])
 "
 ```
 
-Add those at **Porkbun** (`dimcheff.wtf` is there; `dimcheff.com` is on Google Cloud
-DNS). Porkbun's Host field takes only the subdomain part — `dtw`.
-
-Poll the same GET until `ownershipState: OWNERSHIP_ACTIVE` and
-`hostState: HOST_ACTIVE`. Certificate provisioning is the slow part.
+Target state is `OWNERSHIP_ACTIVE` / `HOST_ACTIVE` with a cert in `CERT_ACTIVE`.
+Certificate provisioning is the slow step.
 
 ## 3. Deploy service account
 

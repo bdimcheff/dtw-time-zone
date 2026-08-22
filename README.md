@@ -63,15 +63,17 @@ testing a deploy before DNS is ready.
 Add `dtw.dimcheff.wtf` as a custom domain on that site.
 
 **DNS for `dimcheff.wtf` is at Porkbun**, not Google Cloud DNS — that's `dimcheff.com`.
-Firebase issues a TXT record for ownership first, then the A record(s). In Porkbun's
-DNS Records page the Host field takes only the subdomain part (`dtw`, not the full
-name).
+The custom domain needs exactly one record:
 
-Use exactly what the console shows. Firebase Hosting has changed IPs over time —
-this project resolves to `199.36.158.100`, whereas the older `brandon.dimcheff.com`
-still points at a `151.101.x` pair, so the blog is not a reliable template.
-Certificate provisioning is the slow step, usually under an hour. `npm run verify`
-confirms when it's live.
+| Type | Host | Answer |
+|---|---|---|
+| `CNAME` | `dtw` | `dtw-time-zone.web.app` |
+
+Porkbun's Host field takes only the subdomain part. No TXT record is needed;
+ownership is proven by the CNAME. Note this differs from `brandon.dimcheff.com`,
+which predates a Hosting infrastructure change and still uses A records — so the
+blog is not a usable template. See [SETUP.md](SETUP.md) for querying the authoritative
+records from the API.
 
 **2. Bluesky app password.** Generate one at Settings → App Passwords on
 `dimcheff.wtf`.
