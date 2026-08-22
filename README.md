@@ -14,7 +14,7 @@ the AppView hydrates the content at read time.
 
 ```
 collect  →  data/posts.json   (exact matches, auto-admitted)
-            data/pending.json (variants, admitted by merging a PR)
+            data/pending.json (variants, admitted by review)
    ↓
 build    →  public/.well-known/did.json
             public/xrpc/app.bsky.feed.describeFeedGenerator
@@ -51,7 +51,7 @@ auto-admit. CI runs them before collecting.
 
 ## Reviewing variants
 
-The Action opens a PR when new candidates appear. For each entry in
+The Action opens (or comments on) an issue when new candidates appear. For each entry in
 `data/pending.json`:
 
 - **Admit** — move the entry into `data/posts.json`.
