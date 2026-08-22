@@ -1,0 +1,116 @@
+import {
+  EXACT_QUERY,
+  VARIANT_QUERIES,
+  WINDOW_OVERLAP_DAYS,
+  FULL_SWEEP_INTERVAL_DAYS,
+} from "./config.ts";
+import { createSearcher } from "./lib/bsky.ts";
+import { classify, postText } from "./lib/match.ts";
+import {
+  readPosts, readPending, readDenied, readState,
+  writePosts, writePending, writeState,
+} from "./lib/store.ts";
+import type { StoredPost, PendingPost, SearchPostView } from "./lib/types.ts";
+
+const DAY_MS = 86_400_000;
+
+function toStored(p: SearchPostView, firstSeenAt: string): StoredPost {
+  return {
+    uri: p.uri,
+    cid: p.cid,
+    authorDid: p.author.did,
+    authorHandle: p.author.handle,
+    text: postText(p),
+    createdAt: p.record?.createdAt ?? p.indexedAt,
+    indexedAt: p.indexedAt,
+    firstSeenAt,
+  };
+}
+
+async function main(): Promise<void> {
+  const forceFullSweep = process.argv.includes("--full");
+  const now = new Date();
+  const nowIso = now.toISOString();
+
+  const search = await createSearcher();
+
+  const [posts, pending, denied, state] = await Promise.all([
+    readPosts(), readPending(), readDenied(), readState(),
+  ]);
+
+  const byUri = new Map(posts.map((p) => [p.uri, p]));
+  const pendingByUri = new Map(pending.map((p) => [p.uri, p]));
+
+  // The exact query returns a single page, so sweeping it fully every run costs
+  // one request and is self-healing: posts that were briefly private, late to
+  // index, or from since-unblocked accounts get picked up without special cases.
+  const results: Array<{ query: string; posts: SearchPostView[] }> = [];
+  console.log(`exact sweep: ${EXACT_QUERY}`);
+  results.push({ query: EXACT_QUERY, posts: await search(EXACT_QUERY) });
+
+  // Variant queries paginate through years of sincere timezone discussion, so
+  // they run windowed except during a periodic full sweep.
+  const lastSweep = state.lastFullSweepAt ? Date.parse(state.lastFullSweepAt) : 0;
+  const sweepDue = now.getTime() - lastSweep > FULL_SWEEP_INTERVAL_DAYS * DAY_MS;
+  const fullSweep = forceFullSweep || sweepDue;
+
+  // Widened rather than trusted exactly: since/until filter on `sortAt`, which
+  // the lexicon warns may not match `createdAt`. Dedupe makes the overlap free.
+  const since = fullSweep || !state.lastRunAt
+    ? undefined
+    : new Date(Date.parse(state.lastRunAt) - WINDOW_OVERLAP_DAYS * DAY_MS).toISOString();
+
+  console.log(fullSweep ? "variant queries: FULL sweep" : `variant queries: since ${since}`);
+  for (const query of VARIANT_QUERIES) {
+    results.push({ query, posts: await search(query, { since }) });
+  }
+
+  let newExact = 0;
+  let newPending = 0;
+
+  for (const { query, posts: found } of results) {
+    for (const p of found) {
+      const kind = classify(postText(p));
+      if (kind === "ignore") continue;
+
+      if (kind === "exact") {
+        // A post promoted to exact leaves the review queue; re-running the
+        // matcher over stored text can reclassify without re-querying.
+        pendingByUri.delete(p.uri);
+        if (byUri.has(p.uri)) continue;
+        byUri.set(p.uri, toStored(p, nowIso));
+        newExact++;
+        continue;
+      }
+
+      // variant
+      if (byUri.has(p.uri) || pendingByUri.has(p.uri) || denied.has(p.uri)) continue;
+      pendingByUri.set(p.uri, { ...toStored(p, nowIso), matchedQuery: query });
+      newPending++;
+    }
+  }
+
+  await Promise.all([
+    writePosts([...byUri.values()]),
+    writePending([...pendingByUri.values()] as PendingPost[]),
+    writeState({
+      lastRunAt: nowIso,
+      lastFullSweepAt: fullSweep ? nowIso : state.lastFullSweepAt,
+    }),
+  ]);
+
+  console.log(
+    `\n${byUri.size} posts (+${newExact}), ${pendingByUri.size} pending (+${newPending})`,
+  );
+
+  // Consumed by the workflow to decide whether to open a review PR.
+  if (process.env.GITHUB_OUTPUT) {
+    const { appendFileSync } = await import("node:fs");
+    appendFileSync(process.env.GITHUB_OUTPUT, `new_pending=${newPending}\nnew_posts=${newExact}\n`);
+  }
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

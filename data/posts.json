@@ -1,0 +1,712 @@
+[
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mtefurko2c2z",
+    "cid": "bafyreigfamrfflolm7oaxxnydjvp2j53mjufq2itejkff5h6zweeeinjbq",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "🤔 I need to make a \"Detroit, Michigan is in the Eastern Time Zone\" feed",
+    "createdAt": "2026-08-18T14:18:20.758Z",
+    "indexedAt": "2026-08-18T14:18:21.466Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:c4w7mqccqjla67asoydxrrzh/app.bsky.feed.post/3mtdcp4d4wk27",
+    "cid": "bafyreia7ovevkgp3rgcj63gi2fa7blnxleydvgyl5mzatkxodf2jwkx4uu",
+    "authorDid": "did:plc:c4w7mqccqjla67asoydxrrzh",
+    "authorHandle": "hypomodern.com",
+    "text": "Detroit Michigan is in the eastern time zone",
+    "createdAt": "2026-08-18T03:48:49.754Z",
+    "indexedAt": "2026-08-18T03:48:50.466Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:xqkmz6ejer4g2wb5dbwyxbrc/app.bsky.feed.post/3ms3abr2xjk23",
+    "cid": "bafyreiamzskxg5n4imxffwea6j2t57an6an6xfayygsbqi6sxrqwvtugba",
+    "authorDid": "did:plc:xqkmz6ejer4g2wb5dbwyxbrc",
+    "authorHandle": "robbinsa.me",
+    "text": "hour 26: detroit michigan is in the eastern time zone",
+    "createdAt": "2026-08-02T05:19:04.726Z",
+    "indexedAt": "2026-08-02T05:19:05.466Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3mqic7rxwbc2v",
+    "cid": "bafyreid2jreon44psqcceyzb3vj5bnkmysl6zewuobmxq6r4njt7dyfzmy",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "Detroit, Michigan is in the eastern time zone",
+    "createdAt": "2026-07-12T23:07:59.394Z",
+    "indexedAt": "2026-07-12T23:07:59.872Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mp5cothru22b",
+    "cid": "bafyreiezhvbjyitn73wnsffsubwpsbdb37xz54gsq4yzxphdue465y2ln4",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2026-06-25T20:51:55.529Z",
+    "indexedAt": "2026-06-25T20:51:56.064Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:xqkmz6ejer4g2wb5dbwyxbrc/app.bsky.feed.post/3mnutunpa3c2t",
+    "cid": "bafyreiair6ckgyqsnnejbga7n3vdlxeruychl3nc47ft45gmfzstdw5dgu",
+    "authorDid": "did:plc:xqkmz6ejer4g2wb5dbwyxbrc",
+    "authorHandle": "robbinsa.me",
+    "text": "Detroit Michigan is in the eastern time zone. In several pieces.",
+    "createdAt": "2026-06-09T18:40:15.146Z",
+    "indexedAt": "2026-06-09T18:40:15.469Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:pbsomovygkguz7sxqkktcecj/app.bsky.feed.post/3mnsqqnv2o4a2",
+    "cid": "bafyreicrdcjkzbwjitizli6uy4mvg2gklr2ot5mpyo3xa5nfvqgsvklgwu",
+    "authorDid": "did:plc:pbsomovygkguz7sxqkktcecj",
+    "authorHandle": "peterhoneyman.a2mi.social.ap.brid.gy",
+    "text": "detroit michigan is in the eastern time zone",
+    "createdAt": "2026-06-08T22:38:55.000Z",
+    "indexedAt": "2026-06-08T22:39:02.865Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:cj3dbuvvyhc6r55j44qlkvhz/app.bsky.feed.post/3mkvufu4kyk2t",
+    "cid": "bafyreigdviq6u3eolpmib2zzvg3p6bpoecrta2qszzrppfwov3ibwpftqq",
+    "authorDid": "did:plc:cj3dbuvvyhc6r55j44qlkvhz",
+    "authorHandle": "compoundsplural.bsky.social",
+    "text": "You did learn that Detroit Michigan is in the Eastern Time Zone in various languages today so you’ve earned it.",
+    "createdAt": "2026-05-03T00:06:57.154Z",
+    "indexedAt": "2026-05-03T00:06:57.363Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:ae5ixxvdzgv7buf5k76jbg2b/app.bsky.feed.post/3mjx3jh34j22x",
+    "cid": "bafyreiatpnmibniws6th7bhaztmsqbgeojqpampeaxfvtn2xq5zyxxwqyq",
+    "authorDid": "did:plc:ae5ixxvdzgv7buf5k76jbg2b",
+    "authorHandle": "bluebarronphoto.bsky.social",
+    "text": "Detroit, Michigan is in the eastern time zone",
+    "createdAt": "2026-04-20T18:21:41.997Z",
+    "indexedAt": "2026-04-20T18:21:42.553Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mjq6jfdxxk24",
+    "cid": "bafyreieb4u7lwwkqj7kexqlg4ztbrwizbbo3uniicbxhjwjmrid2iitoay",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2026-04-18T00:26:43.246Z",
+    "indexedAt": "2026-04-18T00:26:49.153Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:modxpl36na5lijaazwlmm5o7/app.bsky.feed.post/3mj4cj4zzbs22",
+    "cid": "bafyreiayurxyjdli4odohygl7a64flsi2k4iaozmhqc2hvemgtgvhnbwue",
+    "authorDid": "did:plc:modxpl36na5lijaazwlmm5o7",
+    "authorHandle": "danielayala.com",
+    "text": "Detroit, Michigan is in the Eastern Time Zone #iykyk",
+    "createdAt": "2026-04-10T02:44:54.732Z",
+    "indexedAt": "2026-04-10T02:44:54.851Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:ppao5p3pbmowmi2deo5ajrks/app.bsky.feed.post/3mhtpshc7pk2p",
+    "cid": "bafyreicxnarwn6xuk4c3zm5uabuban4uhmfi4yhgyngh5js3oxowljzgxq",
+    "authorDid": "did:plc:ppao5p3pbmowmi2deo5ajrks",
+    "authorHandle": "stegan.bsky.social",
+    "text": "Detroit Michigan is in the eastern time zone.  Glad to be almost home.",
+    "createdAt": "2026-03-24T23:23:36.846Z",
+    "indexedAt": "2026-03-24T23:23:37.360Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:xqkmz6ejer4g2wb5dbwyxbrc/app.bsky.feed.post/3mg6p7fndzk24",
+    "cid": "bafyreidsfzr3rddac47taoyrwjn7hddbvgv2jmch6ep366xplxq4y452oi",
+    "authorDid": "did:plc:xqkmz6ejer4g2wb5dbwyxbrc",
+    "authorHandle": "robbinsa.me",
+    "text": "Detroit Michigan is in the Eastern time zone",
+    "createdAt": "2026-03-03T21:21:51.447Z",
+    "indexedAt": "2026-03-03T21:21:51.650Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:o2yqb26rffzs2csjwv2xr22e/app.bsky.feed.post/3meu2t7yqts2d",
+    "cid": "bafyreibxigcyd4zjpftqogsbyphf2giw7tbe4fleqvqeq3hxnn42avorme",
+    "authorDid": "did:plc:o2yqb26rffzs2csjwv2xr22e",
+    "authorHandle": "damnarbor.bsky.social",
+    "text": "Detroit, Michigan is in the Eastern Time Zone.",
+    "createdAt": "2026-02-14T22:25:19.027Z",
+    "indexedAt": "2026-02-14T22:25:19.349Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mett7eltcc2m",
+    "cid": "bafyreifq4ex6ecbidyqgmrzbnyf2ic2vaczq7bbjxxuwuio2fjspgpd5lm",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2026-02-14T20:08:56.566Z",
+    "indexedAt": "2026-02-14T20:08:57.855Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:voyllquszwlixfquirkfbbvc/app.bsky.feed.post/3mdnhvi772s2o",
+    "cid": "bafyreifl76ihw7mhoxry3k4ogfqd5mwonoeecjjzkggsbea6ml67zg6k7y",
+    "authorDid": "did:plc:voyllquszwlixfquirkfbbvc",
+    "authorHandle": "edmundfitzgerald.bsky.social",
+    "text": "“Detroit, Michigan is in the Eastern Time Zone”",
+    "createdAt": "2026-01-30T14:05:23.580Z",
+    "indexedAt": "2026-01-30T14:05:23.852Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3mbzsz6gdok2u",
+    "cid": "bafyreihrblvi5f22kz2qm3s6t4i2notvfo4stktiostqc3r7jbzy3tc4um",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "Detroit, Michigan is in the Eastern time zone.",
+    "createdAt": "2026-01-10T01:05:52.315Z",
+    "indexedAt": "2026-01-10T01:05:53.532Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3map2pnznr22h",
+    "cid": "bafyreica4waexn6ety6jiqvanj3mjcldzwk7rho642lxzfjaabhkeneny4",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2025-12-24T00:59:14.316Z",
+    "indexedAt": "2025-12-24T00:59:16.330Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mai2bdzn5s2c",
+    "cid": "bafyreiafnifli2sigb3om3lcv2qslkpvbsiqhmz3xri5bnaiv42ho2jtea",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2025-12-21T06:02:35.898Z",
+    "indexedAt": "2025-12-21T06:02:36.131Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:ae5ixxvdzgv7buf5k76jbg2b/app.bsky.feed.post/3m7ixky5btc2h",
+    "cid": "bafyreibdj2vaa2ujlaurwdunmci5rsvqz47viderrraddx2d4ymbikxfmm",
+    "authorDid": "did:plc:ae5ixxvdzgv7buf5k76jbg2b",
+    "authorHandle": "bluebarronphoto.bsky.social",
+    "text": "Detroit, Michigan is in the eastern time zone",
+    "createdAt": "2025-12-08T21:21:45.865Z",
+    "indexedAt": "2025-12-08T21:21:46.230Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:xqkmz6ejer4g2wb5dbwyxbrc/app.bsky.feed.post/3m6kppij7ec2w",
+    "cid": "bafyreiauv2kzmtyrszth64d3ewsg7h4xpneeirgnf2ol6acixaibzukfta",
+    "authorDid": "did:plc:xqkmz6ejer4g2wb5dbwyxbrc",
+    "authorHandle": "robbinsa.me",
+    "text": "Detroit Michigan is in the Eastern Time Zone",
+    "createdAt": "2025-11-26T20:41:15.165Z",
+    "indexedAt": "2025-11-26T20:41:15.033Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:7qofgzufsnmuyk23fyabb32w/app.bsky.feed.post/3m5aahg5h56w2",
+    "cid": "bafyreib4su2qvbs7nd5aqxvw7oo2ynxj3bizbz2mv47txfsezxyxwqtine",
+    "authorDid": "did:plc:7qofgzufsnmuyk23fyabb32w",
+    "authorHandle": "alex.a2mi.social.ap.brid.gy",
+    "text": "Detroit, Michigan is in the Eastern Time Zone.",
+    "createdAt": "2025-11-09T23:16:24.000Z",
+    "indexedAt": "2025-11-09T23:16:39.357Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:utq5txoqgh5d5gqy5hs577ad/app.bsky.feed.post/3m557i26ejc2e",
+    "cid": "bafyreicqwmhko5ry7auuf2xexkjyf3eu5ztsxt2ztjwghh6ouuc5gpq2wi",
+    "authorDid": "did:plc:utq5txoqgh5d5gqy5hs577ad",
+    "authorHandle": "wandrme.paxex.aero",
+    "text": "Detroit, Michigan is in the eastern time zone. Please check flight information monitors for the correct local time. \n\nTwo flights scheduled for me today, and everything is delayed a couple hours. I have a short night booked in Florida and sleep is shrinking. But I'll probably get there.  #25for25",
+    "createdAt": "2025-11-08T18:20:57.127Z",
+    "indexedAt": "2025-11-08T18:21:01.460Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:xqkmz6ejer4g2wb5dbwyxbrc/app.bsky.feed.post/3m4yqetj7e22x",
+    "cid": "bafyreidnqjflhkiai6zdgsxbyzmy66plscpsjxzbn7l5ziirkmtycq5z2i",
+    "authorDid": "did:plc:xqkmz6ejer4g2wb5dbwyxbrc",
+    "authorHandle": "robbinsa.me",
+    "text": "DETROIT MICHIGAN IS IN THE EASTERN TIME ZONE",
+    "createdAt": "2025-11-06T23:40:04.424Z",
+    "indexedAt": "2025-11-06T23:40:07.167Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:c4w7mqccqjla67asoydxrrzh/app.bsky.feed.post/3m4wmwdtrpc25",
+    "cid": "bafyreicz3mjobhplbef6lgc2qpka7s3poprx3bpc5nqpzrfsupxex5qt7a",
+    "authorDid": "did:plc:c4w7mqccqjla67asoydxrrzh",
+    "authorHandle": "hypomodern.com",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2025-11-06T03:32:57.528Z",
+    "indexedAt": "2025-11-06T03:32:57.756Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:6khd3qearp2tb3xw4jlc64jn/app.bsky.feed.post/3m4a5nilng22c",
+    "cid": "bafyreicqa3ienrb2ga3w6qaepzak6rf5bbstkue6lnr7ncjsuwc3tsmpxa",
+    "authorDid": "did:plc:6khd3qearp2tb3xw4jlc64jn",
+    "authorHandle": "twbrandt.net",
+    "text": "Detroit, Michigan, is in the Eastern time zone.",
+    "createdAt": "2025-10-28T05:01:00.145Z",
+    "indexedAt": "2025-10-28T05:01:00.758Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3m47ithhfxc2m",
+    "cid": "bafyreibt6flqetexmdrjrmv65uda4w2oxscdvod7t6vtxuqwpvwka7ujmm",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2025-10-27T22:48:31.706Z",
+    "indexedAt": "2025-10-27T22:48:41.163Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:6khd3qearp2tb3xw4jlc64jn/app.bsky.feed.post/3m2rryouxuc23",
+    "cid": "bafyreigafocd4jrcq2r6gjzvps27taqhluz5jcxx6mzxnrkwdspmg2vovu",
+    "authorDid": "did:plc:6khd3qearp2tb3xw4jlc64jn",
+    "authorHandle": "twbrandt.net",
+    "text": "Detroit, Michigan is in the Eastern time zone.",
+    "createdAt": "2025-10-09T18:30:02.974Z",
+    "indexedAt": "2025-10-09T18:30:07.893Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3lzp3c6drgk2x",
+    "cid": "bafyreifde2qz37e7gulzp3z6dcpf474fy6ayrpsvwp2uvcncjbhznar5oi",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2025-09-25T23:13:14.010Z",
+    "indexedAt": "2025-09-25T23:13:14.552Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:pbsomovygkguz7sxqkktcecj/app.bsky.feed.post/3lzh2gqqeqt42",
+    "cid": "bafyreiftcguzgev5sdpncju3xxjsgv4al6o7o6ymho3hzhrvzjiuuk6amu",
+    "authorDid": "did:plc:pbsomovygkguz7sxqkktcecj",
+    "authorHandle": "peterhoneyman.a2mi.social.ap.brid.gy",
+    "text": "detroit michigan is in the eastern time zone",
+    "createdAt": "2025-09-22T18:36:24.000Z",
+    "indexedAt": "2025-09-22T18:39:44.207Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:ae5ixxvdzgv7buf5k76jbg2b/app.bsky.feed.post/3lxrailhi722h",
+    "cid": "bafyreicktobjo436guc63dltjdnwg6vriizgbyo3ao7gby425aw2rz7agy",
+    "authorDid": "did:plc:ae5ixxvdzgv7buf5k76jbg2b",
+    "authorHandle": "bluebarronphoto.bsky.social",
+    "text": "Detroit, Michigan is in the eastern time zone",
+    "createdAt": "2025-09-01T09:01:14.021Z",
+    "indexedAt": "2025-09-01T09:01:14.504Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3lxn7bcvxlc2m",
+    "cid": "bafyreiaxrgbwlkueoh5ms5flnh6livw5bhezrwh76fzmiaxrpoixinzlia",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2025-08-30T18:28:37.482Z",
+    "indexedAt": "2025-08-30T18:28:39.906Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3lthgycvdo22h",
+    "cid": "bafyreieacn4wq4zpmpzhlcmbd5xrpx2cychcmxjd7zbxr77osjs3meshs4",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Do they broadcast \"Detroit, Michigan is in the Eastern Time Zone\" into the hotel?",
+    "createdAt": "2025-07-08T13:50:00.464Z",
+    "indexedAt": "2025-07-08T13:50:00.938Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:pbsomovygkguz7sxqkktcecj/app.bsky.feed.post/3lss2qxqnmzs2",
+    "cid": "bafyreiexb6vkpxaocc3kf4nzi6ftbrqcrgf76tlljbe3alp7e3rxm6djoi",
+    "authorDid": "did:plc:pbsomovygkguz7sxqkktcecj",
+    "authorHandle": "peterhoneyman.a2mi.social.ap.brid.gy",
+    "text": "Detroit Michigan is in the Eastern Time Zone",
+    "createdAt": "2025-06-30T01:45:08.000Z",
+    "indexedAt": "2025-06-30T01:47:23.642Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3lspetmneo22d",
+    "cid": "bafyreibzaanirvjluzx7tbcsnd6m7q2pqgvx37dxri3iuaj2pcye6v4bwm",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2025-06-29T00:07:41.712Z",
+    "indexedAt": "2025-06-29T00:07:43.537Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:pbsomovygkguz7sxqkktcecj/app.bsky.feed.post/3lsobptzs6e22",
+    "cid": "bafyreiax4kn5a5vbabcrpjy6bpo735iimkvw6txrbjkrt33xbyvzddikdi",
+    "authorDid": "did:plc:pbsomovygkguz7sxqkktcecj",
+    "authorHandle": "peterhoneyman.a2mi.social.ap.brid.gy",
+    "text": "Detroit Michigan is in the Eastern Time Zone",
+    "createdAt": "2025-06-28T13:38:48.000Z",
+    "indexedAt": "2025-06-28T13:39:37.036Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3lqsykvngcc2g",
+    "cid": "bafyreihlyozdihp3iwovhuqzvhefvvrpzbkavnvyqcvcvehgkwbqfk6rw4",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2025-06-04T23:48:19.958Z",
+    "indexedAt": "2025-06-04T23:48:21.345Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:xqkmz6ejer4g2wb5dbwyxbrc/app.bsky.feed.post/3lpuemibgnk2c",
+    "cid": "bafyreibtp2ebxxffawhq5bf43qwl5snqa6p7pxoyik5kvuq563uryutm7m",
+    "authorDid": "did:plc:xqkmz6ejer4g2wb5dbwyxbrc",
+    "authorHandle": "robbinsa.me",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2025-05-23T19:31:26.055Z",
+    "indexedAt": "2025-05-23T19:31:26.254Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:uny6bwvfldkfpwoqwvmydlq7/app.bsky.feed.post/3lpfnyhw3c222",
+    "cid": "bafyreigum7zer2ymbvhwlo3zc7gkbu2akndjd5yumpyw5vvw7mvp4hw2v4",
+    "authorDid": "did:plc:uny6bwvfldkfpwoqwvmydlq7",
+    "authorHandle": "reymiguel.bsky.social",
+    "text": "[In Japanese] “Detroit, Michigan is in the eastern time zone.”",
+    "createdAt": "2025-05-17T23:09:15.933Z",
+    "indexedAt": "2025-05-17T23:09:16.255Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:ae5ixxvdzgv7buf5k76jbg2b/app.bsky.feed.post/3lnbbmuvfgc2g",
+    "cid": "bafyreidj7nq7fyby7zxovplcfx3jmnbnowfwhgqe3iytkicxdydgoiyv4a",
+    "authorDid": "did:plc:ae5ixxvdzgv7buf5k76jbg2b",
+    "authorHandle": "bluebarronphoto.bsky.social",
+    "text": "Hearing reports that Detroit, Michigan is in the eastern time zone, confirm @dimcheff.wtf ?",
+    "createdAt": "2025-04-20T18:26:59.781Z",
+    "indexedAt": "2025-04-20T18:27:00.281Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:oafrik4tx7nkmqysa4kpnuv5/app.bsky.feed.post/3lmsuhhmbwk2k",
+    "cid": "bafyreiaodkdxihknfbktqh32kowluldiylqkcmi3qydd24g7c7wb4k5wxm",
+    "authorDid": "did:plc:oafrik4tx7nkmqysa4kpnuv5",
+    "authorHandle": "hockeybear.space",
+    "text": "That makes sense because Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2025-04-15T00:54:03.099Z",
+    "indexedAt": "2025-04-15T00:54:05.479Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3lm4h7x6cpk2b",
+    "cid": "bafyreicuxrtrw6bmjye3gt5ewneg2asf6s4jfjn5x6lutwqa7r7iuea5hy",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2025-04-06T02:58:38.095Z",
+    "indexedAt": "2025-04-06T02:58:38.405Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:xuzn6w22rsk44lak2kxzrvew/app.bsky.feed.post/3ll2x33bfjk2y",
+    "cid": "bafyreid2s4bsrkifv3axgaxe432aktsiz4oodqxfepm5g6qbftt5dyc66q",
+    "authorDid": "did:plc:xuzn6w22rsk44lak2kxzrvew",
+    "authorHandle": "cyclesixmile.bsky.social",
+    "text": "DETROIT MICHIGAN IS IN THE EASTERN TIME ZONE booming over the intercom at DTW.",
+    "createdAt": "2025-03-23T19:11:43.382Z",
+    "indexedAt": "2025-03-23T19:11:43.047Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:xr2hwq6ztlq7cwbu6z4uco2a/app.bsky.feed.post/3lklpkcjltc24",
+    "cid": "bafyreigyrgosiqlerqmoritnjrvtxulrn3ztelmhnk5hu7wl76u5bibvke",
+    "authorDid": "did:plc:xr2hwq6ztlq7cwbu6z4uco2a",
+    "authorHandle": "blainplanes.bsky.social",
+    "text": "🚨🗣️ DETROIT MICHIGAN IS IN THE EASTERN TIME ZONE🗣️🚨",
+    "createdAt": "2025-03-17T17:47:08.296Z",
+    "indexedAt": "2025-03-17T17:47:06.655Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:pbsomovygkguz7sxqkktcecj/app.bsky.feed.post/3lkiyi2dpydr2",
+    "cid": "bafyreicwu5ilbvas2jrq2p3ylaojlbtrtqvpwm6ghqm5sjmlskdyh5cdz4",
+    "authorDid": "did:plc:pbsomovygkguz7sxqkktcecj",
+    "authorHandle": "peterhoneyman.a2mi.social.ap.brid.gy",
+    "text": "Detroit Michigan is in the Eastern Time Zone",
+    "createdAt": "2025-03-16T15:48:50.000Z",
+    "indexedAt": "2025-03-16T15:51:22.755Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3lgmknidz7s2z",
+    "cid": "bafyreigvcmcbp3mbwapt5m6df7vdpuhxhfdv5egbrs6sbzwuoff6rz7ogi",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2025-01-26T04:11:19.588Z",
+    "indexedAt": "2025-01-26T04:11:21.052Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3lfw47t74dc2e",
+    "cid": "bafyreiheqd2j4l5gp2g4mapnpmm5olix23sc5w5skdf6x44uqznwuudv7e",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone\n\neven at this ungodly hour",
+    "createdAt": "2025-01-17T05:54:34.569Z",
+    "indexedAt": "2025-01-17T05:54:35.751Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3lfiyvqiejk2t",
+    "cid": "bafyreicvjbjce4pmw2hmsn2do7muk3mez3otsvyqh7d7ipugcrtpeysjym",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "Detroit, Michigan is in the eastern time zone",
+    "createdAt": "2025-01-12T00:50:38.359Z",
+    "indexedAt": "2025-01-12T00:50:38.969Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3lenrruaes22u",
+    "cid": "bafyreievtvsmcqd3gem7ybpjbwwv7zpe2nysbd654ho43vy3cevnyyahu4",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone\n\nand it’s 2025",
+    "createdAt": "2025-01-01T05:01:18.945Z",
+    "indexedAt": "2025-01-01T05:01:19.348Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3ldk2q2hfn225",
+    "cid": "bafyreib3rrfkqeiz6oap3rqlkezky2elmo3drvyjklwwqxtvawu54y4wqy",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2024-12-18T00:05:31.453Z",
+    "indexedAt": "2024-12-18T00:05:32.254Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3lbvbnkvrg227",
+    "cid": "bafyreie4xxvi76qlkcnypv5yfpjmj6vlwwn6spfk5lufihytan75ixza2a",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "Detroit, Michigan is in the eastern time zone.",
+    "createdAt": "2024-11-27T00:18:18.097Z",
+    "indexedAt": "2024-11-27T00:18:18.742Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:fr6j3klgg6t5gqk5dvocurnj/app.bsky.feed.post/3lavxbcqnrs2u",
+    "cid": "bafyreih5xacoqtcnfgpb3i2yawp3px6hdxun7ybziqcptfg5xmlww27u2u",
+    "authorDid": "did:plc:fr6j3klgg6t5gqk5dvocurnj",
+    "authorHandle": "airlineflyer.net",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2024-11-14T13:19:57.580Z",
+    "indexedAt": "2024-11-14T13:33:08.758Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:fr6j3klgg6t5gqk5dvocurnj/app.bsky.feed.post/3lavwonokbk2u",
+    "cid": "bafyreiepn4czhhqa2llbkfpm7byajffhapqflvgwslygyqhvfzeeskaioq",
+    "authorDid": "did:plc:fr6j3klgg6t5gqk5dvocurnj",
+    "authorHandle": "airlineflyer.net",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2024-11-14T13:09:31.511Z",
+    "indexedAt": "2024-11-14T13:15:57.780Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3kuw7xkmxaq2v",
+    "cid": "bafyreib4y2oxzt7inru2hhcvafv3dw2fuwycrvibiuqrrqllhakywhs444",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2024-06-14T22:53:13.482Z",
+    "indexedAt": "2024-06-14T22:53:13.482Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3kt6zwon7e22j",
+    "cid": "bafyreieppml2pgvyfz2oxf47zqfpuacsxsnd7mm5iuoezlar3wy5gglqqe",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2024-05-24T00:08:56.975Z",
+    "indexedAt": "2024-05-24T00:08:56.975Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3kqjhgpxc2k2p",
+    "cid": "bafyreibazspu3txfcczkfgzlp7rtee6ru6ylrkd3s5myglha4tf6gwqgme",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "Detroit, Michigan is in the eastern time zone",
+    "createdAt": "2024-04-19T23:21:35.812Z",
+    "indexedAt": "2024-04-19T23:21:35.812Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3kqh3p47rs22t",
+    "cid": "bafyreiftjppqsh4yarq5lntn5pfxb4ngwv3clxdw6e6ax6enwvqwi5fzau",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2024-04-19T00:46:12.709Z",
+    "indexedAt": "2024-04-19T00:46:12.709Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:ppao5p3pbmowmi2deo5ajrks/app.bsky.feed.post/3khxh7iqqzl2e",
+    "cid": "bafyreicamalyh7d2bryhnijthumcgm54f6oli2g2q7c7iafjdndy27ztku",
+    "authorDid": "did:plc:ppao5p3pbmowmi2deo5ajrks",
+    "authorHandle": "stegan.bsky.social",
+    "text": "There are few words more welcome to this weary traveler than “Detroit Michigan is in the Eastern time zone.”",
+    "createdAt": "2024-01-02T00:08:05.495Z",
+    "indexedAt": "2024-01-02T00:08:05.495Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3keldvoabp423",
+    "cid": "bafyreibq63hg5cqtw4li3yz5loir42kzcbx2ulcww76oj6h2olqsx7lrvi",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "Detroit, Michigan is in the eastern time zone",
+    "createdAt": "2023-11-20T00:21:22.692Z",
+    "indexedAt": "2023-11-20T00:21:22.692Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:b6oayrw5icbcytr4wcsqyw77/app.bsky.feed.post/3kcgxxo5f552c",
+    "cid": "bafyreibowqwe4vfze5s4ftepvr6an7szsnxitkamvqqthgkyyvaukinf3i",
+    "authorDid": "did:plc:b6oayrw5icbcytr4wcsqyw77",
+    "authorHandle": "kylelady.bsky.social",
+    "text": "Lies. Only Detroit, Michigan is in the Eastern Time Zone.",
+    "createdAt": "2023-10-23T19:46:42.779Z",
+    "indexedAt": "2023-10-23T19:46:42.779Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:eivbq4tgt66s63vvksj3bugz/app.bsky.feed.post/3kbbjwthren23",
+    "cid": "bafyreigyvstfnhbymmk3mnz4jmrbbfd5hdrdaupugvkgntttdyyggbtede",
+    "authorDid": "did:plc:eivbq4tgt66s63vvksj3bugz",
+    "authorHandle": "jonmatthews.com",
+    "text": "Detroit, Michigan is in the Eastern time zone",
+    "createdAt": "2023-10-08T22:27:11.916Z",
+    "indexedAt": "2023-10-08T22:27:11.916Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3k62lnyalbb2o",
+    "cid": "bafyreiecinyo4y22ahecdtfdjgzv2d45zqnhx3o5dckxho2oinucecwf3y",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2023-08-28T23:53:49.499Z",
+    "indexedAt": "2023-08-28T23:53:49.499Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3k5qhuyym6m2o",
+    "cid": "bafyreifqrixf32engfdtx4znjh2mul2mkmjmmgmauoix3s5be57o7tyb6a",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2023-08-24T23:19:32.800Z",
+    "indexedAt": "2023-08-24T23:19:32.800Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3k5hwri5th727",
+    "cid": "bafyreiaivagctgtfuul43yc4zb7dttbutid5id5m6myqvkx5gmeoghahwu",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the eastern time zone",
+    "createdAt": "2023-08-21T13:52:03.023Z",
+    "indexedAt": "2023-08-21T13:52:03.023Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3jyjqpbfcbn27",
+    "cid": "bafyreig3rmkxu4wd5rtak7yxz4kmxcd53zgbdo2pad3xwktgkz6gf2awdi",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the eastern time zone.",
+    "createdAt": "2023-06-19T16:02:47.711Z",
+    "indexedAt": "2023-06-19T16:02:47.711Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:b6oayrw5icbcytr4wcsqyw77/app.bsky.feed.post/3jx4f75to2t2m",
+    "cid": "bafyreica2dvhqcy2urfvzzw7jgt242x6qqw6hfvnquliq5qvlaql7ucmxe",
+    "authorDid": "did:plc:b6oayrw5icbcytr4wcsqyw77",
+    "authorHandle": "kylelady.bsky.social",
+    "text": "DETROIT MICHIGAN IS IN THE EASTERN TIME ZONE",
+    "createdAt": "2023-06-01T15:07:07.698Z",
+    "indexedAt": "2023-06-01T15:07:07.698Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3jx4erexj4w2v",
+    "cid": "bafyreihslbawobabzksffkxvxcecthwn6ac77pyogyf5u7etjcvhq5krve",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "But did you know that Detroit, Michigan is in the eastern time zone?",
+    "createdAt": "2023-06-01T14:59:25.355Z",
+    "indexedAt": "2023-06-01T14:59:25.355Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3jvfv5gjnj327",
+    "cid": "bafyreidzojtb276wseg2g6zivz42kuzfetvaicgdxmqbyct5lk3rr3dhfa",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the eastern time zone.",
+    "createdAt": "2023-05-10T22:56:03.799Z",
+    "indexedAt": "2023-05-10T22:56:03.799Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3jv7ytjcqel2r",
+    "cid": "bafyreier77jviooirljuphj3u7vh6oebllsnbqgycnnfzomd2nobm73maa",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the eastern time zone",
+    "createdAt": "2023-05-08T14:46:07.891Z",
+    "indexedAt": "2023-05-08T14:46:07.891Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3jux5qcj6rs2b",
+    "cid": "bafyreiepn5nzhmxsff4mppqmhu4olr4ujepuc6nynkt33ntpfp2jisppci",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the eastern time zone",
+    "createdAt": "2023-05-05T02:19:51.071Z",
+    "indexedAt": "2023-05-05T02:19:51.071Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3juofypfz3y2z",
+    "cid": "bafyreic6imrcjsn3pgtb2phgehknqeraquujqi3sdv427pjkvexkjsaf3y",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the eastern time zone",
+    "createdAt": "2023-05-01T14:53:45.425Z",
+    "indexedAt": "2023-05-01T14:53:45.425Z",
+    "firstSeenAt": "2026-08-22T18:05:40.750Z"
+  }
+]
