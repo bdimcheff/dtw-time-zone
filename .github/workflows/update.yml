@@ -80,11 +80,18 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm run --silent pending-report > /tmp/body.md
-          existing=$(gh issue list --label pending-review --state open --json number --jq '.[0].number')
+
+          # The label has to exist before it can be filtered on, and `--jq
+          # '.[0].number'` prints the literal string "null" on an empty list --
+          # which is truthy in shell, so the comment branch would run
+          # `gh issue comment null`. `// empty` yields a genuinely empty string.
+          gh label create pending-review --color FBCA04 \
+            --description "Candidate posts awaiting review" 2>/dev/null || true
+          existing=$(gh issue list --label pending-review --state open --json number --jq '.[0].number // empty')
+
           if [ -n "$existing" ]; then
             gh issue comment "$existing" --body-file /tmp/body.md
           else
-            gh label create pending-review --color FBCA04 --description "Candidate posts awaiting review" 2>/dev/null || true
             gh issue create --label pending-review \
               --title "Review ${{ steps.collect.outputs.new_pending }} candidate variant post(s)" \
               --body-file /tmp/body.md
