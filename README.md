@@ -53,8 +53,22 @@ The Action opens a PR when new candidates appear. For each entry in
 Required once.
 
 **1. Firebase Hosting site.** Create a site with ID `dtw-time-zone` in the
-`bdimcheff` project, then add `dtw.dimcheff.wtf` as a custom domain and set the DNS
-records Firebase provides. `.firebaserc` already maps the `dtw` target to it.
+`bdimcheff` project and add `dtw.dimcheff.wtf` as a custom domain. `.firebaserc`
+already maps the `dtw` target to it.
+
+**DNS for `dimcheff.wtf` is at Porkbun**, not Google Cloud DNS — that's `dimcheff.com`.
+Firebase issues a TXT record for ownership first, then two A records. In Porkbun's
+DNS Records page the Host field takes only the subdomain part (`dtw`, not the full
+name). The A records should match what `brandon.dimcheff.com` already uses:
+
+```
+151.101.65.195
+151.101.1.195
+```
+
+Use whatever the Firebase console shows rather than these, in case it issues
+different addresses. Certificate provisioning is the slow step — usually under an
+hour. `npm run verify` confirms when it's live.
 
 **2. Bluesky app password.** Generate one at Settings → App Passwords on
 `dimcheff.wtf`.

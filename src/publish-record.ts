@@ -34,6 +34,37 @@ async function preflight(): Promise<void> {
   console.log(`✓ ${FEED_DID} resolves`);
 }
 
+/** The generator lexicon accepts only PNG and JPEG, capped at 1MB. */
+const AVATAR_CANDIDATES = [
+  ["assets/avatar.png", "image/png"],
+  ["assets/avatar.jpg", "image/jpeg"],
+  ["assets/avatar.jpeg", "image/jpeg"],
+] as const;
+
+const AVATAR_MAX_BYTES = 1_000_000;
+
+async function uploadAvatar(agent: AtpAgent): Promise<unknown | undefined> {
+  for (const [relPath, mimeType] of AVATAR_CANDIDATES) {
+    let bytes: Buffer;
+    try {
+      bytes = await readFile(join(process.cwd(), relPath));
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === "ENOENT") continue;
+      throw err;
+    }
+    if (bytes.byteLength > AVATAR_MAX_BYTES) {
+      throw new Error(
+        `${relPath} is ${bytes.byteLength} bytes; the lexicon caps avatars at ${AVATAR_MAX_BYTES}`,
+      );
+    }
+    const upload = await agent.uploadBlob(bytes, { encoding: mimeType });
+    console.log(`✓ avatar uploaded from ${relPath}`);
+    return upload.data.blob;
+  }
+  console.log("no avatar found in assets/; publishing without one");
+  return undefined;
+}
+
 async function main(): Promise<void> {
   const identifier = process.env.BSKY_IDENTIFIER;
   const password = process.env.BSKY_APP_PASSWORD;
@@ -58,16 +89,7 @@ async function main(): Promise<void> {
     );
   }
 
-  let avatar: { $type: string; ref: unknown; mimeType: string; size: number } | undefined;
-  try {
-    const bytes = await readFile(join(process.cwd(), "assets", "avatar.png"));
-    const upload = await agent.uploadBlob(bytes, { encoding: "image/png" });
-    avatar = upload.data.blob as unknown as typeof avatar;
-    console.log("✓ avatar uploaded");
-  } catch (err) {
-    if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
-    console.log("no assets/avatar.png; publishing without an avatar");
-  }
+  const avatar = await uploadAvatar(agent);
 
   await agent.com.atproto.repo.putRecord({
     repo: agent.session.did,
