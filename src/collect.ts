@@ -5,6 +5,7 @@ import {
   FULL_SWEEP_INTERVAL_DAYS,
 } from "./config.ts";
 import { createSearcher } from "./lib/bsky.ts";
+import type { Searcher, SearchOptions, SearchResult } from "./lib/bsky.ts";
 import { classify, postText } from "./lib/match.ts";
 import {
   readPosts, readPending, readDenied, readState,
@@ -27,6 +28,25 @@ function toStored(p: SearchPostView, firstSeenAt: string): StoredPost {
   };
 }
 
+/**
+ * One failing query must not discard the rest of the run. Every query completes
+ * before anything is written, so an unguarded throw from the last variant query
+ * threw away the exact sweep's results too, then failed the workflow before Build
+ * and Deploy. A failed query counts as truncated: its window went uncovered.
+ */
+async function runQuery(
+  search: Searcher,
+  query: string,
+  opts?: SearchOptions,
+): Promise<SearchResult> {
+  try {
+    return await search(query, opts);
+  } catch (err) {
+    console.error(`  query failed: ${query}\n    ${(err as Error).message}`);
+    return { posts: [], truncated: true };
+  }
+}
+
 async function main(): Promise<void> {
   const forceFullSweep = process.argv.includes("--full");
   const now = new Date();
@@ -46,7 +66,7 @@ async function main(): Promise<void> {
   // index, or from since-unblocked accounts get picked up without special cases.
   const results: Array<{ query: string; posts: SearchPostView[]; truncated: boolean }> = [];
   console.log(`exact sweep: ${EXACT_QUERY}`);
-  results.push({ query: EXACT_QUERY, ...(await search(EXACT_QUERY)) });
+  results.push({ query: EXACT_QUERY, ...(await runQuery(search, EXACT_QUERY)) });
 
   // Variant queries paginate through years of sincere timezone discussion, so
   // they run windowed except during a periodic full sweep.
@@ -65,7 +85,7 @@ async function main(): Promise<void> {
   let windowTruncated = false;
   console.log(fullSweep ? "variant queries: FULL sweep" : `variant queries: since ${since}`);
   for (const query of VARIANT_QUERIES) {
-    const result = await search(query, { since });
+    const result = await runQuery(search, query, { since });
     if (result.truncated) windowTruncated = true;
     results.push({ query, ...result });
   }
