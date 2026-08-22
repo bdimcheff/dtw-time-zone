@@ -58,8 +58,13 @@ async function main(): Promise<void> {
     readPosts(), readPending(), readDenied(), readState(),
   ]);
 
-  const byUri = new Map(posts.map((p) => [p.uri, p]));
-  const pendingByUri = new Map(pending.map((p) => [p.uri, p]));
+  // Applied at load rather than only when a query re-surfaces the post: variant
+  // queries run windowed and the exact query is capped, so an older archived post
+  // added to denied.json may never appear in a result set again.
+  const byUri = new Map(posts.filter((p) => !denied.has(p.uri)).map((p) => [p.uri, p]));
+  const pendingByUri = new Map(
+    pending.filter((p) => !denied.has(p.uri)).map((p) => [p.uri, p]),
+  );
 
   // The exact query returns a single page, so sweeping it fully every run costs
   // one request and is self-healing: posts that were briefly private, late to
@@ -99,12 +104,9 @@ async function main(): Promise<void> {
       if (kind === "ignore") continue;
 
       // denied is a moderation escape hatch and must outrank an exact match:
-      // otherwise a post you removed is re-added by the next sweep, forever.
-      if (denied.has(p.uri)) {
-        pendingByUri.delete(p.uri);
-        byUri.delete(p.uri);
-        continue;
-      }
+      // otherwise a post you removed is re-added by the next sweep, forever. The
+      // maps were filtered at load, so this only has to block the re-add.
+      if (denied.has(p.uri)) continue;
 
       if (kind === "exact") {
         // A post promoted to exact leaves the review queue; re-running the
