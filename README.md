@@ -38,6 +38,16 @@ and South Bend out of the feed.
 | `npm run build` | Render `public/` from `data/posts.json` |
 | `npm run verify` | Smoke-test the deployed endpoints |
 | `npm run publish-record` | Publish the feed record (one-time, idempotent) |
+| `npm run check` | Typecheck and run the tests |
+
+## Tests
+
+`npm run check` typechecks and runs the tests, which cover the matcher and the feed
+sort key — the two places where a plausible-looking change quietly reshapes a
+permanent archive. Cases come from the real corpus, and `src/lib/corpus.test.ts`
+asserts invariants against the committed data itself: every archived post still
+matches, nothing denied reappears, and the queue holds nothing the matcher would
+auto-admit. CI runs them before collecting.
 
 ## Reviewing variants
 

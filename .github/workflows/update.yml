@@ -33,6 +33,11 @@ jobs:
 
       - run: npm ci
 
+      # Cheap, and the matcher decides what enters a permanent archive: a change
+      # that silently stops matching would quietly stop collecting.
+      - name: Check
+        run: npm run check
+
       - name: Collect posts
         id: collect
         env:
