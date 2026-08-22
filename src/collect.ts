@@ -47,120 +47,114 @@ async function runQuery(
   }
 }
 
-async function main(): Promise<void> {
-  const forceFullSweep = process.argv.includes("--full");
-  const now = new Date();
-  const nowIso = now.toISOString();
 
-  const search = await createSearcher();
+const forceFullSweep = process.argv.includes("--full");
+const now = new Date();
+const nowIso = now.toISOString();
 
-  const [posts, pending, denied, state] = await Promise.all([
-    readPosts(), readPending(), readDenied(), readState(),
-  ]);
+const search = await createSearcher();
 
-  // Applied at load rather than only when a query re-surfaces the post: variant
-  // queries run windowed and the exact query is capped, so an older archived post
-  // added to denied.json may never appear in a result set again.
-  const byUri = new Map(posts.filter((p) => !denied.has(p.uri)).map((p) => [p.uri, p]));
-  const pendingByUri = new Map(
-    pending.filter((p) => !denied.has(p.uri)).map((p) => [p.uri, p]),
-  );
+const [posts, pending, denied, state] = await Promise.all([
+  readPosts(), readPending(), readDenied(), readState(),
+]);
 
-  // The exact query returns a single page, so sweeping it fully every run costs
-  // one request and is self-healing: posts that were briefly private, late to
-  // index, or from since-unblocked accounts get picked up without special cases.
-  const results: Array<{ query: string; posts: SearchPostView[]; truncated: boolean }> = [];
-  console.log(`exact sweep: ${EXACT_QUERY}`);
-  results.push({ query: EXACT_QUERY, ...(await runQuery(search, EXACT_QUERY)) });
+// Applied at load rather than only when a query re-surfaces the post: variant
+// queries run windowed and the exact query is capped, so an older archived post
+// added to denied.json may never appear in a result set again.
+const byUri = new Map(posts.filter((p) => !denied.has(p.uri)).map((p) => [p.uri, p]));
+const pendingByUri = new Map(
+  pending.filter((p) => !denied.has(p.uri)).map((p) => [p.uri, p]),
+);
 
-  // Variant queries paginate through years of sincere timezone discussion, so
-  // they run windowed except during a periodic full sweep.
-  const lastSweep = state.lastFullSweepAt ? Date.parse(state.lastFullSweepAt) : 0;
-  const sweepDue = now.getTime() - lastSweep > FULL_SWEEP_INTERVAL_DAYS * DAY_MS;
-  const fullSweep = forceFullSweep || sweepDue;
+// The exact query returns a single page, so sweeping it fully every run costs
+// one request and is self-healing: posts that were briefly private, late to
+// index, or from since-unblocked accounts get picked up without special cases.
+const results: Array<{ query: string; posts: SearchPostView[]; truncated: boolean }> = [];
+console.log(`exact sweep: ${EXACT_QUERY}`);
+results.push({ query: EXACT_QUERY, ...(await runQuery(search, EXACT_QUERY)) });
 
-  // Widened rather than trusted exactly: since/until filter on `sortAt`, which
-  // the lexicon warns may not match `createdAt`. Dedupe makes the overlap free.
-  const since = fullSweep || !state.lastRunAt
-    ? undefined
-    : new Date(Date.parse(state.lastRunAt) - WINDOW_OVERLAP_DAYS * DAY_MS).toISOString();
+// Variant queries paginate through years of sincere timezone discussion, so
+// they run windowed except during a periodic full sweep.
+const lastSweep = state.lastFullSweepAt ? Date.parse(state.lastFullSweepAt) : 0;
+const sweepDue = now.getTime() - lastSweep > FULL_SWEEP_INTERVAL_DAYS * DAY_MS;
+const fullSweep = forceFullSweep || sweepDue;
 
-  // Only the variant queries read `since`, so only their truncation can invalidate
-  // the watermark; the exact query re-sweeps unwindowed every run regardless.
-  let windowTruncated = false;
-  console.log(fullSweep ? "variant queries: FULL sweep" : `variant queries: since ${since}`);
-  for (const query of VARIANT_QUERIES) {
-    const result = await runQuery(search, query, { since });
-    if (result.truncated) windowTruncated = true;
-    results.push({ query, ...result });
-  }
+// Widened rather than trusted exactly: since/until filter on `sortAt`, which
+// the lexicon warns may not match `createdAt`. Dedupe makes the overlap free.
+const since = fullSweep || !state.lastRunAt
+  ? undefined
+  : new Date(Date.parse(state.lastRunAt) - WINDOW_OVERLAP_DAYS * DAY_MS).toISOString();
 
-  let newExact = 0;
-  let newPending = 0;
+// Only the variant queries read `since`, so only their truncation can invalidate
+// the watermark; the exact query re-sweeps unwindowed every run regardless.
+let windowTruncated = false;
+console.log(fullSweep ? "variant queries: FULL sweep" : `variant queries: since ${since}`);
+for (const query of VARIANT_QUERIES) {
+  const result = await runQuery(search, query, { since });
+  if (result.truncated) windowTruncated = true;
+  results.push({ query, ...result });
+}
 
-  for (const { query, posts: found } of results) {
-    for (const p of found) {
-      const kind = classify(postText(p));
-      if (kind === "ignore") continue;
+let newExact = 0;
+let newPending = 0;
 
-      // denied is a moderation escape hatch and must outrank an exact match:
-      // otherwise a post you removed is re-added by the next sweep, forever. The
-      // maps were filtered at load, so this only has to block the re-add.
-      if (denied.has(p.uri)) continue;
+for (const { query, posts: found } of results) {
+  for (const p of found) {
+    const kind = classify(postText(p));
+    if (kind === "ignore") continue;
 
-      if (kind === "exact") {
-        // A post promoted to exact leaves the review queue; re-running the
-        // matcher over stored text can reclassify without re-querying. Its
-        // firstSeenAt carries over: the field records when the collector first
-        // saw the post, which is when it entered the queue, not when review ended.
-        const queued = pendingByUri.get(p.uri);
-        pendingByUri.delete(p.uri);
-        if (byUri.has(p.uri)) continue;
-        byUri.set(p.uri, toStored(p, queued?.firstSeenAt ?? nowIso));
-        newExact++;
-        continue;
-      }
+    // denied is a moderation escape hatch and must outrank an exact match:
+    // otherwise a post you removed is re-added by the next sweep, forever. The
+    // maps were filtered at load, so this only has to block the re-add.
+    if (denied.has(p.uri)) continue;
 
-      // variant
-      if (byUri.has(p.uri) || pendingByUri.has(p.uri)) continue;
-      pendingByUri.set(p.uri, { ...toStored(p, nowIso), matchedQuery: query });
-      newPending++;
+    if (kind === "exact") {
+      // A post promoted to exact leaves the review queue; re-running the
+      // matcher over stored text can reclassify without re-querying. Its
+      // firstSeenAt carries over: the field records when the collector first
+      // saw the post, which is when it entered the queue, not when review ended.
+      const queued = pendingByUri.get(p.uri);
+      pendingByUri.delete(p.uri);
+      if (byUri.has(p.uri)) continue;
+      byUri.set(p.uri, toStored(p, queued?.firstSeenAt ?? nowIso));
+      newExact++;
+      continue;
     }
-  }
 
-  await Promise.all([
-    writePosts([...byUri.values()]),
-    writePending([...pendingByUri.values()] as PendingPost[]),
-    // A truncated query means posts inside the window were never examined.
-    // Advancing the watermark past them moves the next run's `since` beyond posts
-    // nothing ever read, and the output looks identical to a clean run. Hold it
-    // instead. On the anonymous path, where every query is capped at page 1, this
-    // is the normal case rather than an edge case.
-    writeState({
-      lastRunAt: windowTruncated ? state.lastRunAt : nowIso,
-      lastFullSweepAt: fullSweep && !windowTruncated ? nowIso : state.lastFullSweepAt,
-    }),
-  ]);
-
-  console.log(
-    `\n${byUri.size} posts (+${newExact}), ${pendingByUri.size} pending (+${newPending})`,
-  );
-  if (windowTruncated) {
-    console.warn("  window not fully covered; holding lastRunAt so the next run re-reads it");
-  }
-
-  // Consumed by the workflow to decide whether to open a review issue, and to
-  // title it.
-  if (process.env.GITHUB_OUTPUT) {
-    const { appendFileSync } = await import("node:fs");
-    appendFileSync(
-      process.env.GITHUB_OUTPUT,
-      `new_pending=${newPending}\nnew_posts=${newExact}\ntotal_pending=${pendingByUri.size}\n`,
-    );
+    // variant
+    if (byUri.has(p.uri) || pendingByUri.has(p.uri)) continue;
+    pendingByUri.set(p.uri, { ...toStored(p, nowIso), matchedQuery: query });
+    newPending++;
   }
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+await Promise.all([
+  writePosts([...byUri.values()]),
+  writePending([...pendingByUri.values()] as PendingPost[]),
+  // A truncated query means posts inside the window were never examined.
+  // Advancing the watermark past them moves the next run's `since` beyond posts
+  // nothing ever read, and the output looks identical to a clean run. Hold it
+  // instead. On the anonymous path, where every query is capped at page 1, this
+  // is the normal case rather than an edge case.
+  writeState({
+    lastRunAt: windowTruncated ? state.lastRunAt : nowIso,
+    lastFullSweepAt: fullSweep && !windowTruncated ? nowIso : state.lastFullSweepAt,
+  }),
+]);
+
+console.log(
+  `\n${byUri.size} posts (+${newExact}), ${pendingByUri.size} pending (+${newPending})`,
+);
+if (windowTruncated) {
+  console.warn("  window not fully covered; holding lastRunAt so the next run re-reads it");
+}
+
+// Consumed by the workflow to decide whether to open a review issue, and to
+// title it.
+if (process.env.GITHUB_OUTPUT) {
+  const { appendFileSync } = await import("node:fs");
+  appendFileSync(
+    process.env.GITHUB_OUTPUT,
+    `new_pending=${newPending}\nnew_posts=${newExact}\ntotal_pending=${pendingByUri.size}\n`,
+  );
+}

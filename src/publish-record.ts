@@ -4,8 +4,9 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   FEED_DID, FEED_DESCRIPTION, FEED_NAME, FEED_RKEY,
-  HOSTNAME, PUBLISHER_DID, PUBLISHER_HANDLE, USER_AGENT,
+  HOSTNAME, PUBLISHER_DID, PUBLISHER_HANDLE,
 } from "./config.ts";
+import { getJson, isJson } from "./lib/http.ts";
 
 /**
  * One-time (and idempotent) publication of the app.bsky.feed.generator record.
@@ -16,53 +17,42 @@ import {
 /** The record is inert until did:web resolution works, so check first. */
 async function preflight(): Promise<void> {
   const url = `https://${HOSTNAME}/.well-known/did.json`;
-  const res = await fetch(url, { headers: { "user-agent": USER_AGENT } });
-  if (!res.ok) throw new Error(`${url} returned ${res.status} — deploy the site first`);
-
-  const contentType = res.headers.get("content-type") ?? "";
-  if (!contentType.includes("application/json")) {
-    throw new Error(
-      `${url} served as "${contentType}", not application/json — check the ` +
-      `headers block in firebase.json`,
-    );
+  const { status, type, body } = await getJson(url);
+  if (status !== 200) throw new Error(`${url} returned ${status} — deploy the site first`);
+  if (!isJson(type)) {
+    throw new Error(`${url} served as "${type}" — check the headers block in firebase.json`);
   }
 
-  const doc = (await res.json()) as { id?: string; service?: Array<{ type?: string }> };
+  const doc = body as { id?: string; service?: Array<{ type?: string }> };
   if (doc.id !== FEED_DID) throw new Error(`DID document declares ${doc.id}, expected ${FEED_DID}`);
-  if (!doc.service?.some((s) => s.type === "BskyFeedGenerator")) {
+  if (!doc.service?.some((svc) => svc.type === "BskyFeedGenerator")) {
     throw new Error("DID document has no BskyFeedGenerator service entry");
   }
   console.log(`✓ ${FEED_DID} resolves`);
 }
 
-/** The generator lexicon accepts only PNG and JPEG, capped at 1MB. */
-const AVATAR_CANDIDATES = [
-  ["assets/avatar.png", "image/png"],
-  ["assets/avatar.jpg", "image/jpeg"],
-  ["assets/avatar.jpeg", "image/jpeg"],
-] as const;
-
-const AVATAR_MAX_BYTES = 1_000_000;
-
 /** Resolved from the module, not cwd, so the script works from any directory. */
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
+/** The generator lexicon accepts only PNG and JPEG, capped at 1MB. */
+const AVATAR_MAX_BYTES = 1_000_000;
+
 async function uploadAvatar(agent: AtpAgent): Promise<unknown | undefined> {
-  for (const [relPath, mimeType] of AVATAR_CANDIDATES) {
+  for (const rel of ["assets/avatar.png", "assets/avatar.jpg", "assets/avatar.jpeg"]) {
     let bytes: Buffer;
     try {
-      bytes = await readFile(join(ROOT, relPath));
+      bytes = await readFile(join(ROOT, rel));
     } catch (err) {
       if ((err as NodeJS.ErrnoException).code === "ENOENT") continue;
       throw err;
     }
     if (bytes.byteLength > AVATAR_MAX_BYTES) {
-      throw new Error(
-        `${relPath} is ${bytes.byteLength} bytes; the lexicon caps avatars at ${AVATAR_MAX_BYTES}`,
-      );
+      throw new Error(`${rel} is ${bytes.byteLength} bytes; the lexicon caps avatars at ${AVATAR_MAX_BYTES}`);
     }
-    const upload = await agent.uploadBlob(bytes, { encoding: mimeType });
-    console.log(`✓ avatar uploaded from ${relPath}`);
+    const upload = await agent.uploadBlob(bytes, {
+      encoding: rel.endsWith(".png") ? "image/png" : "image/jpeg",
+    });
+    console.log(`✓ avatar uploaded from ${rel}`);
     return upload.data.blob;
   }
   console.log("no avatar found in assets/; publishing without one");
