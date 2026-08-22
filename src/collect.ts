@@ -152,7 +152,10 @@ async function main(): Promise<void> {
   // Consumed by the workflow to decide whether to open a review PR.
   if (process.env.GITHUB_OUTPUT) {
     const { appendFileSync } = await import("node:fs");
-    appendFileSync(process.env.GITHUB_OUTPUT, `new_pending=${newPending}\nnew_posts=${newExact}\n`);
+    appendFileSync(
+      process.env.GITHUB_OUTPUT,
+      `new_pending=${newPending}\nnew_posts=${newExact}\ntotal_pending=${pendingByUri.size}\n`,
+    );
   }
 }
 

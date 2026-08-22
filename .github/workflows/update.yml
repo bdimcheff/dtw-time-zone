@@ -119,7 +119,7 @@ jobs:
             gh issue comment "$existing" --body-file /tmp/body.md
           else
             gh issue create --label pending-review \
-              --title "Review ${{ steps.collect.outputs.new_pending }} candidate variant post(s)" \
+              --title "Review candidate variant posts (${{ steps.collect.outputs.total_pending }} awaiting)" \
               --body-file /tmp/body.md
           fi
 
