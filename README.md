@@ -52,23 +52,24 @@ The Action opens a PR when new candidates appear. For each entry in
 
 Required once.
 
-**1. Firebase Hosting site.** Create a site with ID `dtw-time-zone` in the
-`bdimcheff` project and add `dtw.dimcheff.wtf` as a custom domain. `.firebaserc`
-already maps the `dtw` target to it.
+**1. Firebase Hosting.** The feed lives in its own Firebase project, `dtw-time-zone`,
+rather than alongside the blog in `bdimcheff`. This keeps the CI service account
+scoped to a project that can't touch anything else, and avoids multi-site hosting
+config. The default site is `dtw-time-zone.web.app`, which is also useful for
+testing a deploy before DNS is ready.
+
+Add `dtw.dimcheff.wtf` as a custom domain on that site.
 
 **DNS for `dimcheff.wtf` is at Porkbun**, not Google Cloud DNS — that's `dimcheff.com`.
-Firebase issues a TXT record for ownership first, then two A records. In Porkbun's
+Firebase issues a TXT record for ownership first, then the A record(s). In Porkbun's
 DNS Records page the Host field takes only the subdomain part (`dtw`, not the full
-name). The A records should match what `brandon.dimcheff.com` already uses:
+name).
 
-```
-151.101.65.195
-151.101.1.195
-```
-
-Use whatever the Firebase console shows rather than these, in case it issues
-different addresses. Certificate provisioning is the slow step — usually under an
-hour. `npm run verify` confirms when it's live.
+Use exactly what the console shows. Firebase Hosting has changed IPs over time —
+this project resolves to `199.36.158.100`, whereas the older `brandon.dimcheff.com`
+still points at a `151.101.x` pair, so the blog is not a reliable template.
+Certificate provisioning is the slow step, usually under an hour. `npm run verify`
+confirms when it's live.
 
 **2. Bluesky app password.** Generate one at Settings → App Passwords on
 `dimcheff.wtf`.
@@ -77,7 +78,7 @@ hour. `npm run verify` confirms when it's live.
 
 | Secret | Purpose |
 |---|---|
-| `FIREBASE_SERVICE_ACCOUNT` | Deploy. From Firebase → Project settings → Service accounts |
+| `FIREBASE_SERVICE_ACCOUNT` | Deploy. From the **`dtw-time-zone`** project → Project settings → Service accounts. Paste the entire JSON. |
 | `BSKY_IDENTIFIER` | `dimcheff.wtf` |
 | `BSKY_APP_PASSWORD` | Lifts the single-page search cap (see below) |
 

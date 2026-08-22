@@ -78,8 +78,7 @@ jobs:
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          projectId: bdimcheff
-          target: dtw
+          projectId: dtw-time-zone
           channelId: live
 
       # The feed fails in a confusing way if these regress: the DID stops

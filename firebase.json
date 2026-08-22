@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "target": "dtw",
     "public": "public",
     "//": "Firebase's default ignore list contains '**/.*', which silently excludes .well-known and would make did:web resolution 404. Exclusions are enumerated explicitly instead.",
     "ignore": [
