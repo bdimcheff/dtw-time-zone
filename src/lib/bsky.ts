@@ -7,6 +7,12 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 /** Pages are capped so a runaway query can't paginate through the whole network. */
 const MAX_PAGES = 12;
 const MAX_ATTEMPTS = 5;
+/**
+ * Ceiling on a single backoff. bsky.social rate-limit windows run to five
+ * minutes, so the previous 60s cap could burn the whole attempt budget while the
+ * limit was still in force.
+ */
+const MAX_BACKOFF_MS = 300_000;
 
 interface SearchResponse {
   posts?: SearchPostView[];
@@ -76,10 +82,17 @@ async function withRetry<T>(
         || status === 429 || status === 403 || status >= 500;
       if (!retryable || attempt >= MAX_ATTEMPTS) throw err;
 
+      // Floored at the exponential delay rather than used in place of it: a
+      // ratelimit-reset already in the past (clock skew, a stale or echoed
+      // header) computed a zero-length wait, and since resetAt stayed truthy the
+      // `delay` accumulator was never consulted — so every remaining attempt
+      // fired back to back with no backoff, deepening the limit it was meant to
+      // wait out.
       const resetAt = resetAtOf(err);
-      const waitMs = resetAt ? Math.max(0, resetAt * 1000 - Date.now()) : delay;
+      const untilReset = resetAt ? resetAt * 1000 - Date.now() : 0;
+      const waitMs = Math.min(Math.max(untilReset, delay), MAX_BACKOFF_MS);
       console.warn(`  ${status}; retrying in ${Math.round(waitMs / 1000)}s (${attempt}/${MAX_ATTEMPTS})`);
-      await sleep(Math.min(waitMs, 60_000));
+      await sleep(waitMs);
       delay *= 2;
     }
   }
