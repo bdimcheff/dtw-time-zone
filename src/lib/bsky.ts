@@ -58,9 +58,14 @@ function resetAtOf(err: unknown): number | undefined {
  * surfaced immediately rather than burning the full backoff schedule on a request
  * that cannot succeed. A 403 on a first page, by contrast, has been observed to
  * clear on retry, so it stays retryable there.
+ *
+ * That reasoning is specific to the anonymous transport, so `cursorCapApplies`
+ * is false when authenticated: a 403 from the PDS means a revoked app password
+ * or a blocked account, and must surface as an error rather than be mistaken for
+ * the expected cap.
  */
 async function withRetry<T>(
-  isCursorPage: boolean,
+  cursorCapApplies: boolean,
   fn: () => Promise<T>,
 ): Promise<T> {
   let delay = 1_000;
@@ -69,7 +74,7 @@ async function withRetry<T>(
       return await fn();
     } catch (err) {
       const status = statusOf(err);
-      if (status === 403 && isCursorPage) throw new PaginationCapped();
+      if (status === 403 && cursorCapApplies) throw new PaginationCapped();
 
       // A connection-level failure carries no usable HTTP status: fetch rejects
       // with a TypeError, and XRPCError.from falls back to ResponseType.Unknown
@@ -112,6 +117,7 @@ async function fetchPage(url: string): Promise<SearchResponse> {
 async function paginate(
   q: string,
   getPage: (cursor?: string) => Promise<SearchResponse>,
+  { anonymous }: { anonymous: boolean },
 ): Promise<SearchPostView[]> {
   const out: SearchPostView[] = [];
   let cursor: string | undefined;
@@ -119,7 +125,7 @@ async function paginate(
   for (let page = 0; page < MAX_PAGES; page++) {
     let data: SearchResponse;
     try {
-      data = await withRetry(page > 0, () => getPage(cursor));
+      data = await withRetry(anonymous && page > 0, () => getPage(cursor));
     } catch (err) {
       if (err instanceof PaginationCapped && page > 0) {
         console.warn(`  pagination capped after ${page} page(s) for ${q}`);
@@ -155,7 +161,7 @@ function publicSearcher(): Searcher {
       if (opts.since) params.set("since", opts.since);
       if (cursor) params.set("cursor", cursor);
       return fetchPage(`${APPVIEW}/xrpc/app.bsky.feed.searchPosts?${params}`);
-    });
+    }, { anonymous: true });
 }
 
 /** Authenticated searcher, proxied through the PDS. */
@@ -166,7 +172,7 @@ function authedSearcher(agent: AtpAgent): Searcher {
         q, limit: 100, sort: "latest", ...(opts.since ? { since: opts.since } : {}), cursor,
       });
       return res.data as unknown as SearchResponse;
-    });
+    }, { anonymous: false });
 }
 
 /**
