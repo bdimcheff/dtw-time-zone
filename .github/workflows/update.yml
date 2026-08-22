@@ -38,7 +38,13 @@ jobs:
         env:
           BSKY_IDENTIFIER: ${{ secrets.BSKY_IDENTIFIER }}
           BSKY_APP_PASSWORD: ${{ secrets.BSKY_APP_PASSWORD }}
-        run: npm run collect -- ${{ inputs.full_sweep && '--full' || '' }}
+          FULL_SWEEP: ${{ inputs.full_sweep }}
+        run: |
+          if [ "$FULL_SWEEP" = "true" ]; then
+            npm run collect -- --full
+          else
+            npm run collect
+          fi
 
       # All three data files are committed to main together. An earlier version
       # routed pending.json through a bot branch, which force-pushed over any
@@ -49,6 +55,10 @@ jobs:
         env:
           BSKY_IDENTIFIER: ${{ secrets.BSKY_IDENTIFIER }}
           BSKY_APP_PASSWORD: ${{ secrets.BSKY_APP_PASSWORD }}
+          # Carried through so a re-collect repeats the sweep this run was asked
+          # for; a full sweep that lost a push race would otherwise silently
+          # continue as a windowed run.
+          FULL_SWEEP: ${{ inputs.full_sweep }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -80,7 +90,11 @@ jobs:
             git rebase --abort 2>/dev/null || true
             git fetch origin main
             git reset --hard FETCH_HEAD
-            npm run collect
+            if [ "$FULL_SWEEP" = "true" ]; then
+              npm run collect -- --full
+            else
+              npm run collect
+            fi
             commit_data "Update archive (re-collected on $(git rev-parse --short HEAD))" || exit 0
             sleep 5
           done
