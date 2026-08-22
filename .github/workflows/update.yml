@@ -74,8 +74,12 @@ jobs:
 
       # An issue, not a PR: the collector rewrites pending.json every run, so a
       # bot branch would clobber whatever a reviewer committed to it.
+      # Advisory only: whether a notification issue opened has no bearing on
+      # whether the built skeleton should ship, and this step sits between the
+      # data commit and the deploy.
       - name: Open review issue for pending variants
         if: steps.collect.outputs.new_pending != '0'
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
