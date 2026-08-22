@@ -1,0 +1,140 @@
+# DTW Time Zone — Bluesky Feed
+
+A Bluesky custom feed collecting posts of the phrase **"Detroit, Michigan is in the
+Eastern Time Zone"** — the recorded announcement that used to play at DTW, and a
+long-running inside joke among friends landing there.
+
+## Background
+
+A Bluesky custom feed is not a file format. It's an HTTP service exposing three
+endpoints, all of which can be **static JSON**:
+
+| Path | Purpose |
+|---|---|
+| `/.well-known/did.json` | `did:web` document identifying the generator |
+| `/xrpc/app.bsky.feed.describeFeedGenerator` | Lists offered feeds |
+| `/xrpc/app.bsky.feed.getFeedSkeleton` | Returns `{feed: [{post: "at://..."}]}` |
+
+The skeleton returns only AT-URIs; Bluesky's AppView hydrates post content at read
+time. There is no per-user logic, so a generated static file is a complete
+implementation. A one-time `app.bsky.feed.generator` record published to a Bluesky
+repo makes the feed discoverable.
+
+## Findings from reconnaissance (2026-08-22)
+
+- **71 exact-phrase posts** exist, dating to **2023-05-01**. By year:
+  2023: 13 · 2024: 9 · 2025: 42 · 2026: 25 YTD. Roughly 25 distinct authors.
+- Search indexes the full history, so a **one-time backfill captures everything**.
+- `app.bsky.feed.searchPosts` returns **403 on `public.api.bsky.app`** (blocked at
+  the CDN) but **200 unauthenticated on `api.bsky.app`**. Rate limits trip after
+  ~6 paginated queries; needs backoff.
+- Search **ignores punctuation** — comma and no-comma queries return identical sets.
+- Loose matching produces convincing false positives ("most of Indiana is in the
+  eastern time zone") — hence the review gate below.
+- `getFeedSkeleton` caps request `limit` at 100 but sets **no max on the response
+  array**.
+- A DID document's `serviceEndpoint` may point at a **different host** than the DID
+  itself (live precedent: `did:web:skyfeed.me` → `https://feeds.skyfeed.eu`).
+
+## Architecture
+
+```
+GitHub Action (cron)
+  └─ collect  → query api.bsky.app/searchPosts, paginate, dedupe
+  └─ classify → exact match → data/posts.json      (auto-admitted)
+                variant     → data/pending.json    (opens a PR)
+  └─ build    → render static artifacts into public/
+  └─ deploy   → firebase deploy --only hosting:dtw
+```
+
+**Identity:** `did:web:dtw.dimcheff.wtf`, served from Firebase Hosting.
+Because the DID's `serviceEndpoint` is indirect, the serving layer can move later
+without changing the feed's identity or dropping subscribers.
+
+**Precision model:** exact-phrase matches are ~100% precise and are admitted
+automatically. Variants are written to a pending file and require a merged PR to
+enter the feed. Nothing ambiguous reaches the feed unreviewed.
+
+## Lookback strategy
+
+Cost per run is dominated by *pagination depth*, not history depth, so the two query
+classes are handled differently:
+
+| Query | Strategy | Requests/run |
+|---|---|---|
+| Exact phrase | Full sweep every run | 1 |
+| Broad variants | `since` window with overlap | 1-2 |
+| Full variant sweep | Monthly, or via manual flag | ~10 |
+
+The exact-phrase query returns 71 results — a single page. Sweeping it fully every
+run costs one request and is **self-healing**: posts that were briefly private,
+late-indexed, or from since-unblocked accounts get picked up automatically.
+
+The broad variant queries are the expensive ones, paginating through years of
+unrelated timezone chatter; these get a `since` window. Two caveats drive the
+design:
+
+- `since`/`until` filter on **`sortAt`, not `createdAt`** — the lexicon states these
+  may not match. The window is therefore set to `last_run - 7 days`, not `last_run`;
+  dedupe by AT-URI makes the overlap free.
+- `cursor` is documented as "may not necessarily allow scrolling through entire
+  result set," so deep pagination is not treated as reliable. The periodic full
+  variant sweep exists to catch what windowing drops.
+
+Steady-state cost is ~2-3 requests per run, well clear of the rate limit that tripped
+at ~6 paginated queries.
+
+## Known constraint: the 100-post window
+
+Static hosting cannot read the `cursor` query parameter, so the feed serves exactly
+one page — the newest ~100 posts. At 71 posts and ~35/year, this becomes binding in
+roughly a year.
+
+This is a *window*, not data loss: `data/posts.json` retains the complete archive
+permanently. When the cap binds, the fix is a Cloudflare Worker (free tier, ~30
+lines) serving the skeleton with real pagination — a `serviceEndpoint` change in the
+DID document, not a migration.
+
+## Build sequence
+
+1. **Repo** — `git init -b main`; work on `bad/dtw-feed-mvp`. TypeScript + Node,
+   no framework.
+2. **`src/collect.ts`** — paginated `searchPosts` with backoff; merges into
+   `data/posts.json` keyed by AT-URI. Query strategy differs per query type (see
+   *Lookback strategy* below).
+3. **`src/classify.ts`** — normalizes text (case, punctuation, whitespace) and
+   applies the exact matcher; everything else routes to `data/pending.json`.
+4. **`src/build.ts`** — emits `public/.well-known/did.json`,
+   `public/xrpc/app.bsky.feed.describeFeedGenerator`, and
+   `public/xrpc/app.bsky.feed.getFeedSkeleton` (newest 100, no cursor).
+5. **`firebase.json`** — hosting target `dtw`, plus `headers` forcing
+   `Content-Type: application/json` on `/xrpc/**` and `/.well-known/did.json`.
+   The default `ignore` glob `**/.*` excludes `.well-known` and is replaced with an
+   explicit exclusion list, or the DID document silently 404s.
+6. **`src/publish-record.ts`** — one-time script writing the
+   `app.bsky.feed.generator` record to **`dimcheff.wtf`**, which becomes the feed's
+   listed creator. Requires a Bluesky app password (unlike collection).
+7. **`.github/workflows/update.yml`** — cron; runs collect → classify → build,
+   commits changed data, deploys, and opens a PR when `pending.json` grows.
+8. **Verification** — confirm `Content-Type` on the deployed endpoints, resolve the
+   DID, and subscribe to the feed in the Bluesky app.
+
+## Manual steps required
+
+- DNS records for `dtw.dimcheff.wtf` (Firebase provides them on site creation).
+- Firebase Hosting site `dtw` added to the existing `bdimcheff` project.
+- GitHub secrets: `FIREBASE_SERVICE_ACCOUNT`, and `BSKY_APP_PASSWORD` for the
+  one-time record publish.
+- GitHub disables scheduled workflows after 60 days without repository activity;
+  re-enable manually when it happens.
+
+## Deferred (not MVP)
+
+- **Riff detection** — capture plays on the original form from known DTW posters,
+  e.g. "Jackson Hole, Wyoming is in the Mountain Time Zone". Needs an author
+  allowlist plus a generalized `<place> is in the <X> Time Zone` matcher, and its
+  own review gate. Deliberately out of scope until the base feed is running.
+- **Archive web page** — HTML listing every captured post. Gains importance once
+  the 100-post window binds.
+- **Stats / leaderboard** — posts per year, top posters, first sighting.
+- **RSS/JSON syndication.**
