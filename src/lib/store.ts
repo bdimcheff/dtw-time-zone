@@ -1,7 +1,7 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { StoredPost, PendingPost, CollectorState } from "./types.ts";
+import type { StoredPost, PendingPost } from "./types.ts";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 export const DATA_DIR = join(ROOT, "data");
@@ -26,12 +26,9 @@ async function writeJson(path: string, value: unknown): Promise<void> {
 const postsPath = join(DATA_DIR, "posts.json");
 const pendingPath = join(DATA_DIR, "pending.json");
 const deniedPath = join(DATA_DIR, "denied.json");
-const statePath = join(DATA_DIR, "state.json");
 
 export const readPosts = () => readJson<StoredPost[]>(postsPath, []);
 export const readPending = () => readJson<PendingPost[]>(pendingPath, []);
-export const readState = () =>
-  readJson<CollectorState>(statePath, { lastRunAt: null, lastFullSweepAt: null });
 
 /** URIs manually rejected; never re-enter pending. Hand-edited. */
 export const readDenied = async () => new Set(await readJson<string[]>(deniedPath, []));
@@ -66,7 +63,6 @@ export const writePosts = (posts: StoredPost[]) =>
   writeJson(postsPath, [...posts].sort(byNewest));
 export const writePending = (pending: PendingPost[]) =>
   writeJson(pendingPath, [...pending].sort(byNewest));
-export const writeState = (state: CollectorState) => writeJson(statePath, state);
 
 export const writePublic = (relPath: string, value: unknown) =>
   writeJson(join(PUBLIC_DIR, relPath), value);

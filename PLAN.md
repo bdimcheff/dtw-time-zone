@@ -57,29 +57,6 @@ without changing the feed's identity or dropping subscribers.
 automatically. Variants are written to a pending file and require a merged PR to
 enter the feed. Nothing ambiguous reaches the feed unreviewed.
 
-## Lookback strategy
-
-> **Superseded.** This described working around the anonymous single-page cap.
-> Authentication lifts that cap, so the collector now authenticates and the
-> workaround is largely obsolete — see
-> [#3](https://github.com/bdimcheff/dtw-time-zone/issues/3), which proposes
-> removing the windowing entirely. Kept for the reasoning below, which still
-> explains why the watermark is widened rather than trusted.
-
-Cost per run is dominated by *pagination depth*, not history depth, so the exact
-query sweeps fully every run — cheap, and **self-healing**: posts that were briefly
-private, late-indexed, or from since-unblocked accounts get picked up without a
-special case. The broader variant query runs against a `since` watermark.
-
-Two caveats drove the window's design:
-
-- `since`/`until` filter on **`sortAt`, not `createdAt`** — the lexicon states these
-  may not match. The window is therefore set to `last_run - 7 days`, not `last_run`;
-  dedupe by AT-URI makes the overlap free.
-- `cursor` is documented as "may not necessarily allow scrolling through entire
-  result set," so deep pagination is not treated as reliable. A query that stops
-  early holds the watermark rather than advancing past results nothing examined.
-
 ## Known constraint: the feed renders one page
 
 Static hosting cannot read the `cursor` query parameter, so the skeleton is a single
@@ -99,8 +76,7 @@ without changing the feed's identity.
 1. **Repo** — `git init -b main`; work on `bad/dtw-feed-mvp`. TypeScript + Node,
    no framework.
 2. **`src/collect.ts`** — paginated `searchPosts` with backoff; merges into
-   `data/posts.json` keyed by AT-URI. Query strategy differs per query type (see
-   *Lookback strategy* below).
+   `data/posts.json` keyed by AT-URI. Every query is swept in full each run.
 3. **`src/lib/match.ts`** — normalizes text (case, accents, punctuation,
    whitespace) and applies the exact matcher; anything looser routes to
    `data/pending.json`.

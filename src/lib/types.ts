@@ -19,11 +19,6 @@ export interface PendingPost extends StoredPost {
   matchedQuery: string;
 }
 
-export interface CollectorState {
-  lastRunAt: string | null;
-  lastFullSweepAt: string | null;
-}
-
 /** Shape of a post in an app.bsky.feed.searchPosts response. */
 export interface SearchPostView {
   uri: string;

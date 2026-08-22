@@ -34,7 +34,6 @@ and South Bend out of the feed.
 | Command | Effect |
 |---|---|
 | `npm run collect` | Search and update `data/` |
-| `npm run collect -- --full` | Force an unwindowed sweep of the variant queries |
 | `npm run build` | Render `public/` from `data/posts.json` |
 | `npm run verify` | Smoke-test the deployed endpoints |
 | `npm run publish-record` | Publish the feed record (one-time, idempotent) |
