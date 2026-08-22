@@ -189,7 +189,15 @@ export async function createSearcher(): Promise<Searcher> {
   }
 
   const agent = new AtpAgent({ service: process.env.BSKY_SERVICE ?? "https://bsky.social" });
-  await agent.login({ identifier, password });
+  try {
+    await agent.login({ identifier, password });
+  } catch (err) {
+    // The lapsed credential this function documents: a revoked or expired app
+    // password throws here, and letting that propagate would fail the run rather
+    // than degrade to the anonymous path.
+    console.warn(`login failed (${(err as Error).message}); falling back to anonymous search`);
+    return publicSearcher();
+  }
   console.log(`searching as ${identifier}`);
   return authedSearcher(agent);
 }
