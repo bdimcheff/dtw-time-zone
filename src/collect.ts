@@ -110,10 +110,13 @@ async function main(): Promise<void> {
 
       if (kind === "exact") {
         // A post promoted to exact leaves the review queue; re-running the
-        // matcher over stored text can reclassify without re-querying.
+        // matcher over stored text can reclassify without re-querying. Its
+        // firstSeenAt carries over: the field records when the collector first
+        // saw the post, which is when it entered the queue, not when review ended.
+        const queued = pendingByUri.get(p.uri);
         pendingByUri.delete(p.uri);
         if (byUri.has(p.uri)) continue;
-        byUri.set(p.uri, toStored(p, nowIso));
+        byUri.set(p.uri, toStored(p, queued?.firstSeenAt ?? nowIso));
         newExact++;
         continue;
       }
