@@ -65,7 +65,15 @@ async function withRetry<T>(
       const status = statusOf(err);
       if (status === 403 && isCursorPage) throw new PaginationCapped();
 
-      const retryable = status === 429 || status === 403 || (status ?? 0) >= 500;
+      // A connection-level failure carries no usable HTTP status: fetch rejects
+      // with a TypeError, and XRPCError.from falls back to ResponseType.Unknown
+      // (1) or InvalidResponse (2). That is the most common transient failure
+      // class, so it retries like a 5xx rather than aborting the run on the
+      // first attempt. (Unlisted 5xx codes are safe: httpResponseCodeToEnum maps
+      // them to InternalServerError.)
+      const retryable = status === undefined
+        || status < 100
+        || status === 429 || status === 403 || status >= 500;
       if (!retryable || attempt >= MAX_ATTEMPTS) throw err;
 
       const resetAt = resetAtOf(err);
