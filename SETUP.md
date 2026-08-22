@@ -98,7 +98,31 @@ for i in d.get('issues') or []:
 ```
 
 Target state is `OWNERSHIP_ACTIVE` / `HOST_ACTIVE` with a cert in `CERT_ACTIVE`.
-Certificate provisioning is the slow step.
+
+### Certificate stuck in CERT_VALIDATING
+
+Ownership and host can both go active within a minute while the certificate sits in
+`CERT_VALIDATING` indefinitely. Firebase offers two ACME challenges, and the HTTP
+one cannot complete on a fresh domain: requesting the challenge path over HTTP
+returns a 301 to HTTPS, which fails because the certificate being validated doesn't
+exist yet.
+
+Resolve it with the DNS challenge instead. The record is in the same GET response:
+
+```sh
+curl -s "https://firebasehosting.googleapis.com/v1beta1/${SITE}/customDomains/dtw.dimcheff.wtf" \
+  -H "Authorization: Bearer ${TOKEN}" -H "x-goog-user-project: dtw-time-zone" \
+  | python3 -c "
+import json,sys
+c=json.load(sys.stdin).get('cert') or {}
+for ch in (c.get('verification',{}).get('dns',{}) or {}).get('desired') or []:
+    for r in ch.get('records') or []:
+        print(r.get('type'), r.get('domainName'), '->', r.get('rdata'), f\"({r.get('requiredAction')})\")
+"
+```
+
+Add the resulting `TXT` at `_acme-challenge.dtw` alongside the CNAME. Both records
+stay; the CNAME routes traffic, the TXT proves control for the certificate.
 
 ## 3. Deploy service account
 
