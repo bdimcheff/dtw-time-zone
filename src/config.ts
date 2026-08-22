@@ -51,38 +51,21 @@ export const USER_AGENT = `dtw-time-zone (+${SERVICE_ENDPOINT})`;
 export const EXACT_QUERY = '"Detroit, Michigan is in the Eastern Time Zone"';
 
 /**
- * Broader queries used to surface variants for manual review. These paginate
- * through years of sincere timezone discussion, so they run windowed rather
- * than as full sweeps. See collect.ts.
+ * Broader query used to surface variants for manual review. It paginates through
+ * years of sincere timezone discussion, so it runs windowed rather than as a full
+ * sweep. See collect.ts.
  *
- * The narrower queries look redundant — classify() only accepts a variant if it
- * contains the frame, which the first query searches for directly — but that
- * holds only for an unbounded search. Each query hits the single-page cap and
- * returns a different newest-100 window, so the narrow ones reach posts the
- * broad one cannot. Measured unauthenticated: "detroit" contributed 27 relevant
- * posts and "dtw" 2 that the broad query alone missed. "michigan" contributed
- * none at that moment, and is kept because the balance shifts once
- * authentication lifts the cap.
- *
- * Note that the measurement expires with the cap. Lifting it is the entire point
- * of authenticating, and once pagination works the first query is unbounded --
- * at which point classify()'s FRAME requirement does make these strictly
- * redundant, by the same argument that makes them useful today. Re-measure once
- * a run completes without reporting truncation, and drop them if they contribute
- * nothing then.
+ * This was once a list of four. Narrower variants ("… michigan", "… detroit",
+ * "… dtw") existed only to work around the anonymous single-page cap: each
+ * returned a different newest-100 window, so together they reached posts the
+ * broad query could not. Authenticated, the broad query returns its complete
+ * result set — measured at 170 results across 2 pages, untruncated — and the
+ * narrow ones contributed zero unique posts. classify() only accepts a variant
+ * containing the frame this query searches for, so the broad query is now a
+ * strict superset.
  */
-export const VARIANT_QUERIES = [
-  '"is in the Eastern Time Zone"',
-  '"eastern time zone" michigan',
-  '"eastern time zone" detroit',
-  '"eastern time zone" dtw',
-];
+export const VARIANT_QUERIES = ['"is in the Eastern Time Zone"'];
 
-/**
- * Number of posts served in the feed skeleton. Static hosting cannot read the
- * cursor query param, so the feed is a single page. The full archive lives in
- * data/posts.json regardless.
- */
 export const FEED_LIMIT = 100;
 
 /**

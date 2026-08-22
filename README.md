@@ -84,7 +84,7 @@ records from the API.
 |---|---|
 | `FIREBASE_SERVICE_ACCOUNT` | Deploy. From the **`dtw-time-zone`** project → Project settings → Service accounts. Paste the entire JSON. |
 | `BSKY_IDENTIFIER` | `dimcheff.wtf` |
-| `BSKY_APP_PASSWORD` | Lifts the single-page search cap (see below) |
+| `BSKY_APP_PASSWORD` | Required for search; see below |
 
 **4. Publish the feed record**, after the site is live:
 
@@ -98,12 +98,12 @@ inert without it.
 
 ## Constraints worth knowing
 
-**Unauthenticated search returns one page.** `api.bsky.app` answers
-`app.bsky.feed.searchPosts` without auth, but any `cursor` request gets
-`403 Request forbidden by administrative rules`. The collector authenticates when
-credentials are present and falls back to anonymous single-page access when they
-are not. The exact query currently returns 71 results, so it fits either way — but
-it will start silently truncating above 100 without auth.
+**Collection requires a Bluesky app password.** `api.bsky.app` refuses
+unauthenticated `searchPosts` cursor requests with `403 Request forbidden by
+administrative rules`, and has been observed refusing first pages too. Measured
+against the same query, anonymous returned nothing while authenticated returned all
+170 results across 2 pages. There is no anonymous fallback: without credentials the
+collector exits rather than silently collecting a fraction.
 
 **The feed shows only the newest ~30-50 posts.** Static hosting can't read the
 `cursor` query param, so the skeleton is a single page with no cursor. The AppView
