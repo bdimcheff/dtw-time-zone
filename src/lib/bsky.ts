@@ -24,7 +24,17 @@ export interface SearchOptions {
   since?: string;
 }
 
-export type Searcher = (q: string, opts?: SearchOptions) => Promise<SearchPostView[]>;
+export interface SearchResult {
+  posts: SearchPostView[];
+  /**
+   * Pagination stopped with results still available — the anonymous single-page
+   * cap, or MAX_PAGES. The caller needs this: results inside the requested
+   * window were never examined, so its `since` watermark must not move past them.
+   */
+  truncated: boolean;
+}
+
+export type Searcher = (q: string, opts?: SearchOptions) => Promise<SearchResult>;
 
 /** The hard single-page cap on unauthenticated search, not a transient failure. */
 class PaginationCapped extends Error {}
@@ -118,9 +128,10 @@ async function paginate(
   q: string,
   getPage: (cursor?: string) => Promise<SearchResponse>,
   { anonymous }: { anonymous: boolean },
-): Promise<SearchPostView[]> {
+): Promise<SearchResult> {
   const out: SearchPostView[] = [];
   let cursor: string | undefined;
+  let truncated = false;
 
   for (let page = 0; page < MAX_PAGES; page++) {
     let data: SearchResponse;
@@ -129,6 +140,7 @@ async function paginate(
     } catch (err) {
       if (err instanceof PaginationCapped && page > 0) {
         console.warn(`  pagination capped after ${page} page(s) for ${q}`);
+        truncated = true;
         break;
       }
       throw err;
@@ -146,11 +158,12 @@ async function paginate(
         `  stopped at the ${MAX_PAGES}-page limit for ${q} with more results available; ` +
         `narrow the query or raise MAX_PAGES`,
       );
+      truncated = true;
     }
     await sleep(500);
   }
 
-  return out;
+  return { posts: out, truncated };
 }
 
 /** Anonymous searcher. Works, but capped at one page per query. */

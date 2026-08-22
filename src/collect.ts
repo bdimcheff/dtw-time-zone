@@ -44,9 +44,9 @@ async function main(): Promise<void> {
   // The exact query returns a single page, so sweeping it fully every run costs
   // one request and is self-healing: posts that were briefly private, late to
   // index, or from since-unblocked accounts get picked up without special cases.
-  const results: Array<{ query: string; posts: SearchPostView[] }> = [];
+  const results: Array<{ query: string; posts: SearchPostView[]; truncated: boolean }> = [];
   console.log(`exact sweep: ${EXACT_QUERY}`);
-  results.push({ query: EXACT_QUERY, posts: await search(EXACT_QUERY) });
+  results.push({ query: EXACT_QUERY, ...(await search(EXACT_QUERY)) });
 
   // Variant queries paginate through years of sincere timezone discussion, so
   // they run windowed except during a periodic full sweep.
@@ -60,9 +60,14 @@ async function main(): Promise<void> {
     ? undefined
     : new Date(Date.parse(state.lastRunAt) - WINDOW_OVERLAP_DAYS * DAY_MS).toISOString();
 
+  // Only the variant queries read `since`, so only their truncation can invalidate
+  // the watermark; the exact query re-sweeps unwindowed every run regardless.
+  let windowTruncated = false;
   console.log(fullSweep ? "variant queries: FULL sweep" : `variant queries: since ${since}`);
   for (const query of VARIANT_QUERIES) {
-    results.push({ query, posts: await search(query, { since }) });
+    const result = await search(query, { since });
+    if (result.truncated) windowTruncated = true;
+    results.push({ query, ...result });
   }
 
   let newExact = 0;
@@ -101,15 +106,23 @@ async function main(): Promise<void> {
   await Promise.all([
     writePosts([...byUri.values()]),
     writePending([...pendingByUri.values()] as PendingPost[]),
+    // A truncated query means posts inside the window were never examined.
+    // Advancing the watermark past them moves the next run's `since` beyond posts
+    // nothing ever read, and the output looks identical to a clean run. Hold it
+    // instead. On the anonymous path, where every query is capped at page 1, this
+    // is the normal case rather than an edge case.
     writeState({
-      lastRunAt: nowIso,
-      lastFullSweepAt: fullSweep ? nowIso : state.lastFullSweepAt,
+      lastRunAt: windowTruncated ? state.lastRunAt : nowIso,
+      lastFullSweepAt: fullSweep && !windowTruncated ? nowIso : state.lastFullSweepAt,
     }),
   ]);
 
   console.log(
     `\n${byUri.size} posts (+${newExact}), ${pendingByUri.size} pending (+${newPending})`,
   );
+  if (windowTruncated) {
+    console.warn("  window not fully covered; holding lastRunAt so the next run re-reads it");
+  }
 
   // Consumed by the workflow to decide whether to open a review PR.
   if (process.env.GITHUB_OUTPUT) {
