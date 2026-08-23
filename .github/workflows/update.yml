@@ -4,18 +4,20 @@ on:
   # Review PRs edit data/ by hand, and the invariants in the corpus tests are
   # exactly what a half-finished edit breaks. Catching it here is the difference
   # between a red PR and a scheduled run that wedges silently.
+  # No paths filter: the job is ~30s, and a filtered-out PR reports no checks at
+  # all, which in the UI is indistinguishable from a PR that passed.
   pull_request:
-    paths: ["data/**", "src/**", "package.json", ".github/workflows/**"]
   schedule:
-    # Four times a day. GitHub disables scheduled workflows after 60 days
-    # without repository activity; re-enable from the Actions tab when it does.
-    - cron: "17 */6 * * *"
+    # Every half hour. The skeleton is a static file, so this cadence *is* the
+    # feed's latency: a post does not appear until a run collects and deploys it.
+    # Every run is a full sweep of ~3 requests, so frequency is close to free.
+    # Offset off the hour because scheduled runs queue at low priority and the
+    # top of the hour is the worst time to ask.
+    #
+    # GitHub disables scheduled workflows after 60 days without repository
+    # activity; re-enable from the Actions tab when it does.
+    - cron: "7,37 * * * *"
   workflow_dispatch:
-    inputs:
-      full_sweep:
-        description: "Run an unwindowed sweep of the variant queries"
-        type: boolean
-        default: false
 
 jobs:
   # Runs on pull requests only. A review PR hand-edits data/, and the corpus
@@ -78,13 +80,7 @@ jobs:
         env:
           BSKY_IDENTIFIER: ${{ secrets.BSKY_IDENTIFIER }}
           BSKY_APP_PASSWORD: ${{ secrets.BSKY_APP_PASSWORD }}
-          FULL_SWEEP: ${{ inputs.full_sweep }}
-        run: |
-          if [ "$FULL_SWEEP" = "true" ]; then
-            npm run collect -- --full
-          else
-            npm run collect
-          fi
+        run: npm run collect
 
       # Now that collect has repaired and rewritten data/, assert the invariants
       # over what will actually be committed and deployed.
@@ -101,10 +97,6 @@ jobs:
         env:
           BSKY_IDENTIFIER: ${{ secrets.BSKY_IDENTIFIER }}
           BSKY_APP_PASSWORD: ${{ secrets.BSKY_APP_PASSWORD }}
-          # Carried through so a re-collect repeats the sweep this run was asked
-          # for; a full sweep that lost a push race would otherwise silently
-          # continue as a windowed run.
-          FULL_SWEEP: ${{ inputs.full_sweep }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -168,11 +160,7 @@ jobs:
             git rebase --abort 2>/dev/null || true
             git fetch origin main
             git reset --hard FETCH_HEAD
-            if [ "$FULL_SWEEP" = "true" ]; then
-              npm run collect -- --full
-            else
-              npm run collect
-            fi
+            npm run collect
             if ! commit_data "Update archive (re-collected on $(git rev-parse --short HEAD))"; then
               echo "added_pending=0" >> "$GITHUB_OUTPUT"
               exit 0

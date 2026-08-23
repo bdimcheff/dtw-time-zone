@@ -18,22 +18,7 @@ interface SearchResponse {
   cursor?: string;
 }
 
-export interface SearchOptions {
-  /** ISO timestamp. Filters on `sortAt`, which may lag `createdAt` — see PLAN.md. */
-  since?: string;
-}
-
-export interface SearchResult {
-  posts: SearchPostView[];
-  /**
-   * Pagination stopped at MAX_PAGES with results still available. The caller
-   * needs this: results inside the requested window were never examined, so its
-   * `since` watermark must not move past them.
-   */
-  truncated: boolean;
-}
-
-export type Searcher = (q: string, opts?: SearchOptions) => Promise<SearchResult>;
+export type Searcher = (q: string) => Promise<SearchPostView[]>;
 
 /** XRPCError carries a numeric status; a connection failure carries none. */
 const statusOf = (err: unknown): number | undefined => {
@@ -86,18 +71,15 @@ async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
  * authenticated returned all 170 results across 2 pages.
  */
 function searcher(agent: AtpAgent): Searcher {
-  return async (q, { since }: SearchOptions = {}) => {
+  return async (q) => {
     const posts: SearchPostView[] = [];
     let cursor: string | undefined;
-    let truncated = false;
 
     for (let page = 0; page < MAX_PAGES; page++) {
       let res;
       try {
         res = await withRetry(() =>
-          agent.app.bsky.feed.searchPosts({
-            q, limit: 100, sort: "latest", ...(since ? { since } : {}), cursor,
-          }),
+          agent.app.bsky.feed.searchPosts({ q, limit: 100, sort: "latest", cursor }),
         );
       } catch (err) {
         // Keep what earlier pages already returned. Letting this escape would
@@ -105,7 +87,7 @@ function searcher(agent: AtpAgent): Searcher {
         // treats a thrown query as having covered nothing.
         if (page === 0) throw err;
         console.warn(`  ${q}: failed after ${page} page(s), keeping ${posts.length} post(s)`);
-        return { posts, truncated: true };
+        return posts;
       }
       const data = res.data as unknown as SearchResponse;
       const found = data.posts ?? [];
@@ -121,12 +103,11 @@ function searcher(agent: AtpAgent): Searcher {
           `  stopped at the ${MAX_PAGES}-page limit for ${q} with more results available; ` +
           `narrow the query or raise MAX_PAGES`,
         );
-        truncated = true;
       }
       await sleep(500);
     }
 
-    return { posts, truncated };
+    return posts;
   };
 }
 

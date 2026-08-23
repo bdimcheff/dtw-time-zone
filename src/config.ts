@@ -78,13 +78,3 @@ export const VARIANT_QUERIES = ['"is in the Eastern Time Zone"'];
  * limit, which caps at 100, so serving more would never reach anyone.
  */
 export const FEED_LIMIT = 100;
-
-/**
- * Overlap applied to the `since` window on variant queries. since/until filter
- * on `sortAt`, which the lexicon warns may not match `createdAt`, so the window
- * is widened rather than trusted exactly. Dedupe by URI makes overlap free.
- */
-export const WINDOW_OVERLAP_DAYS = 7;
-
-/** Days between full (unwindowed) variant sweeps. */
-export const FULL_SWEEP_INTERVAL_DAYS = 30;

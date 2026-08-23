@@ -1,19 +1,9 @@
-import {
-  EXACT_QUERIES,
-  VARIANT_QUERIES,
-  WINDOW_OVERLAP_DAYS,
-  FULL_SWEEP_INTERVAL_DAYS,
-} from "./config.ts";
+import { EXACT_QUERIES, VARIANT_QUERIES } from "./config.ts";
 import { createSearcher } from "./lib/bsky.ts";
-import type { Searcher, SearchOptions, SearchResult } from "./lib/bsky.ts";
+import type { Searcher } from "./lib/bsky.ts";
 import { classify, postText } from "./lib/match.ts";
-import {
-  ms, readPosts, readPending, readDenied, readState,
-  writePosts, writePending, writeState,
-} from "./lib/store.ts";
+import { readPosts, readPending, readDenied, writePosts, writePending } from "./lib/store.ts";
 import type { StoredPost, PendingPost, SearchPostView } from "./lib/types.ts";
-
-const DAY_MS = 86_400_000;
 
 function toStored(p: SearchPostView, firstSeenAt: string): StoredPost {
   return {
@@ -30,46 +20,39 @@ function toStored(p: SearchPostView, firstSeenAt: string): StoredPost {
 
 /**
  * One failing query must not discard the rest of the run. Every query completes
- * before anything is written, so an unguarded throw from the last variant query
- * threw away the exact sweep's results too, then failed the workflow before Build
- * and Deploy. A failed query counts as truncated: its window went uncovered.
+ * before anything is written, so an unguarded throw from the last query threw
+ * away the others' results too, then failed the workflow before Build and Deploy.
  */
-async function runQuery(
-  search: Searcher,
-  query: string,
-  opts?: SearchOptions,
-): Promise<SearchResult> {
+async function runQuery(search: Searcher, query: string): Promise<SearchPostView[]> {
   try {
-    return await search(query, opts);
+    return await search(query);
   } catch (err) {
     console.error(`  query failed: ${query}\n    ${(err as Error).message}`);
-    return { posts: [], truncated: true };
+    return [];
   }
 }
 
 
-const forceFullSweep = process.argv.includes("--full");
-const now = new Date();
-const nowIso = now.toISOString();
+const nowIso = new Date().toISOString();
 
 const search = await createSearcher();
 
-const [posts, pending, denied, state] = await Promise.all([
-  readPosts(), readPending(), readDenied(), readState(),
+const [posts, pending, denied] = await Promise.all([
+  readPosts(), readPending(), readDenied(),
 ]);
 
-// Applied at load rather than only when a query re-surfaces the post: variant
-// queries run windowed and the exact query is capped, so an older archived post
-// added to denied.json may never appear in a result set again.
+// Applied at load rather than only when a query re-surfaces the post: a query
+// that stops early, or a post that has since been deleted, would otherwise leave
+// a denied entry in the archive indefinitely.
 const byUri = new Map(posts.filter((p) => !denied.has(p.uri)).map((p) => [p.uri, p]));
 const pendingByUri = new Map(
   pending.filter((p) => !denied.has(p.uri)).map((p) => [p.uri, p]),
 );
 
 // Reclassify the queue against the current matcher before searching. Promotion
-// otherwise only happens when a query re-surfaces the post, and the variant query
-// runs windowed -- so loosening the matcher (as adding "MI" did) would strand
-// older queued posts it now accepts. The text is stored, so this costs nothing.
+// otherwise only happens when a query re-surfaces the post, so loosening the
+// matcher (as adding "MI" did) would strand older queued posts it now accepts.
+// The text is stored, so this costs nothing.
 let promoted = 0;
 let dropped = 0;
 for (const [uri, queued] of pendingByUri) {
@@ -98,37 +81,18 @@ if (dropped > 0) console.log(`dropped ${dropped} queued post(s) the matcher no l
 const results: Array<{ query: string; posts: SearchPostView[] }> = [];
 for (const query of EXACT_QUERIES) {
   console.log(`exact sweep: ${query}`);
-  // `truncated` is deliberately ignored: these queries are unwindowed, so they
-  // cannot invalidate a watermark, and the next run re-sweeps them in full.
-  const { posts: found } = await runQuery(search, query);
-  results.push({ query, posts: found });
+  results.push({ query, posts: await runQuery(search, query) });
 }
 
-// Variant queries paginate through years of sincere timezone discussion, so
-// they run windowed except during a periodic full sweep.
-// data/state.json is written by CI and rebased on every push, which makes it a
-// frequent merge-conflict target. An unparseable value used to fail two ways at
-// once: NaN here left sweepDue false forever, silently disabling full sweeps,
-// while the `since` computation below threw RangeError. Both now read as absent.
-const lastSweep = ms(state.lastFullSweepAt ?? "");
-const sweepDue = now.getTime() - lastSweep > FULL_SWEEP_INTERVAL_DAYS * DAY_MS;
-const fullSweep = forceFullSweep || sweepDue;
-
-// Widened rather than trusted exactly: since/until filter on `sortAt`, which
-// the lexicon warns may not match `createdAt`. Dedupe makes the overlap free.
-const lastRun = ms(state.lastRunAt ?? "");
-const since = fullSweep || !lastRun
-  ? undefined
-  : new Date(lastRun - WINDOW_OVERLAP_DAYS * DAY_MS).toISOString();
-
-// Only the variant queries read `since`, so only their truncation can invalidate
-// the watermark; the exact query re-sweeps unwindowed every run regardless.
-let windowTruncated = false;
-console.log(fullSweep ? "variant queries: FULL sweep" : `variant queries: since ${since}`);
+// Swept in full like the exact queries. This used to run against a `since`
+// watermark to avoid paginating through years of sincere timezone discussion,
+// which mattered when anonymous search was capped at one page per query.
+// Authenticated it returns its complete result set in two requests, so the
+// watermark bought about one request per run and cost a state file, a truncation
+// signal, and the rule tying them together.
 for (const query of VARIANT_QUERIES) {
-  const { posts: found, truncated } = await runQuery(search, query, { since });
-  if (truncated) windowTruncated = true;
-  results.push({ query, posts: found });
+  console.log(`variant sweep: ${query}`);
+  results.push({ query, posts: await runQuery(search, query) });
 }
 
 let newExact = 0;
@@ -167,22 +131,11 @@ for (const { query, posts: found } of results) {
 await Promise.all([
   writePosts([...byUri.values()]),
   writePending([...pendingByUri.values()] as PendingPost[]),
-  // A truncated query means posts inside the window were never examined.
-  // Advancing the watermark past them moves the next run's `since` beyond posts
-  // nothing ever read, and the output looks identical to a clean run. Hold it
-  // instead.
-  writeState({
-    lastRunAt: windowTruncated ? state.lastRunAt : nowIso,
-    lastFullSweepAt: fullSweep && !windowTruncated ? nowIso : state.lastFullSweepAt,
-  }),
 ]);
 
 console.log(
   `\n${byUri.size} posts (+${newExact + promoted}), ${pendingByUri.size} pending (+${newPending})`,
 );
-if (windowTruncated) {
-  console.warn("  window not fully covered; holding lastRunAt so the next run re-reads it");
-}
 
 // Consumed by the workflow to decide whether to open a review issue, and to
 // title it.

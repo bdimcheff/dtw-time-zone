@@ -34,7 +34,6 @@ and South Bend out of the feed.
 | Command | Effect |
 |---|---|
 | `npm run collect` | Search and update `data/` |
-| `npm run collect -- --full` | Force an unwindowed sweep of the variant queries |
 | `npm run build` | Render `public/` from `data/posts.json` |
 | `npm run verify` | Smoke-test the deployed endpoints |
 | `npm run publish-record` | Publish the feed record (one-time, idempotent) |
@@ -59,6 +58,15 @@ The Action opens (or comments on) an issue when new candidates appear. For each 
 - **Admit** — move the entry into `data/posts.json`.
 - **Reject** — delete it and add its `uri` to `data/denied.json` so it is not
   re-queued.
+
+### If a review PR shows no checks
+
+A pull request with merge conflicts gets **no CI run at all** — not a failure, zero
+runs — because `pull_request` workflows execute against a merge commit GitHub cannot
+create. In the UI that is easy to mistake for a PR that passed.
+
+The collector commits to `data/` on every run that finds something, so a review PR
+left open for a while can conflict. Rebase it on `main` and the checks appear.
 
 ## Setup
 
