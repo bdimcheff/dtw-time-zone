@@ -46,7 +46,7 @@ GitHub Action (cron)
   └─ classify → exact match → data/posts.json      (auto-admitted)
                 variant     → data/pending.json    (opens a review issue)
   └─ build    → render static artifacts into public/
-  └─ deploy   → firebase deploy --only hosting:dtw
+  └─ deploy   → firebase deploy --only hosting --project dtw-time-zone
 ```
 
 **Identity:** `did:web:dtw.dimcheff.wtf`, served from Firebase Hosting.

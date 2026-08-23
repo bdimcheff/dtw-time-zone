@@ -7,8 +7,10 @@ Feed: https://bsky.app/profile/dimcheff.wtf/feed/dtw-time-zone
 
 ## How it works
 
-A GitHub Action searches Bluesky a few times a day, merges matches into
-`data/posts.json`, and renders three static JSON files that Firebase serves. There
+A GitHub Action searches Bluesky every 30 minutes, merges matches into
+`data/posts.json`, and renders three static JSON files that Firebase serves. The
+skeleton is a static file, so that cadence is also the feed's latency — a post does
+not appear until a run collects and deploys it. There
 is no server — a Bluesky feed generator only has to return a list of post URIs, and
 the AppView hydrates the content at read time.
 
@@ -38,6 +40,8 @@ and South Bend out of the feed.
 | `npm run verify` | Smoke-test the deployed endpoints |
 | `npm run publish-record` | Publish the feed record (one-time, idempotent) |
 | `npm run check` | Typecheck and run the tests |
+| `npm run test` | Tests only |
+| `npm run pending-report` | Render the review queue as markdown |
 
 ## Tests
 
