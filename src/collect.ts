@@ -115,6 +115,11 @@ for (const { query, posts: found } of results) {
       // saw the post, which is when it entered the queue, not when review ended.
       const queued = pendingByUri.get(p.uri);
       pendingByUri.delete(p.uri);
+      // Never overwrite an existing entry. Beyond avoiding pointless churn, this
+      // is what makes createdAt/indexedAt -- and so the feed's sort key -- fixed
+      // for the life of a URI. The pagination cursor encodes that key as a
+      // position, so a key that moved would drop or repeat everything after it
+      // for any client mid-walk.
       if (byUri.has(p.uri)) continue;
       byUri.set(p.uri, toStored(p, queued?.firstSeenAt ?? nowIso));
       newExact++;

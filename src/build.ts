@@ -1,10 +1,6 @@
-import {
-  FEED_DID, FEED_LIMIT, FEED_RKEY, HOSTNAME, PUBLISHER_DID, SERVICE_ENDPOINT,
-} from "./config.ts";
-import { byNewest, readPosts, writePublic } from "./lib/store.ts";
-
-/** AT-URI of the app.bsky.feed.generator record clients subscribe to. */
-export const FEED_URI = `at://${PUBLISHER_DID}/app.bsky.feed.generator/${FEED_RKEY}`;
+import { FEED_DID, FEED_LIMIT, FEED_URI, HOSTNAME, SERVICE_ENDPOINT } from "./config.ts";
+import { byNewest, entriesOf } from "./lib/order.ts";
+import { readPosts, writeFunctions, writePublic } from "./lib/store.ts";
 
 
 // Sorted here rather than trusted: data/posts.json is hand-edited during
@@ -37,7 +33,15 @@ await writePublic("xrpc/app.bsky.feed.describeFeedGenerator", {
 const feed = posts.slice(0, FEED_LIMIT).map((p) => ({ post: p.uri }));
 await writePublic("xrpc/app.bsky.feed.getFeedSkeleton", { feed });
 
+// The paginating endpoint's data, deployed inside the function bundle rather than
+// fetched at request time: a request then never touches the network, and code and
+// data can never disagree about which posts exist. Freshness comes from deploying,
+// which the update workflow does whenever data/posts.json changes.
+const entries = entriesOf(posts);
+await writeFunctions("entries.json", entries);
+
 console.log(`built ${feed.length} skeleton entries from ${posts.length} archived posts`);
+console.log(`  functions/entries.json: ${entries.length} entries`);
 // The AppView slices this to the client's `limit` and stops, since we return no
 // cursor, so subscribers see far fewer than we serve. See TODO.md.
 console.log(

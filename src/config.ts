@@ -30,6 +30,14 @@ export const PUBLISHER_DID = "did:plc:2zwqewi6t7coiohtmpfzz2wd";
 /** Record key; the feed's AT-URI is at://<publisher-did>/app.bsky.feed.generator/<key> */
 export const FEED_RKEY = "dtw-time-zone";
 
+/**
+ * AT-URI of the app.bsky.feed.generator record clients subscribe to. Lives here
+ * rather than in build.ts so the feed function can validate the `feed` query
+ * param against it without importing build.ts, whose top-level await would pull
+ * the whole data layer into the function bundle.
+ */
+export const FEED_URI = `at://${PUBLISHER_DID}/app.bsky.feed.generator/${FEED_RKEY}`;
+
 export const FEED_NAME = "DTW Time Zone";
 export const FEED_DESCRIPTION =
   "Detroit, Michigan is in the Eastern Time Zone.\n\n" +
@@ -76,5 +84,7 @@ export const VARIANT_QUERIES = ['"is in the Eastern Time Zone"'];
 /**
  * Entries written to the skeleton. The AppView slices this to the client's own
  * limit, which caps at 100, so serving more would never reach anyone.
+ *
+ * Retires with the static skeleton when the paginating endpoint lands (#2).
  */
 export const FEED_LIMIT = 100;

@@ -1,7 +1,9 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { classify } from "./match.ts";
-import { readPending, readPosts, readDenied, sortAt, byNewest } from "./store.ts";
+import { entriesOf, sortAt, byNewest } from "./order.ts";
+import { paginate } from "./skeleton.ts";
+import { readPending, readPosts, readDenied } from "./store.ts";
 
 /**
  * Invariants over the committed data. These run against whatever the collector
@@ -26,12 +28,40 @@ describe("archive", () => {
   });
 
   test("URIs are unique", () => {
+    // Load-bearing for pagination as well as for the archive: the feed cursor
+    // encodes (sortAt, uri) as a position in a total order, and duplicate URIs
+    // would make that order non-total at a tie.
     assert.equal(new Set(posts.map((p) => p.uri)).size, posts.length);
   });
 
   test("nothing denied is in the archive or the queue", () => {
     assert.deepEqual(posts.filter((p) => denied.has(p.uri)).map((p) => p.uri), []);
     assert.deepEqual(pending.filter((p) => denied.has(p.uri)).map((p) => p.uri), []);
+  });
+
+  test("a paginated walk reaches every archived post exactly once", () => {
+    // The endpoint's contract, asserted against the real archive: subscribers
+    // see the whole thing only if a cursor walk is a permutation of it. limit=7
+    // is deliberately not a divisor of the corpus size, so the final page is a
+    // partial one.
+    const entries = entriesOf(posts);
+    const seen: string[] = [];
+    let cursor: string | undefined;
+    let pages = 0;
+    const cap = Math.ceil(entries.length / 7) + 3;
+    for (;;) {
+      const page = paginate(entries, { limit: "7", cursor });
+      pages++;
+      assert.notEqual(page.cursor, cursor, `page ${pages} echoed its request cursor`);
+      assert.ok(page.feed.length <= 7, "page exceeded the requested limit");
+      seen.push(...page.feed.map((f) => f.post));
+      if (page.cursor === undefined) break;
+      cursor = page.cursor;
+      assert.ok(pages <= cap, "walk did not terminate");
+    }
+    assert.deepEqual(seen, entries.map((e) => e.uri), "walk order matches byNewest");
+    assert.equal(new Set(seen).size, seen.length, "no post appears twice");
+    assert.equal(pages, Math.ceil(entries.length / 7), "no wasted trailing page");
   });
 
   // Deliberately not asserted: file order. The documented way to admit a post is

@@ -28,5 +28,10 @@
         ]
       }
     ]
+  },
+  "functions": {
+    "//": "Deploy artifact only: index.js is the esbuild bundle of src/functions/index.ts, entries.json comes from build.ts, and neither is committed. See npm run build:functions.",
+    "source": "functions",
+    "codebase": "default"
   }
 }
