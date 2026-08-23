@@ -7,11 +7,15 @@ import type { StoredPost } from "./types.ts";
  * reaches for node:fs, which has no business inside a request handler.
  */
 
-/** The fields ordering actually needs. StoredPost satisfies this structurally. */
-export interface Orderable {
-  uri: string;
+/** What the sort key is derived from. Split out so tests need no dummy `uri`. */
+export interface Timestamped {
   createdAt: string;
   indexedAt: string;
+}
+
+/** The fields ordering actually needs. StoredPost satisfies this structurally. */
+export interface Orderable extends Timestamped {
+  uri: string;
 }
 
 /**
@@ -20,9 +24,14 @@ export interface Orderable {
  * anyone pin themselves to the top of the feed forever by posting a future date.
  * Taking the earlier of createdAt and indexedAt caps a post at the moment the
  * network actually saw it, which is how the AppView derives its own sort key.
+ *
+ * Milliseconds, not the ISO string: every caller wanted the number, so returning
+ * the string meant re-parsing it -- three Date.parse calls per element per
+ * comparison. A malformed timestamp still pins to the epoch, since ms() yields 0
+ * and Math.min of a zero is a zero.
  */
-export const sortAt = (p: Orderable): string =>
-  ms(p.createdAt) < ms(p.indexedAt) ? p.createdAt : p.indexedAt;
+export const sortAtMs = (p: Timestamped): number =>
+  Math.min(ms(p.createdAt), ms(p.indexedAt));
 
 /**
  * Milliseconds for an ISO timestamp. These are compared numerically rather than
@@ -52,7 +61,7 @@ export const ms = (iso: string): number => {
  * which corpus.test.ts asserts.
  */
 export const byNewest = (a: Orderable, b: Orderable) =>
-  ms(sortAt(b)) - ms(sortAt(a)) || (a.uri < b.uri ? -1 : a.uri > b.uri ? 1 : 0);
+  sortAtMs(b) - sortAtMs(a) || (a.uri < b.uri ? -1 : a.uri > b.uri ? 1 : 0);
 
 /** A post reduced to what the feed endpoint serves and orders by. */
 export interface FeedEntry {
@@ -63,7 +72,7 @@ export interface FeedEntry {
 
 export const toEntry = (p: Orderable): FeedEntry => ({
   uri: p.uri,
-  sortAt: ms(sortAt(p)),
+  sortAt: sortAtMs(p),
 });
 
 /** Typed narrowly so callers can pass StoredPost without a cast. */

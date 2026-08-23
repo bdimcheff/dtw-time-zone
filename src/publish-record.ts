@@ -1,4 +1,4 @@
-import { AtpAgent } from "@atproto/api";
+import type { AtpAgent } from "@atproto/api";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -6,6 +6,7 @@ import {
   FEED_DID, FEED_DESCRIPTION, FEED_NAME, FEED_RKEY,
   HOSTNAME, PUBLISHER_DID, PUBLISHER_HANDLE,
 } from "./config.ts";
+import { credentials, login } from "./lib/bsky.ts";
 import { getJson, isJson } from "./lib/http.ts";
 
 /**
@@ -60,11 +61,9 @@ async function uploadAvatar(agent: AtpAgent): Promise<unknown | undefined> {
 }
 
 async function main(): Promise<void> {
-  const identifier = process.env.BSKY_IDENTIFIER;
-  const password = process.env.BSKY_APP_PASSWORD;
-  if (!identifier || !password) {
-    throw new Error("BSKY_IDENTIFIER and BSKY_APP_PASSWORD are required");
-  }
+  // Checked before the preflight request so a missing secret fails immediately
+  // rather than after a round trip. login() re-reads them.
+  credentials();
 
   if (process.argv.includes("--skip-preflight")) {
     console.warn("skipping preflight — the feed will not work until the host is live");
@@ -72,8 +71,7 @@ async function main(): Promise<void> {
     await preflight();
   }
 
-  const agent = new AtpAgent({ service: process.env.BSKY_SERVICE ?? "https://bsky.social" });
-  await agent.login({ identifier, password });
+  const agent = await login();
 
   // The record's repo determines who is credited as the feed's creator, so a
   // wrong login would publish under the wrong identity.

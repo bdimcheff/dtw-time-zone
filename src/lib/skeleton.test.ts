@@ -2,6 +2,7 @@ import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import {
   BadCursor, DEFAULT_LIMIT, clampLimit, decodeCursor, encodeCursor, paginate,
+  urisOf, walkFeed,
 } from "./skeleton.ts";
 import type { FeedEntry } from "./order.ts";
 
@@ -20,25 +21,14 @@ const feed = (n: number): FeedEntry[] =>
 
 const uris = (p: { feed: { post: string }[] }) => p.feed.map((f) => f.post);
 
-/** Walk to exhaustion, returning every uri seen and the number of pages taken. */
-function walk(entries: FeedEntry[], limit: string, cap = 100) {
-  const seen: string[] = [];
-  const cursors: (string | undefined)[] = [];
-  let cursor: string | undefined;
-  let pages = 0;
-  for (;;) {
-    const page = paginate(entries, { limit, cursor });
-    pages++;
-    // The AppView reads an echoed cursor as end-of-feed, so this must hold on
-    // every page of every walk, not just at the boundaries.
-    assert.notEqual(page.cursor, cursor, `page ${pages} echoed its request cursor`);
-    seen.push(...uris(page));
-    cursors.push(page.cursor);
-    if (page.cursor === undefined) break;
-    cursor = page.cursor;
-    assert.ok(pages < cap, "walk did not terminate");
-  }
-  return { seen, pages, cursors };
+/**
+ * Walk to exhaustion via the shared walker, which is the same code `npm run
+ * verify` runs against the deployed endpoint. It throws WalkError on an echoed
+ * cursor or a walk that will not terminate, so those need no assertion here.
+ */
+async function walk(entries: FeedEntry[], limit: string, cap = 100) {
+  const pages = await walkFeed((cursor) => paginate(entries, { limit, cursor }), cap);
+  return { seen: urisOf(pages), pages: pages.length, cursors: pages.map((p) => p.cursor) };
 }
 
 describe("cursor encoding", () => {
@@ -105,27 +95,27 @@ describe("paginate", () => {
     assert.deepEqual(paginate([], {}), { feed: [] });
   });
 
-  test("a full walk yields every entry once, in order", () => {
+  test("a full walk yields every entry once, in order", async () => {
     const entries = feed(88);
-    const { seen, pages } = walk(entries, "10");
+    const { seen, pages } = await walk(entries, "10");
     assert.deepEqual(seen, entries.map((e) => e.uri));
     assert.equal(new Set(seen).size, seen.length, "no repeats");
     assert.equal(pages, 9);
   });
 
-  test("an exactly-full final page returns no cursor", () => {
+  test("an exactly-full final page returns no cursor", async () => {
     // Otherwise the next request returns an empty page, which the AppView reads
     // as end-of-feed anyway — but only after a wasted round trip.
-    const { pages, cursors } = walk(feed(20), "10");
+    const { pages, cursors } = await walk(feed(20), "10");
     assert.equal(pages, 2);
     assert.equal(cursors.at(-1), undefined);
   });
 
-  test("a page boundary inside a run of equal sortAt keeps the run intact", () => {
+  test("a page boundary inside a run of equal sortAt keeps the run intact", async () => {
     // The only case that catches a reversed tiebreaker. The corpus has no ties,
     // so nothing else in the suite would notice.
     const tied: FeedEntry[] = [0, 1, 2, 3, 4].map((i) => ({ uri: at(i), sortAt: 999 }));
-    const { seen } = walk(tied, "2");
+    const { seen } = await walk(tied, "2");
     assert.deepEqual(seen, tied.map((e) => e.uri));
   });
 
@@ -149,6 +139,15 @@ describe("paginate", () => {
     const page = paginate(after, { limit: "5", cursor });
     assert.ok(!uris(page).includes(inserted.uri), "backfilled post is behind the cursor");
     assert.deepEqual(uris(page), entries.slice(5).map((e) => e.uri));
+  });
+
+  test("a one-page feed is a complete walk, not an echoed cursor", async () => {
+    // The old per-test walker compared page.cursor to the undefined it started
+    // with, so this case would have failed its own echo assertion. No walk in
+    // the suite happened to be short enough to reach it.
+    const { seen, pages } = await walk(feed(3), "10");
+    assert.equal(pages, 1);
+    assert.equal(seen.length, 3);
   });
 
   test("a cursor past the end is an empty page with no cursor", () => {

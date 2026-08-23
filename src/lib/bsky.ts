@@ -111,19 +111,32 @@ function searcher(agent: AtpAgent): Searcher {
   };
 }
 
-export async function createSearcher(): Promise<Searcher> {
+/**
+ * A missing secret is operator configuration, not a crash. Typed so an entry
+ * point can print the instruction instead of a stack trace that buries it --
+ * see exitOnConfigError.
+ */
+export class MissingCredentials extends Error {}
+
+/**
+ * Read the credentials without touching the network, so a script can fail fast
+ * on a missing secret before doing any work.
+ */
+export function credentials(): { identifier: string; password: string } {
   const identifier = process.env.BSKY_IDENTIFIER;
   const password = process.env.BSKY_APP_PASSWORD;
   if (!identifier || !password) {
-    // A missing secret is operator configuration, not a crash: exit cleanly
-    // rather than printing a stack trace that buries the instruction.
-    console.error(
+    throw new MissingCredentials(
       "BSKY_IDENTIFIER and BSKY_APP_PASSWORD are required: anonymous search is\n" +
       "refused by api.bsky.app. Create an app password at Settings -> App Passwords.",
     );
-    process.exit(1);
   }
+  return { identifier, password };
+}
 
+/** The one place an agent is constructed and authenticated. */
+export async function login(): Promise<AtpAgent> {
+  const { identifier, password } = credentials();
   const agent = new AtpAgent({ service: process.env.BSKY_SERVICE ?? "https://bsky.social" });
   try {
     await agent.login({ identifier, password });
@@ -133,6 +146,24 @@ export async function createSearcher(): Promise<Searcher> {
       "Check the BSKY_APP_PASSWORD secret.",
     );
   }
-  console.log(`searching as ${identifier}`);
+  return agent;
+}
+
+/**
+ * For an entry point's `.catch`. Lives here rather than as a `process.exit`
+ * inside login() so that nothing importing this module can have the process
+ * pulled out from under it -- including a test.
+ */
+export function exitOnConfigError(err: unknown): never {
+  if (err instanceof MissingCredentials) {
+    console.error(err.message);
+    process.exit(1);
+  }
+  throw err;
+}
+
+export async function createSearcher(): Promise<Searcher> {
+  const agent = await login();
+  console.log(`searching as ${agent.session?.handle ?? process.env.BSKY_IDENTIFIER}`);
   return searcher(agent);
 }

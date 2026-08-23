@@ -36,14 +36,12 @@ export const encodeCursor = (e: FeedEntry): string =>
   Buffer.from(`${e.sortAt}:${e.uri}`, "utf8").toString("base64url");
 
 export function decodeCursor(raw: string): FeedEntry {
-  let decoded: string;
-  try {
-    // base64url is what we emit; plain base64 also decodes, in case anything in
-    // the path re-encodes it.
-    decoded = Buffer.from(raw, "base64url").toString("utf8");
-  } catch {
-    throw new BadCursor("cursor is not valid base64url");
-  }
+  // base64url is what we emit; plain base64 also decodes, in case anything in
+  // the path re-encodes it. Not wrapped in try/catch: Buffer.from does not throw
+  // on malformed base64, it silently drops the invalid characters -- "!!!!"
+  // decodes to a zero-length buffer. The guards below are what actually reject a
+  // bad cursor, and an earlier catch here was unreachable.
+  const decoded = Buffer.from(raw, "base64url").toString("utf8");
 
   // indexOf, never split(":"): an AT-URI is at://did:plc:…, so splitting yields
   // "at" as the uri. Since "at" < "at://…" that parse makes the cursor's own post
@@ -107,3 +105,51 @@ export function paginate(
     ...(more && last ? { cursor: encodeCursor(last) } : {}),
   };
 }
+
+/** A walk that could not finish. `page` is 1-based, for the message. */
+export class WalkError extends Error {
+  constructor(message: string, readonly page: number) {
+    super(`page ${page}: ${message}`);
+  }
+}
+
+/**
+ * Follow a feed's cursor to exhaustion, returning every page in order.
+ *
+ * Shared rather than rewritten per caller: the paginator's contract with the
+ * AppView is asymmetric -- we are the only party that can violate it, and every
+ * violation shows up as a short feed rather than an error -- so it is worth
+ * having exactly one implementation of the walk that checks it. `fetchPage` is
+ * the local paginator in tests and an HTTP request in `npm run verify`, which is
+ * what makes those two assert the same thing.
+ */
+export async function walkFeed(
+  fetchPage: (cursor: string | undefined) => Page | Promise<Page>,
+  maxPages: number,
+): Promise<Page[]> {
+  const pages: Page[] = [];
+  let cursor: string | undefined;
+
+  for (;;) {
+    const page = await fetchPage(cursor);
+    pages.push(page);
+
+    // An echoed cursor is read by the AppView as end-of-feed, so it would
+    // truncate the feed here for every subscriber. Checked only when a cursor is
+    // actually present: an absent one *is* end-of-feed, not an echo of the
+    // undefined the first page is fetched with.
+    if (page.cursor !== undefined && page.cursor === cursor) {
+      throw new WalkError("echoed its request cursor", pages.length);
+    }
+    if (page.cursor === undefined) return pages;
+
+    cursor = page.cursor;
+    if (pages.length >= maxPages) {
+      throw new WalkError(`still paging after ${maxPages} pages`, pages.length);
+    }
+  }
+}
+
+/** Every post URI a walk returned, in the order it returned them. */
+export const urisOf = (pages: Page[]): string[] =>
+  pages.flatMap((p) => p.feed.map((f) => f.post));

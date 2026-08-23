@@ -8,6 +8,15 @@ export interface JsonResponse {
 }
 
 /**
+ * The AppView aborts a feed generator at 10s with no retries, so a response
+ * slower than this is already a broken feed. Bounded at all because an
+ * unbounded fetch against a host that accepts a connection and then stalls
+ * hangs the whole job until its 45-minute timeout, which reads in the Actions
+ * UI as a wedged run rather than a failed check.
+ */
+const TIMEOUT_MS = 10_000;
+
+/**
  * GET a JSON endpoint without throwing. Both callers are checking whether a
  * deployment is healthy, so an unreachable host is a result to report rather
  * than an exception to handle.
@@ -15,8 +24,14 @@ export interface JsonResponse {
 export async function getJson(url: string): Promise<JsonResponse> {
   let res: Response;
   try {
-    res = await fetch(url, { headers: { "user-agent": USER_AGENT } });
+    res = await fetch(url, {
+      headers: { "user-agent": USER_AGENT },
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
   } catch (err) {
+    if ((err as Error)?.name === "TimeoutError") {
+      return { status: 0, type: `unreachable (no response in ${TIMEOUT_MS / 1000}s)`, body: null };
+    }
     const cause = (err as { cause?: { code?: string } })?.cause?.code ?? "network error";
     return { status: 0, type: `unreachable (${cause})`, body: null };
   }
