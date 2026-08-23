@@ -7,22 +7,27 @@ Feed: https://bsky.app/profile/dimcheff.wtf/feed/dtw-time-zone
 
 ## How it works
 
-A GitHub Action searches Bluesky every 30 minutes, merges matches into
-`data/posts.json`, and renders three static JSON files that Firebase serves. The
-skeleton is a static file, so that cadence is also the feed's latency — a post does
-not appear until a run collects and deploys it. There
-is no server — a Bluesky feed generator only has to return a list of post URIs, and
-the AppView hydrates the content at read time.
+A GitHub Action searches Bluesky every 30 minutes and merges matches into
+`data/posts.json`. That cadence is also the feed's latency — a post does not appear
+until a run collects and deploys it. There is no database: a Bluesky feed generator
+only has to return a list of post URIs, and the AppView hydrates the content at read
+time.
+
+Two of the three endpoints are static JSON. The third, `getFeedSkeleton`, is a small
+Cloud Function behind a Hosting rewrite, because pagination needs to read a `cursor`
+query param and static hosting cannot route on one. It carries its own copy of the
+archive, so it is redeployed whenever `data/posts.json` changes.
 
 ```
 collect  →  data/posts.json   (exact matches, auto-admitted)
             data/pending.json (variants, admitted by review)
    ↓
-build    →  public/.well-known/did.json
-            public/xrpc/app.bsky.feed.describeFeedGenerator
-            public/xrpc/app.bsky.feed.getFeedSkeleton
-   ↓
-deploy   →  https://dtw.dimcheff.wtf
+build    →  public/.well-known/did.json                     ─┐ static
+            public/xrpc/app.bsky.feed.describeFeedGenerator  ┘
+            functions/entries.json                          ── bundled into ─┐
+   ↓                                                                         │
+deploy   →  https://dtw.dimcheff.wtf                                         │
+            └─ /xrpc/app.bsky.feed.getFeedSkeleton  ──rewrite──→  getFeedSkeleton
 ```
 
 Matching normalizes case, accents, and punctuation, because the joke is retyped
@@ -36,7 +41,8 @@ and South Bend out of the feed.
 | Command | Effect |
 |---|---|
 | `npm run collect` | Search and update `data/` |
-| `npm run build` | Render `public/` from `data/posts.json` |
+| `npm run build` | Render `public/` and `functions/entries.json` from `data/posts.json` |
+| `npm run build:functions` | Bundle the feed function into `functions/index.js` |
 | `npm run verify` | Smoke-test the deployed endpoints |
 | `npm run publish-record` | Publish the feed record (one-time, idempotent) |
 | `npm run check` | Typecheck and run the tests |
@@ -106,7 +112,7 @@ records from the API.
 
 | Secret | Purpose |
 |---|---|
-| `FIREBASE_SERVICE_ACCOUNT` | Deploy. From the **`dtw-time-zone`** project → Project settings → Service accounts. Paste the entire JSON. |
+| `FIREBASE_SERVICE_ACCOUNT` | Deploys hosting *and* the feed function, so it needs more than Hosting Admin — see [SETUP.md](SETUP.md) §3. Paste the entire JSON. |
 | `BSKY_IDENTIFIER` | `dimcheff.wtf` |
 | `BSKY_APP_PASSWORD` | Required for search; see below |
 
@@ -129,17 +135,16 @@ against the same query, anonymous returned nothing while authenticated returned 
 170 results across 2 pages. There is no anonymous fallback: without credentials the
 collector exits rather than silently collecting a fraction.
 
-**The feed shows only the newest ~30-50 posts.** Static hosting can't read the
-`cursor` query param, so the skeleton is a single page with no cursor. The AppView
-slices whatever we return down to the client's requested `limit` and treats a
-missing cursor as end-of-feed, so serving more entries doesn't help — subscribers
-see one page and stop.
+**The skeleton is a function, and it ships the archive with it.** A new post is not
+reachable until the *function* is redeployed — a hosting deploy alone no longer
+changes what the feed contains. The update workflow handles this whenever
+`data/posts.json` changes, which is roughly 40 times a year.
 
-`data/posts.json` keeps the complete archive regardless. Fixing this means moving
-the skeleton endpoint to something that can paginate; see
-[#2](https://github.com/bdimcheff/dtw-time-zone/issues/2).
-Because the DID document's `serviceEndpoint` may name a different host than the DID,
-that change doesn't affect the feed's identity or its subscribers.
+**The AppView is unforgiving about pagination, and silent about it.** It slices the
+skeleton to the client's `limit` before reading our cursor, and treats an echoed or
+absent cursor as end-of-feed. Each of those failures shows up as a feed that quietly
+stops early rather than as an error. `npm run verify` walks the cursor to exhaustion
+after every deploy for exactly this reason.
 
 **`.well-known` and Firebase.** Firebase's default `ignore` list contains `**/.*`,
 which excludes `.well-known` and makes `did:web` resolution 404. `firebase.json`
@@ -153,6 +158,6 @@ the Actions tab.
 - Capture riffs on the original form from known posters — *"Jackson Hole, Wyoming is
   in the Mountain Time Zone"*. Needs an author allowlist plus a generalized
   `<place> is in the <X> Time Zone` matcher and its own review gate.
-- An archive page listing every captured post. Gains importance once the 100-post
-  window binds.
+- An archive page listing every captured post — browsable outside a Bluesky client,
+  and a place to link the collection from.
 - Stats: posts per year, top posters, first sighting.

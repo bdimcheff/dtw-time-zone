@@ -58,6 +58,7 @@ jobs:
     permissions:
       contents: write
       issues: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -123,8 +124,13 @@ jobs:
               const before = new Set(at("HEAD^").map((p) => p.uri));
               console.log(at("HEAD").filter((p) => !before.has(p.uri)).length);
             ')
+            # The feed function carries a copy of the archive in its bundle, so it
+            # has to be redeployed when -- and only when -- posts.json changes.
+            local posts_changed=0
+            if ! git diff --quiet HEAD^ HEAD -- data/posts.json; then posts_changed=1; fi
             {
               echo "added_pending=$added"
+              echo "posts_changed=$posts_changed"
               echo "total_pending=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("data/pending.json","utf8")).length)')"
             } >> "$GITHUB_OUTPUT"
           }
@@ -139,7 +145,7 @@ jobs:
           }
 
           if ! commit_data "Update archive: ${{ steps.collect.outputs.new_posts }} new post(s), ${{ steps.collect.outputs.new_pending }} new candidate(s)"; then
-            echo "added_pending=0" >> "$GITHUB_OUTPUT"
+            { echo "added_pending=0"; echo "posts_changed=0"; } >> "$GITHUB_OUTPUT"
             exit 0
           fi
           report
@@ -162,7 +168,7 @@ jobs:
             git reset --hard FETCH_HEAD
             npm run collect
             if ! commit_data "Update archive (re-collected on $(git rev-parse --short HEAD))"; then
-              echo "added_pending=0" >> "$GITHUB_OUTPUT"
+              { echo "added_pending=0"; echo "posts_changed=0"; } >> "$GITHUB_OUTPUT"
               exit 0
             fi
             # Re-collected after the Check step ran, so re-assert the invariants
@@ -219,7 +225,35 @@ jobs:
           projectId: dtw-time-zone
           channelId: live
 
-      # The feed fails in a confusing way if these regress: the DID stops
-      # resolving, or the AppView rejects the skeleton's content type.
+      # The skeleton is a function with the archive bundled into it, so a new post
+      # is not reachable until the function itself is redeployed -- hosting only
+      # carries did.json and describeFeedGenerator now. Gated on posts.json actually
+      # changing, which is ~40 runs a year; the other ~17,500 skip it.
+      #
+      # This lives here rather than in deploy-functions.yml because that workflow
+      # triggers on push, and a push made with GITHUB_TOKEN does not start a
+      # workflow run -- a paths filter on data/ would silently never fire.
+      #
+      # Before Verify, deliberately: the walk in verify asserts the endpoint serves
+      # exactly what data/posts.json holds, which is only true once this has run.
+      - name: Deploy feed function
+        if: steps.commit.outputs.posts_changed == '1'
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          npm run build:functions
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/gcp-key.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/gcp-key.json"
+          # --only functions:getFeedSkeleton, never bare --only functions: an
+          # unqualified deploy deletes functions absent from source.
+          npx --yes firebase-tools deploy \
+            --only functions:getFeedSkeleton \
+            --project dtw-time-zone \
+            --non-interactive --force
+          rm -f "$RUNNER_TEMP/gcp-key.json"
+
+      # The feed fails in a confusing way if these regress: the DID stops resolving,
+      # the AppView rejects a content type, or the cursor walk stops short and
+      # subscribers silently see one page again.
       - name: Verify deployment
         run: npm run verify
