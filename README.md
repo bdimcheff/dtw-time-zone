@@ -59,6 +59,15 @@ The Action opens (or comments on) an issue when new candidates appear. For each 
 - **Reject** — delete it and add its `uri` to `data/denied.json` so it is not
   re-queued.
 
+### If a review PR shows no checks
+
+A pull request with merge conflicts gets **no CI run at all** — not a failure, zero
+runs — because `pull_request` workflows execute against a merge commit GitHub cannot
+create. In the UI that is easy to mistake for a PR that passed.
+
+The collector commits to `data/` on every run that finds something, so a review PR
+left open for a while can conflict. Rebase it on `main` and the checks appear.
+
 ## Setup
 
 Required once. **[SETUP.md](SETUP.md) has the same steps as copy-pasteable CLI
