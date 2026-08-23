@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, rm } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { byNewest } from "./order.ts";
@@ -42,6 +42,15 @@ export const writePending = (pending: PendingPost[]) =>
 
 export const writePublic = (relPath: string, value: unknown) =>
   writeJson(join(PUBLIC_DIR, relPath), value);
+
+/**
+ * Remove a file from public/ if it is there. Hosting serves static content in
+ * preference to rewrites, so a stale artifact of an earlier build shadows the
+ * endpoint that replaced it -- and a deploy from that working tree restores the
+ * old behaviour with nothing in the output to say so.
+ */
+export const unlinkPublic = (relPath: string) =>
+  rm(join(PUBLIC_DIR, relPath), { force: true });
 
 /** Deploy artifacts for the feed function, bundled with it rather than fetched. */
 export const writeFunctions = (relPath: string, value: unknown) =>

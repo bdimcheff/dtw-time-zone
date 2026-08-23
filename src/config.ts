@@ -11,9 +11,10 @@ export const FEED_DID = `did:web:${HOSTNAME}`;
 /**
  * Where the XRPC endpoints are actually served. Deliberately separate from
  * FEED_DID: a DID document's serviceEndpoint may point at a different host
- * (precedent: did:web:skyfeed.me serves from feeds.skyfeed.eu). This is the
- * escape hatch for moving off static hosting once the feed outgrows the
- * single-page limit, without changing the feed's identity.
+ * (precedent: did:web:skyfeed.me serves from feeds.skyfeed.eu). Pagination did
+ * not need it -- the skeleton became a function behind a Hosting rewrite on the
+ * same host -- but it remains the escape hatch for moving the serving layer
+ * elsewhere without changing the feed's identity.
  */
 export const SERVICE_ENDPOINT = `https://${HOSTNAME}`;
 
@@ -80,11 +81,3 @@ export const EXACT_QUERIES = [
  * strict superset.
  */
 export const VARIANT_QUERIES = ['"is in the Eastern Time Zone"'];
-
-/**
- * Entries written to the skeleton. The AppView slices this to the client's own
- * limit, which caps at 100, so serving more would never reach anyone.
- *
- * Retires with the static skeleton when the paginating endpoint lands (#2).
- */
-export const FEED_LIMIT = 100;

@@ -9,10 +9,20 @@
     ],
     "cleanUrls": false,
     "trailingSlash": false,
+    "rewrites": [
+      {
+        "//": "The one endpoint that cannot be a static file: Hosting cannot route on a query string, so `cursor` needs a request-time handler. Exact path, never /xrpc/**, so nothing else can be captured by it. pinTag is deliberately omitted -- it requires an opt-in experiment, forces functions into the targets of every hosting deploy (which would make the 30-minute loop need function-deploy permissions), and burns a Cloud Run tag per deploy against a 1000/service limit.",
+        "source": "/xrpc/app.bsky.feed.getFeedSkeleton",
+        "function": {
+          "functionId": "getFeedSkeleton",
+          "region": "us-central1"
+        }
+      }
+    ],
     "headers": [
       {
-        "//": "XRPC endpoints are extensionless, so Firebase would infer application/octet-stream and the AppView's client would reject them.",
-        "source": "/xrpc/**",
+        "//": "XRPC endpoints are extensionless, so Firebase would infer application/octet-stream and the AppView's client would reject them. Scoped to this exact path rather than /xrpc/**: header rules are matched before rewrites are applied and override the response's own headers, so a glob here would stamp max-age=300 onto getFeedSkeleton's error responses too.",
+        "source": "/xrpc/app.bsky.feed.describeFeedGenerator",
         "headers": [
           { "key": "Content-Type", "value": "application/json; charset=utf-8" },
           { "key": "Access-Control-Allow-Origin", "value": "*" },

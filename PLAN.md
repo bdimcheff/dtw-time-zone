@@ -1,5 +1,11 @@
 # DTW Time Zone — Bluesky Feed
 
+> **Historical.** This is the original MVP build plan, kept for the reasoning behind
+> the design. It describes the feed as it was first built and is no longer an
+> accurate description of the system — most notably, `getFeedSkeleton` is now a
+> Cloud Function rather than a static file (issue #2). `README.md` and `CLAUDE.md`
+> are current; open work lives in GitHub issues.
+
 A Bluesky custom feed collecting posts of the phrase **"Detroit, Michigan is in the
 Eastern Time Zone"** — the recorded announcement that used to play at DTW, and a
 long-running inside joke among friends landing there.
@@ -57,19 +63,19 @@ without changing the feed's identity or dropping subscribers.
 automatically. Variants are written to a pending file and require a merged PR to
 enter the feed. Nothing ambiguous reaches the feed unreviewed.
 
-## Known constraint: the feed renders one page
+## Known constraint: the feed renders one page — *resolved*
 
-Static hosting cannot read the `cursor` query parameter, so the skeleton is a single
-page with no cursor. The AppView's `getFeed` slices the skeleton to the client's
-requested `limit` and treats a returned cursor equal to the request's — including
-absent on a first call — as end-of-feed. Subscribers therefore see **the newest
-`limit` posts, typically 30-50**, regardless of how many entries we serve.
+Static hosting cannot read the `cursor` query parameter, so the skeleton was a
+single page with no cursor. The AppView's `getFeed` slices the skeleton to the
+client's requested `limit` and treats a returned cursor equal to the request's —
+including absent on a first call — as end-of-feed. Subscribers therefore saw **the
+newest `limit` posts, typically 30-50**, regardless of how many entries were served.
 
-This is a *rendering* limit, not data loss: `data/posts.json` retains the complete
-archive permanently. Lifting it requires a paginating endpoint, planned in
-[#2](https://github.com/bdimcheff/dtw-time-zone/issues/2). Because the DID's
-`serviceEndpoint` is indirect, that swap changes where the skeleton is served
-without changing the feed's identity.
+Resolved in [#2](https://github.com/bdimcheff/dtw-time-zone/issues/2): the skeleton
+is now a Cloud Function behind a Hosting rewrite, paginating on a cursor that
+encodes a position in the feed's sort order. The feed's identity was untouched — the
+DID document and `describeFeedGenerator` are still the same static files on the same
+host.
 
 ## Build sequence
 
@@ -83,8 +89,11 @@ without changing the feed's identity.
 4. **`src/build.ts`** — emits `public/.well-known/did.json`,
    `public/xrpc/app.bsky.feed.describeFeedGenerator`, and
    `public/xrpc/app.bsky.feed.getFeedSkeleton` (newest 100, no cursor).
+   *(Since #2: the skeleton is a function, and `build.ts` emits
+   `functions/entries.json` instead.)*
 5. **`firebase.json`** — `headers` forcing `Content-Type: application/json` on
-   `/xrpc/**` and `/.well-known/did.json`. Hosting lives in its own
+   `/xrpc/**` and `/.well-known/did.json`. *(Since #2: narrowed to the one static
+   xrpc path, since header rules override a rewritten function's own headers.)* Hosting lives in its own
    `dtw-time-zone` Firebase project, so no hosting target is needed.
    The default `ignore` glob `**/.*` excludes `.well-known` and is replaced with an
    explicit exclusion list, or the DID document silently 404s.
@@ -112,7 +121,7 @@ without changing the feed's identity.
   e.g. "Jackson Hole, Wyoming is in the Mountain Time Zone". Needs an author
   allowlist plus a generalized `<place> is in the <X> Time Zone` matcher, and its
   own review gate. Deliberately out of scope until the base feed is running.
-- **Archive web page** — HTML listing every captured post. Gains importance once
-  the feed's single page binds.
+- **Archive web page** — HTML listing every captured post, browsable outside a
+  Bluesky client.
 - **Stats / leaderboard** — posts per year, top posters, first sighting.
 - **RSS/JSON syndication.**
