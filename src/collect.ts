@@ -1,9 +1,9 @@
 import { EXACT_QUERIES, VARIANT_QUERIES } from "./config.ts";
-import { createSearcher } from "./lib/bsky.ts";
+import { createSearcher, exitOnConfigError } from "./lib/bsky.ts";
 import type { Searcher } from "./lib/bsky.ts";
 import { classify, postText } from "./lib/match.ts";
 import { readPosts, readPending, readDenied, writePosts, writePending } from "./lib/store.ts";
-import type { StoredPost, PendingPost, SearchPostView } from "./lib/types.ts";
+import type { StoredPost, SearchPostView } from "./lib/types.ts";
 
 function toStored(p: SearchPostView, firstSeenAt: string): StoredPost {
   return {
@@ -35,7 +35,7 @@ async function runQuery(search: Searcher, query: string): Promise<SearchPostView
 
 const nowIso = new Date().toISOString();
 
-const search = await createSearcher();
+const search = await createSearcher().catch(exitOnConfigError);
 
 const [posts, pending, denied] = await Promise.all([
   readPosts(), readPending(), readDenied(),
@@ -75,24 +75,27 @@ for (const [uri, queued] of pendingByUri) {
 if (promoted > 0) console.log(`promoted ${promoted} queued post(s) under the current matcher`);
 if (dropped > 0) console.log(`dropped ${dropped} queued post(s) the matcher no longer accepts`);
 
-// Swept fully every run rather than windowed: it is a couple of requests and it
+// Every query is swept in full, every run. It is a handful of requests and it
 // self-heals, picking up posts that were briefly private, late to index, or from
-// since-unblocked accounts without any special case.
-const results: Array<{ query: string; posts: SearchPostView[] }> = [];
-for (const query of EXACT_QUERIES) {
-  console.log(`exact sweep: ${query}`);
-  results.push({ query, posts: await runQuery(search, query) });
-}
+// since-unblocked accounts without any special case. The variant query used to
+// run against a `since` watermark instead, which mattered when anonymous search
+// was capped at one page; authenticated it returns its whole result set in two
+// requests, so the watermark bought one request per run and cost a state file, a
+// truncation signal, and the rule tying them together.
+//
+// The two lists differ only in what classify() does with what they return, so
+// they sweep identically -- the label is for the log.
+const SWEEPS = [
+  { label: "exact", queries: EXACT_QUERIES },
+  { label: "variant", queries: VARIANT_QUERIES },
+];
 
-// Swept in full like the exact queries. This used to run against a `since`
-// watermark to avoid paginating through years of sincere timezone discussion,
-// which mattered when anonymous search was capped at one page per query.
-// Authenticated it returns its complete result set in two requests, so the
-// watermark bought about one request per run and cost a state file, a truncation
-// signal, and the rule tying them together.
-for (const query of VARIANT_QUERIES) {
-  console.log(`variant sweep: ${query}`);
-  results.push({ query, posts: await runQuery(search, query) });
+const results: Array<{ query: string; posts: SearchPostView[] }> = [];
+for (const { label, queries } of SWEEPS) {
+  for (const query of queries) {
+    console.log(`${label} sweep: ${query}`);
+    results.push({ query, posts: await runQuery(search, query) });
+  }
 }
 
 let newExact = 0;
@@ -135,7 +138,7 @@ for (const { query, posts: found } of results) {
 
 await Promise.all([
   writePosts([...byUri.values()]),
-  writePending([...pendingByUri.values()] as PendingPost[]),
+  writePending([...pendingByUri.values()]),
 ]);
 
 console.log(

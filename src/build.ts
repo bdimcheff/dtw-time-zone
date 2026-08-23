@@ -1,11 +1,9 @@
 import { FEED_DID, FEED_URI, HOSTNAME, SERVICE_ENDPOINT } from "./config.ts";
-import { byNewest, entriesOf } from "./lib/order.ts";
+import { entriesOf } from "./lib/order.ts";
 import { readPosts, unlinkPublic, writeFunctions, writePublic } from "./lib/store.ts";
 
 
-// Sorted here rather than trusted: data/posts.json is hand-edited during
-// variant review, and a misplaced entry would otherwise silently reorder the feed.
-const posts = (await readPosts()).sort(byNewest);
+const posts = await readPosts();
 
 // did:web resolution reads exactly this path. The serviceEndpoint is allowed
 // to name a different host than the DID, which is what lets the serving layer
@@ -37,6 +35,8 @@ await unlinkPublic("xrpc/app.bsky.feed.getFeedSkeleton");
 // time, so a request never touches the network and code and data cannot disagree
 // about which posts exist. Freshness comes from deploying, which the update
 // workflow does whenever data/posts.json changes.
+// entriesOf sorts rather than trusting file order: data/posts.json is hand-edited
+// during variant review, and a misplaced entry would otherwise reorder the feed.
 const entries = entriesOf(posts);
 await writeFunctions("entries.json", entries);
 

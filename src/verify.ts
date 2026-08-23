@@ -1,6 +1,10 @@
-import { FEED_DID, FEED_URI, HOSTNAME } from "./config.ts";
+import {
+  FEED_DESCRIPTION, FEED_DID, FEED_NAME, FEED_RKEY, FEED_URI, HOSTNAME, PUBLISHER_DID,
+} from "./config.ts";
 import { getJson, isJson } from "./lib/http.ts";
 import { entriesOf } from "./lib/order.ts";
+import type { Page } from "./lib/skeleton.ts";
+import { WalkError, urisOf, walkFeed } from "./lib/skeleton.ts";
 import { readPosts } from "./lib/store.ts";
 
 /**
@@ -16,9 +20,15 @@ const check = (ok: boolean, label: string, detail = "") => {
   if (!ok) failures.push(label);
 };
 
-const skeletonUrl = (params: Record<string, string>) => {
+/** Reported, not counted: we could not determine the answer, which is not a no. */
+const unknown = (label: string, detail: string) => {
+  console.log(`~ ${label} — ${detail}`);
+};
+
+/** Omit `feed` for the malformed-request checks; it defaults to ours. */
+const skeletonUrl = (params: Record<string, string> = {}, feed: string | null = FEED_URI) => {
   const u = new URL(`https://${HOSTNAME}/xrpc/app.bsky.feed.getFeedSkeleton`);
-  u.searchParams.set("feed", FEED_URI);
+  if (feed !== null) u.searchParams.set("feed", feed);
   for (const [k, v] of Object.entries(params)) u.searchParams.set(k, v);
   return u.toString();
 };
@@ -28,7 +38,7 @@ const skeletonUrl = (params: Record<string, string>) => {
  * cold start. One retry keeps that from reddening the collection loop; a second
  * 5xx is a real failure.
  */
-async function getSkeleton(url: string) {
+async function getWithRetry(url: string) {
   const first = await getJson(url);
   if (first.status < 500 && first.status !== 0) return first;
   await new Promise((r) => setTimeout(r, 2000));
@@ -65,7 +75,7 @@ const ENDPOINTS = [
 ];
 
 for (const { name, path, extra } of ENDPOINTS) {
-  const res = await getSkeleton(path);
+  const res = await getWithRetry(path);
   check(res.status === 200, `${name} reachable`, `HTTP ${res.status}`);
   check(isJson(res.type), `${name} content type`, res.type || "(none)");
   for (const [ok, label, detail] of extra(res.body)) check(ok, `${name} ${label}`, String(detail ?? ""));
@@ -75,11 +85,11 @@ for (const { name, path, extra } of ENDPOINTS) {
 // and a feed we do not serve must be rejected as UnknownFeed rather than silently
 // answered with ours.
 {
-  const bare = await getJson(`https://${HOSTNAME}/xrpc/app.bsky.feed.getFeedSkeleton`);
+  const bare = await getJson(skeletonUrl({}, null));
   check(bare.status === 400, "rejects a request with no feed param", `HTTP ${bare.status}`);
-  const other = new URL(`https://${HOSTNAME}/xrpc/app.bsky.feed.getFeedSkeleton`);
-  other.searchParams.set("feed", "at://did:plc:nobody/app.bsky.feed.generator/other");
-  const wrong = await getJson(other.toString());
+  const wrong = await getJson(
+    skeletonUrl({}, "at://did:plc:nobody/app.bsky.feed.generator/other"),
+  );
   check(
     wrong.status === 400 && (wrong.body as any)?.error === "UnknownFeed",
     "rejects an unknown feed",
@@ -97,48 +107,70 @@ for (const { name, path, extra } of ENDPOINTS) {
   const expected = entriesOf(await readPosts()).map((e) => e.uri);
   const limit = 10;
   const maxPages = Math.ceil(expected.length / limit) + 3;
-  const seen: string[] = [];
-  let cursor: string | undefined;
-  let pages = 0;
-  let ok = true;
 
-  for (;;) {
-    const res = await getSkeleton(skeletonUrl({
-      limit: String(limit),
-      ...(cursor ? { cursor } : {}),
-    }));
-    pages++;
-    if (res.status !== 200) {
-      check(false, "walk page reachable", `page ${pages}: HTTP ${res.status}`);
-      ok = false;
-      break;
-    }
-    const body = res.body as { feed?: { post: string }[]; cursor?: string };
-    // An echoed cursor is read by the AppView as end-of-feed, so it would truncate
-    // the feed at this page for every subscriber.
-    if (body.cursor !== undefined && body.cursor === cursor) {
-      check(false, "walk never echoes its cursor", `page ${pages}`);
-      ok = false;
-      break;
-    }
-    seen.push(...(body.feed ?? []).map((f) => f.post));
-    if (body.cursor === undefined) break;
-    cursor = body.cursor;
-    if (pages >= maxPages) {
-      check(false, "walk terminates", `still paging after ${pages} pages`);
-      ok = false;
-      break;
-    }
+  /** One page over HTTP, shaped for the shared walker. */
+  const fetchPage = async (cursor: string | undefined): Promise<Page> => {
+    const res = await getWithRetry(
+      skeletonUrl({ limit: String(limit), ...(cursor ? { cursor } : {}) }),
+    );
+    if (res.status !== 200) throw new WalkError(`HTTP ${res.status}`, 0);
+    const body = res.body as Partial<Page>;
+    return { feed: body.feed ?? [], ...(body.cursor !== undefined ? { cursor: body.cursor } : {}) };
+  };
+
+  // The same walker the tests run against the local paginator, so the endpoint
+  // is held to exactly the contract skeleton.test.ts asserts. It throws on an
+  // echoed cursor or a walk that will not terminate -- both of which the AppView
+  // reads as end-of-feed, truncating the feed for every subscriber.
+  let pages: Page[] | undefined;
+  try {
+    pages = await walkFeed(fetchPage, maxPages);
+  } catch (err) {
+    check(false, "walk completes", err instanceof WalkError ? err.message : String(err));
   }
 
-  if (ok) {
-    check(pages === Math.ceil(expected.length / limit), "walk takes the expected number of pages",
-      `${pages} pages for ${expected.length} posts at limit ${limit}`);
+  if (pages) {
+    const seen = urisOf(pages);
+    check(pages.length === Math.ceil(expected.length / limit), "walk takes the expected number of pages",
+      `${pages.length} pages for ${expected.length} posts at limit ${limit}`);
     check(new Set(seen).size === seen.length, "walk repeats no post",
       `${seen.length - new Set(seen).size} duplicate(s)`);
     check(seen.length === expected.length, "walk reaches every archived post",
       `${seen.length} of ${expected.length}`);
     check(seen.join() === expected.join(), "walk matches the archive's order");
+  }
+}
+
+/**
+ * The feed's display metadata lives in two places that nothing reconciles:
+ * config.ts, and the app.bsky.feed.generator record `npm run publish-record`
+ * wrote. Editing FEED_NAME or FEED_DESCRIPTION changes only the first, and
+ * Bluesky keeps serving the old text with every other check here still green --
+ * the same shape as the rest of this file's failures.
+ *
+ * A record we cannot read is reported as unknown rather than as a failure. This
+ * runs after every collection, ~17,500 times a year, and its subject is two
+ * strings that change by hand perhaps twice in the feed's life; a bsky.social
+ * blip must not redden the loop over that. A mismatch -- the thing actually
+ * worth knowing -- still fails. Unlike isValid/isOnline below, this check can
+ * say no.
+ */
+{
+  const url = new URL("https://bsky.social/xrpc/com.atproto.repo.getRecord");
+  url.searchParams.set("repo", PUBLISHER_DID);
+  url.searchParams.set("collection", "app.bsky.feed.generator");
+  url.searchParams.set("rkey", FEED_RKEY);
+
+  const res = await getJson(url.toString());
+  const record = (res.body as { value?: { displayName?: string; description?: string } })?.value;
+
+  if (res.status !== 200 || !record) {
+    unknown("feed record matches config.ts", `could not read the record (HTTP ${res.status})`);
+  } else {
+    check(record.displayName === FEED_NAME, "feed record name matches config.ts",
+      record.displayName ?? "(none)");
+    check(record.description === FEED_DESCRIPTION, "feed record description matches config.ts",
+      record.description === FEED_DESCRIPTION ? "" : "stale — run npm run publish-record");
   }
 }
 
