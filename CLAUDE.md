@@ -21,7 +21,8 @@ is in the Eastern Time Zone". Live at
 
 Run a single test file: `node --import tsx --test src/lib/match.test.ts`
 
-`collect` needs `BSKY_IDENTIFIER` and `BSKY_APP_PASSWORD`. On fish, prefix with
+`collect` needs `BSKY_IDENTIFIER` and `BSKY_APP_PASSWORD` (`lib/bsky.ts` owns the
+login for both it and `publish-record`). On fish, prefix with
 `env`. Deploy manually with `firebase deploy --only hosting --project dtw-time-zone`,
 and the skeleton with `npm run build && npm run build:functions && firebase deploy
 --only functions:getFeedSkeleton --project dtw-time-zone`.
@@ -111,8 +112,8 @@ look like nothing happening.
   and the AppView rejects the response. `firebase.json` forces the content type for
   `describeFeedGenerator`; the skeleton function sets its own.
 - **`createdAt` is client-supplied and unverified** — the archive contains a post
-  dated 2009. Order by `sortAt` (`min(createdAt, indexedAt)`), compared as instants,
-  never by `createdAt` alone.
+  dated 2009. Order by `sortAtMs` (`min(createdAt, indexedAt)`), compared as
+  instants, never by `createdAt` alone.
 - **A conflicting PR gets zero CI runs**, not a failure, because `pull_request`
   workflows run against a merge commit GitHub cannot create. Rebase on `main`.
 
@@ -149,6 +150,11 @@ and the function run in different containers), and never return more than `limit
 
 The corpus has no `sortAt` ties, so no test over committed data can catch a
 regression in the tiebreaker — that is what `skeleton.test.ts`'s fixtures are for.
+
+`walkFeed` in `skeleton.ts` is the one implementation of a cursor walk. The
+fixture tests, the corpus test and `npm run verify` all go through it, so the
+local paginator and the deployed endpoint are held to the same contract; only
+the page-fetcher differs.
 
 ## Workflow ordering
 

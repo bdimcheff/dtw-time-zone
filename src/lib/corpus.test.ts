@@ -1,8 +1,8 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { classify } from "./match.ts";
-import { entriesOf, sortAt, byNewest } from "./order.ts";
-import { paginate } from "./skeleton.ts";
+import { entriesOf, sortAtMs, ms, byNewest } from "./order.ts";
+import { paginate, urisOf, walkFeed } from "./skeleton.ts";
 import { readPending, readPosts, readDenied } from "./store.ts";
 
 /**
@@ -39,29 +39,21 @@ describe("archive", () => {
     assert.deepEqual(pending.filter((p) => denied.has(p.uri)).map((p) => p.uri), []);
   });
 
-  test("a paginated walk reaches every archived post exactly once", () => {
+  test("a paginated walk reaches every archived post exactly once", async () => {
     // The endpoint's contract, asserted against the real archive: subscribers
     // see the whole thing only if a cursor walk is a permutation of it. limit=7
     // is deliberately not a divisor of the corpus size, so the final page is a
     // partial one.
     const entries = entriesOf(posts);
-    const seen: string[] = [];
-    let cursor: string | undefined;
-    let pages = 0;
     const cap = Math.ceil(entries.length / 7) + 3;
-    for (;;) {
-      const page = paginate(entries, { limit: "7", cursor });
-      pages++;
-      assert.notEqual(page.cursor, cursor, `page ${pages} echoed its request cursor`);
-      assert.ok(page.feed.length <= 7, "page exceeded the requested limit");
-      seen.push(...page.feed.map((f) => f.post));
-      if (page.cursor === undefined) break;
-      cursor = page.cursor;
-      assert.ok(pages <= cap, "walk did not terminate");
-    }
+    // walkFeed throws on an echoed cursor or a walk that will not terminate.
+    const pages = await walkFeed((cursor) => paginate(entries, { limit: "7", cursor }), cap);
+    const seen = urisOf(pages);
+
+    assert.ok(pages.every((p) => p.feed.length <= 7), "page exceeded the requested limit");
     assert.deepEqual(seen, entries.map((e) => e.uri), "walk order matches byNewest");
     assert.equal(new Set(seen).size, seen.length, "no post appears twice");
-    assert.equal(pages, Math.ceil(entries.length / 7), "no wasted trailing page");
+    assert.equal(pages.length, Math.ceil(entries.length / 7), "no wasted trailing page");
   });
 
   // Deliberately not asserted: file order. The documented way to admit a post is
@@ -92,22 +84,31 @@ describe("review queue", () => {
 });
 
 describe("sort key", () => {
-  const at = (createdAt: string, indexedAt: string) =>
-    sortAt({ createdAt, indexedAt } as Parameters<typeof sortAt>[0]);
+  const at = (createdAt: string, indexedAt: string) => sortAtMs({ createdAt, indexedAt });
+  const order = (uri: string, createdAt: string, indexedAt: string) =>
+    ({ uri, createdAt, indexedAt });
 
   test("prefers createdAt when it precedes indexing", () => {
-    assert.equal(at("2025-01-01T00:00:00.000Z", "2025-01-01T00:00:05.000Z"), "2025-01-01T00:00:00.000Z");
+    assert.equal(at("2025-01-01T00:00:00.000Z", "2025-01-01T00:00:05.000Z"), ms("2025-01-01T00:00:00.000Z"));
   });
 
   test("caps a post-dated createdAt at indexedAt", () => {
     // createdAt is client-supplied; without this, a future date pins a post to
     // the top of the feed permanently.
-    assert.equal(at("2099-01-01T00:00:00.000Z", "2025-01-01T00:00:00.000Z"), "2025-01-01T00:00:00.000Z");
+    assert.equal(at("2099-01-01T00:00:00.000Z", "2025-01-01T00:00:00.000Z"), ms("2025-01-01T00:00:00.000Z"));
   });
 
   test("keeps a genuinely backdated post at its own date", () => {
     // A real archived post is dated 2009, years before Bluesky, from an import.
-    assert.equal(at("2009-10-16T17:25:46.000Z", "2024-11-11T20:40:46.000Z"), "2009-10-16T17:25:46.000Z");
+    assert.equal(at("2009-10-16T17:25:46.000Z", "2024-11-11T20:40:46.000Z"), ms("2009-10-16T17:25:46.000Z"));
+  });
+
+  test("pins an unparseable timestamp to the epoch rather than to NaN", () => {
+    // NaN would make the comparator non-transitive; 0 puts a malformed record
+    // at the bottom of the feed. Math.min must not turn one bad side into NaN.
+    assert.equal(at("not a date", "2025-01-01T00:00:00.000Z"), 0);
+    assert.equal(at("2025-01-01T00:00:00.000Z", "not a date"), 0);
+    assert.equal(at("not a date", "also not a date"), 0);
   });
 
   test("compares by instant, not by string", () => {
@@ -116,18 +117,18 @@ describe("sort key", () => {
     // 00:30-05:00 is 05:30Z, so it is the newer of the two and must sort first.
     // As strings the opposite holds: "T00:30" precedes "T05:00", which would
     // place it last.
-    const withOffset = { createdAt: "2025-06-01T00:30:00-05:00", indexedAt: "2025-06-01T06:00:00.000Z" } as any;
-    const utc = { createdAt: "2025-06-01T05:00:00.000Z", indexedAt: "2025-06-01T06:00:00.000Z" } as any;
+    const withOffset = order("at://a", "2025-06-01T00:30:00-05:00", "2025-06-01T06:00:00.000Z");
+    const utc = order("at://b", "2025-06-01T05:00:00.000Z", "2025-06-01T06:00:00.000Z");
     assert.ok(byNewest(withOffset, utc) < 0, "05:30Z should sort ahead of 05:00Z");
     assert.ok(
-      sortAt(withOffset).localeCompare(sortAt(utc)) < 0,
+      withOffset.createdAt.localeCompare(utc.createdAt) < 0,
       "guard: the string ordering really is the opposite, so this test has teeth",
     );
   });
 
   test("orders newest first", () => {
-    const older = { createdAt: "2024-01-01T00:00:00.000Z", indexedAt: "2024-01-01T00:00:00.000Z" } as any;
-    const newer = { createdAt: "2026-01-01T00:00:00.000Z", indexedAt: "2026-01-01T00:00:00.000Z" } as any;
+    const older = order("at://a", "2024-01-01T00:00:00.000Z", "2024-01-01T00:00:00.000Z");
+    const newer = order("at://b", "2026-01-01T00:00:00.000Z", "2026-01-01T00:00:00.000Z");
     assert.ok(byNewest(newer, older) < 0);
   });
 });

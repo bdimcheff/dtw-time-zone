@@ -8,7 +8,6 @@
     "collect": "tsx src/collect.ts",
     "build": "tsx src/build.ts",
     "build:functions": "esbuild src/functions/index.ts --bundle --platform=node --format=cjs --target=node22 --outfile=functions/index.js --external:firebase-functions",
-    "update": "npm run collect && npm run build",
     "publish-record": "tsx src/publish-record.ts",
     "typecheck": "tsc --noEmit",
     "verify": "tsx src/verify.ts",
