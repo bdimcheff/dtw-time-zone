@@ -1,4 +1,6 @@
-import { FEED_DID, FEED_URI, HOSTNAME } from "./config.ts";
+import {
+  FEED_DESCRIPTION, FEED_DID, FEED_NAME, FEED_RKEY, FEED_URI, HOSTNAME, PUBLISHER_DID,
+} from "./config.ts";
 import { getJson, isJson } from "./lib/http.ts";
 import { entriesOf } from "./lib/order.ts";
 import type { Page } from "./lib/skeleton.ts";
@@ -16,6 +18,11 @@ const failures: string[] = [];
 const check = (ok: boolean, label: string, detail = "") => {
   console.log(`${ok ? "✓" : "✗"} ${label}${detail ? ` — ${detail}` : ""}`);
   if (!ok) failures.push(label);
+};
+
+/** Reported, not counted: we could not determine the answer, which is not a no. */
+const unknown = (label: string, detail: string) => {
+  console.log(`~ ${label} — ${detail}`);
 };
 
 /** Omit `feed` for the malformed-request checks; it defaults to ours. */
@@ -131,6 +138,39 @@ for (const { name, path, extra } of ENDPOINTS) {
     check(seen.length === expected.length, "walk reaches every archived post",
       `${seen.length} of ${expected.length}`);
     check(seen.join() === expected.join(), "walk matches the archive's order");
+  }
+}
+
+/**
+ * The feed's display metadata lives in two places that nothing reconciles:
+ * config.ts, and the app.bsky.feed.generator record `npm run publish-record`
+ * wrote. Editing FEED_NAME or FEED_DESCRIPTION changes only the first, and
+ * Bluesky keeps serving the old text with every other check here still green --
+ * the same shape as the rest of this file's failures.
+ *
+ * A record we cannot read is reported as unknown rather than as a failure. This
+ * runs after every collection, ~17,500 times a year, and its subject is two
+ * strings that change by hand perhaps twice in the feed's life; a bsky.social
+ * blip must not redden the loop over that. A mismatch -- the thing actually
+ * worth knowing -- still fails. Unlike isValid/isOnline below, this check can
+ * say no.
+ */
+{
+  const url = new URL("https://bsky.social/xrpc/com.atproto.repo.getRecord");
+  url.searchParams.set("repo", PUBLISHER_DID);
+  url.searchParams.set("collection", "app.bsky.feed.generator");
+  url.searchParams.set("rkey", FEED_RKEY);
+
+  const res = await getJson(url.toString());
+  const record = (res.body as { value?: { displayName?: string; description?: string } })?.value;
+
+  if (res.status !== 200 || !record) {
+    unknown("feed record matches config.ts", `could not read the record (HTTP ${res.status})`);
+  } else {
+    check(record.displayName === FEED_NAME, "feed record name matches config.ts",
+      record.displayName ?? "(none)");
+    check(record.description === FEED_DESCRIPTION, "feed record description matches config.ts",
+      record.description === FEED_DESCRIPTION ? "" : "stale — run npm run publish-record");
   }
 }
 
