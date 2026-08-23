@@ -1,0 +1,10 @@
+{
+  "name": "dtw-time-zone-functions",
+  "private": true,
+  "description": "Deploy artifact for the paginating feed skeleton. index.js and entries.json are generated; see npm run build:functions.",
+  "main": "index.js",
+  "engines": { "node": "22" },
+  "dependencies": {
+    "firebase-functions": "6.5.0"
+  }
+}

@@ -7,6 +7,7 @@
   "scripts": {
     "collect": "tsx src/collect.ts",
     "build": "tsx src/build.ts",
+    "build:functions": "esbuild src/functions/index.ts --bundle --platform=node --format=cjs --target=node22 --outfile=functions/index.js --external:firebase-functions",
     "update": "npm run collect && npm run build",
     "publish-record": "tsx src/publish-record.ts",
     "typecheck": "tsc --noEmit",
@@ -17,10 +18,14 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
+    "esbuild": "^0.28.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   },
   "dependencies": {
     "@atproto/api": "^0.13.35"
-  }
+  },
+  "workspaces": [
+    "functions"
+  ]
 }

@@ -1,0 +1,65 @@
+name: Deploy feed function
+
+# The function's code changes rarely; its data changes ~40 times a year. This
+# workflow covers the code, and the update workflow deploys the data when
+# data/posts.json changes -- it has to, because a push made with GITHUB_TOKEN
+# does not start a workflow run, so a paths filter on data/ would silently
+# never fire and the function would serve a frozen archive.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "functions/**"
+      - "src/functions/**"
+      - "src/lib/skeleton.ts"
+      - "src/lib/order.ts"
+      - "src/config.ts"
+      - ".github/workflows/deploy-functions.yml"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: deploy-feed-function
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      # Before the deploy, not after: this is the one path that ships the
+      # paginator, so it is the one path that must not ship it ungated.
+      - name: Check
+        run: npm run check
+
+      # entries.json comes from the archive; index.js is the esbuild bundle.
+      - name: Build
+        run: |
+          npm run build
+          npm run build:functions
+
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      # --only functions:getFeedSkeleton, never bare --only functions: an
+      # unqualified deploy deletes functions absent from source, and this
+      # credential is shared with the hosting deploy.
+      # --force: without an Artifact Registry cleanup policy a non-interactive
+      # deploy ships the function and *then* fails asking for one.
+      - name: Deploy
+        run: >
+          npx --yes firebase-tools deploy
+          --only functions:getFeedSkeleton
+          --project dtw-time-zone
+          --non-interactive --force
