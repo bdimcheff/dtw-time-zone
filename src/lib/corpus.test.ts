@@ -74,8 +74,8 @@ describe("archive", () => {
 describe("review queue", () => {
   test("holds no post the matcher would auto-admit", () => {
     // collect.ts promotes these on load. Anything left here means promotion did
-    // not run, and the post would wait for a query to resurface it — which the
-    // windowed variant query may never do.
+    // not run, and the post sits in the queue misreported as awaiting a human
+    // decision it does not need.
     const promotable = pending.filter((p) => classify(p.text) === "exact");
     assert.deepEqual(promotable.map((p) => p.text.slice(0, 60)), []);
   });

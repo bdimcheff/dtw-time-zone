@@ -98,10 +98,12 @@ look like nothing happening.
   AppView, with a `@TODO`. They cannot fail, for any reason, including the endpoint
   being deleted. Do not treat them as a health signal — `npm run verify`'s cursor
   walk is the health signal.
-- **A push made with `GITHUB_TOKEN` does not start a workflow run.** The function
-  deploy lives inside `update.yml` rather than in a `paths`-filtered workflow for
-  this reason; a filter on `data/` would silently never fire and the feed would
-  freeze at whatever the last code change deployed.
+- **A push made with `GITHUB_TOKEN` does not start a workflow run.** This is why
+  the function is deployed from *two* places. `deploy-functions.yml` is
+  `paths`-filtered and covers code changes, which arrive as ordinary pushes. The
+  data deploy cannot work that way — the archive is pushed by the bot's own token,
+  so a filter on `data/` would silently never fire — and therefore lives as a step
+  inside `update.yml` instead.
 - **Firebase's default `ignore` glob `**/.*` excludes `.well-known`**, which makes
   `did:web` resolution 404. `firebase.json` enumerates exclusions explicitly — do
   not reintroduce the glob.
@@ -160,12 +162,26 @@ into bugs:
 - **`Build` runs after the push**, since a rebase can pull in a review PR that
   admitted posts.
 
-- **`Deploy feed function` runs after the hosting deploy and before `Verify`**, and
-  only when `data/posts.json` changed. The archive is bundled into the function, so
-  `verify`'s cursor walk — which asserts the endpoint serves exactly what
-  `data/posts.json` holds — is only true once it has run.
+- **`Deploy feed function (archive changed)` runs after the hosting deploy and
+  before `Verify`**, and only when `data/posts.json` changed. The archive is bundled
+  into the function, so `verify`'s cursor walk — which asserts the endpoint serves
+  exactly what `data/posts.json` holds — is only true once it has run.
 
 The push-conflict path re-collects and re-checks; keep both.
+
+### The other workflow
+
+`.github/workflows/deploy-functions.yml` ("Deploy feed function (code)") is the
+second half of the same job: it redeploys the function when the *code* changes,
+where `update.yml`'s step redeploys it when the *data* changes. The split exists
+because a bot push does not trigger a workflow (see above), not because the two
+deploys differ.
+
+Its `paths` filter is deliberately `src/**` rather than the function's import
+graph. The filter has to track two dependency graphs — what the bundle imports,
+and what produces `entries.json` at build time — and only the first is
+mechanical. A narrow list that missed the second would leave the function serving
+a stale ordering with nothing failing.
 
 ## Tests
 
@@ -185,3 +201,12 @@ and adding its `uri` to `denied.json`. Denying a *riff* forecloses it for issue 
 so riffs are left queued rather than denied.
 
 Open work is tracked as GitHub issues; `TODO.md` is only an index.
+
+## Removing a mechanism
+
+This repository documents itself in prose next to the code, which means a deleted
+mechanism leaves its rationale behind, still reading as current. Before opening a
+PR that removes one, grep the tree for its name — `grep -rn windowed` would have
+found three stale comments left by #3, and `grep -rn state.json` a fourth.
+
+Comments here cannot be tested. The grep is the test.

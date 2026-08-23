@@ -1,15 +1,14 @@
 name: Update feed
 
 on:
-  # Review PRs edit data/ by hand, and the invariants in the corpus tests are
-  # exactly what a half-finished edit breaks. Catching it here is the difference
-  # between a red PR and a scheduled run that wedges silently.
   # No paths filter: the job is ~30s, and a filtered-out PR reports no checks at
-  # all, which in the UI is indistinguishable from a PR that passed.
+  # all, which in the UI is indistinguishable from a PR that passed. See the
+  # `check` job below for why pull requests are gated at all.
   pull_request:
   schedule:
-    # Every half hour. The skeleton is a static file, so this cadence *is* the
-    # feed's latency: a post does not appear until a run collects and deploys it.
+    # Every half hour. This cadence *is* the feed's latency: the archive is
+    # bundled into the skeleton function, so a post does not appear until a run
+    # collects it and redeploys (see "Deploy feed function (archive changed)").
     # Every run is a full sweep of ~3 requests, so frequency is close to free.
     # Offset off the hour because scheduled runs queue at low priority and the
     # top of the hour is the worst time to ask.
@@ -91,8 +90,8 @@ jobs:
       # All three data files are committed to main together. An earlier version
       # routed pending.json through a bot branch, which force-pushed over any
       # review commits and silently discarded removals when no new candidates
-      # were found. state.json changes every run, so this commits every run --
-      # accepted as an audit trail rather than adding cache plumbing.
+      # were found. A run that changes nothing now commits nothing: commit_data
+      # returns 1, and both deploy gates below then read "0".
       - name: Commit data
         id: commit
         env:
@@ -108,9 +107,7 @@ jobs:
           # Counts URIs added to the queue by this commit, not merely whether the
           # file changed: a run that only promotes or drops entries would
           # otherwise open an issue titled "(0 awaiting)" reading "No posts are
-          # awaiting review". Derived from the commit rather than the collect
-          # step's outputs, which the re-collect below cannot update -- it writes
-          # to this step's GITHUB_OUTPUT, not that one.
+          # awaiting review".
           report() {
             local added
             added=$(node -e '
@@ -236,7 +233,7 @@ jobs:
       #
       # Before Verify, deliberately: the walk in verify asserts the endpoint serves
       # exactly what data/posts.json holds, which is only true once this has run.
-      - name: Deploy feed function
+      - name: Deploy feed function (archive changed)
         if: steps.commit.outputs.posts_changed == '1'
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

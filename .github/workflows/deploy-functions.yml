@@ -1,4 +1,4 @@
-name: Deploy feed function
+name: Deploy feed function (code)
 
 # The function's code changes rarely; its data changes ~40 times a year. This
 # workflow covers the code, and the update workflow deploys the data when
@@ -8,12 +8,20 @@ name: Deploy feed function
 on:
   push:
     branches: [main]
+    # Deliberately the whole of src/, not the function's import graph. The
+    # filter has to track two graphs at once: what the bundle imports
+    # (functions/index.ts, lib/skeleton.ts, config.ts) *and* what produces
+    # entries.json at build time (build.ts, lib/store.ts, lib/order.ts). Only
+    # the first is mechanical, and a change to the second that this list missed
+    # would leave the function serving a stale ordering with nothing failing --
+    # update.yml would not cover it either, since it gates on data/posts.json
+    # changing. The job is ~2 minutes and the code changes rarely, so
+    # over-triggering is the cheap side of the trade.
     paths:
+      - "src/**"
       - "functions/**"
-      - "src/functions/**"
-      - "src/lib/skeleton.ts"
-      - "src/lib/order.ts"
-      - "src/config.ts"
+      - "package.json"
+      - "package-lock.json"
       - ".github/workflows/deploy-functions.yml"
   workflow_dispatch:
 

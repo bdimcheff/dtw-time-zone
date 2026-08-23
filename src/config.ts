@@ -45,11 +45,6 @@ export const FEED_DESCRIPTION =
   "Posts of the announcement that used to play on loop at DTW. " +
   "Updated a few times a day.";
 
-/**
- * searchPosts is blocked at the CDN on public.api.bsky.app but serves
- * unauthenticated on api.bsky.app. See PLAN.md.
- */
-export const APPVIEW = "https://api.bsky.app";
 
 export const USER_AGENT = `dtw-time-zone (+${SERVICE_ENDPOINT})`;
 
@@ -59,17 +54,16 @@ export const USER_AGENT = `dtw-time-zone (+${SERVICE_ENDPOINT})`;
  */
 export const EXACT_QUERIES = [
   '"Detroit, Michigan is in the Eastern Time Zone"',
-  // classify() accepts the abbreviated spellings too, so they get the same
-  // unwindowed sweep. Without this they arrive only via the windowed variant
-  // query, which would miss an older post outside the window until the next full
-  // sweep.
+  // classify() accepts the abbreviated spellings too, so they get a sweep of
+  // their own rather than reaching the archive only as a variant a human has to
+  // admit by hand.
   '"Detroit, MI is in the Eastern Time Zone"',
 ];
 
 /**
- * Broader query used to surface variants for manual review. It paginates through
- * years of sincere timezone discussion, so it runs windowed rather than as a full
- * sweep. See collect.ts.
+ * Broader query used to surface variants for manual review. Swept in full every
+ * run, like the exact queries: it paginates through years of sincere timezone
+ * discussion, but authenticated that is two requests. See collect.ts.
  *
  * This was once a list of four. Narrower variants ("… michigan", "… detroit",
  * "… dtw") existed only to work around the anonymous single-page cap: each

@@ -128,36 +128,16 @@ inert without it.
 
 ## Constraints worth knowing
 
-**Collection requires a Bluesky app password.** `api.bsky.app` refuses
-unauthenticated `searchPosts` cursor requests with `403 Request forbidden by
-administrative rules`, and has been observed refusing first pages too. Measured
-against the same query, anonymous returned nothing while authenticated returned all
-170 results across 2 pages. There is no anonymous fallback: without credentials the
-collector exits rather than silently collecting a fraction.
+**Collection requires a Bluesky app password.** There is no anonymous fallback:
+`api.bsky.app` refuses unauthenticated `searchPosts` requests, and without
+credentials the collector exits rather than silently collecting a fraction.
 
-**The skeleton is a function, and it ships the archive with it.** A new post is not
-reachable until the *function* is redeployed — a hosting deploy alone no longer
-changes what the feed contains. The update workflow handles this whenever
-`data/posts.json` changes, which is roughly 40 times a year.
-
-**The AppView is unforgiving about pagination, and silent about it.** It slices the
-skeleton to the client's `limit` before reading our cursor, and treats an echoed or
-absent cursor as end-of-feed. Each of those failures shows up as a feed that quietly
-stops early rather than as an error. `npm run verify` walks the cursor to exhaustion
-after every deploy for exactly this reason.
-
-**`.well-known` and Firebase.** Firebase's default `ignore` list contains `**/.*`,
-which excludes `.well-known` and makes `did:web` resolution 404. `firebase.json`
-enumerates exclusions explicitly instead. Don't reintroduce the glob.
-
-**GitHub disables cron after 60 days** without repository activity. Re-enable from
-the Actions tab.
+Everything else this feed can break on breaks *silently* — a wrong content type, a
+cursor that ends a walk early, a `.well-known` that 404s. Those are catalogued, with
+the reasoning, under **Constraints that fail silently** in
+[`CLAUDE.md`](CLAUDE.md). Read that before changing the serving path.
 
 ## Ideas
 
-- Capture riffs on the original form from known posters — *"Jackson Hole, Wyoming is
-  in the Mountain Time Zone"*. Needs an author allowlist plus a generalized
-  `<place> is in the <X> Time Zone` matcher and its own review gate.
-- An archive page listing every captured post — browsable outside a Bluesky client,
-  and a place to link the collection from.
-- Stats: posts per year, top posters, first sighting.
+Tracked as GitHub issues — riff detection (#4), an archive page (#5), stats (#6).
+[`TODO.md`](TODO.md) is the index.
