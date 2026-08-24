@@ -1,5 +1,15 @@
 [
   {
+    "uri": "at://did:plc:2acpw7jpr6fjyi7ipobrriea/app.bsky.feed.post/3mtt5rf6mlc2w",
+    "cid": "bafyreigtnvoydtddt3j4strjd4wpt37tpznwj2vpc4tnpst3jttjakuqgu",
+    "authorDid": "did:plc:2acpw7jpr6fjyi7ipobrriea",
+    "authorHandle": "lengau.net",
+    "text": "Detroit Michigan is in the eastern time zone but should actually be in the Central time zone.",
+    "createdAt": "2026-08-24T11:03:13.258Z",
+    "indexedAt": "2026-08-24T11:03:13.676Z",
+    "firstSeenAt": "2026-08-24T11:17:15.019Z"
+  },
+  {
     "uri": "at://did:plc:3s57krp5ghuj3ba3wmrk5k7m/app.bsky.feed.post/3mtr6nzjv2c25",
     "cid": "bafyreidx6opprdqc4zdiqryl7wsj7dkup35kytftvutj62ptlzyocuugbe",
     "authorDid": "did:plc:3s57krp5ghuj3ba3wmrk5k7m",
