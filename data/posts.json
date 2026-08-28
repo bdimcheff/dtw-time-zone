@@ -1,5 +1,15 @@
 [
   {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mu5ztxvjyk23",
+    "cid": "bafyreie437lqxiew5myj6h2v62adrosbkoynb3v35ow357ffmg26t52kji",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Eastern Time Zone",
+    "createdAt": "2026-08-28T18:52:22.146Z",
+    "indexedAt": "2026-08-28T18:52:22.632Z",
+    "firstSeenAt": "2026-08-28T19:58:47.661Z"
+  },
+  {
     "uri": "at://did:plc:cvxm3fecfddayfmnazn5n6zu/app.bsky.feed.post/3mtvqcgsuk22k",
     "cid": "bafyreidryfptmuhjxm7hy757aeu2pvwlqluv7z4uai5xqgcmp5ryicpxu4",
     "authorDid": "did:plc:cvxm3fecfddayfmnazn5n6zu",
