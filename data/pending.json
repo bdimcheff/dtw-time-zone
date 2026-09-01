@@ -1,5 +1,115 @@
 [
   {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mudj4nhkfs2k",
+    "cid": "bafyreiedmxphthdhanggj4avttkaojjmmcu2p6nd62rhqhz6jnxr6xyo74",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Jackson Hole, Wyoming is in the Mountain Time Zone",
+    "createdAt": "2026-08-30T23:08:58.008Z",
+    "indexedAt": "2026-08-30T23:08:58.506Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mu5zzzahgs23",
+    "cid": "bafyreicll5mabkywk4mqayurbcq6ids3m2nx2zwf5bomisf6ez7jzxqx7e",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "ZIP Code 48242 is in the Eastern Time Zone",
+    "createdAt": "2026-08-28T18:55:44.880Z",
+    "indexedAt": "2026-08-28T18:55:46.734Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:gjq3qd3kgudqgbjqpu5wu4fd/app.bsky.feed.post/3mtt4z7eb322p",
+    "cid": "bafyreihwkzcby7htnkheu2o2n4cxlbnslwufx4xaihsusvf4w4ttirlxcy",
+    "authorDid": "did:plc:gjq3qd3kgudqgbjqpu5wu4fd",
+    "authorHandle": "daiseflowers.bsky.social",
+    "text": "When you cross from Maine into New Brunswick, Canada, you move 1 hour ahead. Maine is in the Eastern Time Zone, while New Brunswick is in the Atlantic Time Zone.",
+    "createdAt": "2026-08-24T10:49:41.845Z",
+    "indexedAt": "2026-08-24T10:49:42.126Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mso3io5hgs2r",
+    "cid": "bafyreidg42mnzrh7n3g626sapw6dhvbz2izmq2ihfsw5msmt6a5bxtagqe",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Jackson Hole, Wyoming is in the Mountain Time Zone",
+    "createdAt": "2026-08-09T17:14:02.863Z",
+    "indexedAt": "2026-08-09T17:14:04.944Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mshifivgnc2e",
+    "cid": "bafyreieo4ilpauxuicfqeezantnogbzsk7vulcf5fpjc7gfzkxv42cwun4",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Phocific Standard Time is in the Pacific Daylight Time Zone",
+    "createdAt": "2026-08-07T02:16:17.168Z",
+    "indexedAt": "2026-08-07T02:16:25.528Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"Daylight Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3ms7dczg4xk2z",
+    "cid": "bafyreiduqcvgorv6aswb5lgclxqht2obmb4zosfa7jlaeui6yrlngqzw6i",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Seattle, Washington is in the Pacific Time Zone",
+    "createdAt": "2026-08-03T20:24:07.215Z",
+    "indexedAt": "2026-08-03T20:24:07.540Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Pacific Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2q4ylanb3v4v2f3z2y4hlii2/app.bsky.feed.post/3mqq3giilzc2i",
+    "cid": "bafyreiep2ecevns3vftaeitmo6ys6jqdtrc32emlneifuf5dm6ra7htxba",
+    "authorDid": "did:plc:2q4ylanb3v4v2f3z2y4hlii2",
+    "authorHandle": "grumpybumpy123.bsky.social",
+    "text": "They already are . Eastern Indiana is in the Eastern time zone . Only the counties by Chicago are central time zone .",
+    "createdAt": "2026-07-16T01:27:46.050Z",
+    "indexedAt": "2026-07-16T01:27:46.628Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mqoym2ggyc2m",
+    "cid": "bafyreiczcgvstln6npgomcp4iq7t5wwrwtqwc3bwmlcy5rxdifajiil35i",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "\"Detroit, Michigan is in the Central Time Zone\" is a deranged statement",
+    "createdAt": "2026-07-15T15:04:31.661Z",
+    "indexedAt": "2026-07-15T15:04:32.831Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mpf2co2rkk24",
+    "cid": "bafyreif4iqdokxgfusdudzzvtgtme5eb3fuzqypfwqy3grau6syboyolla",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Jackson Hole, Wyoming is in the Mountain Time Zone",
+    "createdAt": "2026-06-28T22:43:15.179Z",
+    "indexedAt": "2026-06-28T22:43:16.765Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3movyed6hek23",
+    "cid": "bafyreie3jr6wcu2eifmwb4g43dxjkkf4kl2yzdr6f6ts7cy4zshelcnlhe",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Nashville, Tennessee is in the Central Time Zone",
+    "createdAt": "2026-06-22T22:58:27.315Z",
+    "indexedAt": "2026-06-22T22:58:28.662Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
     "uri": "at://did:plc:c6vdjihfz4obux3yhqzvb642/app.bsky.feed.post/3mljjacgas22y",
     "cid": "bafyreictwf7xksysmi6gmj7gy723n5ykkmyg2qpjv46jjx7usr76vqj22a",
     "authorDid": "did:plc:c6vdjihfz4obux3yhqzvb642",
@@ -9,6 +119,248 @@
     "indexedAt": "2026-05-10T19:40:13.360Z",
     "firstSeenAt": "2026-08-22T18:05:40.750Z",
     "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:sy6hejpxlouhwi37tgu2lana/app.bsky.feed.post/3ml7cym5qnc2p",
+    "cid": "bafyreid7xxwb4pdyyznwyfduk4nrqb4554t6z3cry5c5vk34pnmgynibw4",
+    "authorDid": "did:plc:sy6hejpxlouhwi37tgu2lana",
+    "authorHandle": "metalreputationfan.swifties.social",
+    "text": "*assuming 4PM is in the eastern time zone lol",
+    "createdAt": "2026-05-06T18:21:56.369Z",
+    "indexedAt": "2026-05-06T18:21:56.972Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mkgnvelsus2d",
+    "cid": "bafyreidc2fhwxvrqdo537f5qbtgnshemcflojoivcvp65oidgx5q2mxjzu",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Jackson Hole, Wyoming is in the Mountain Time Zone",
+    "createdAt": "2026-04-26T23:00:25.479Z",
+    "indexedAt": "2026-04-26T23:00:27.559Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mj4iiitpp22a",
+    "cid": "bafyreicqx4xounvpjebji2wjclkowfdcbhlnktaek24otfqk7xlzhgb3zy",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Denver, Colorado is in the Mountain Time Zone",
+    "createdAt": "2026-04-10T04:31:56.005Z",
+    "indexedAt": "2026-04-10T04:31:56.394Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:tk47gwnt2yybbadcvscct6xc/app.bsky.feed.post/3miofte36pk2c",
+    "cid": "bafyreid73c6jydniobo2b4spac5qewxjvvuhb7v73e427dcitk4duoomjq",
+    "authorDid": "did:plc:tk47gwnt2yybbadcvscct6xc",
+    "authorHandle": "teresa2608ol.bsky.social",
+    "text": "Tokyo is in the Asia time zone, and New York is in the Pacific time zone",
+    "createdAt": "2026-04-04T14:07:02.542Z",
+    "indexedAt": "2026-04-04T14:07:03.599Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Pacific Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3miatehfoz226",
+    "cid": "bafyreif3tajikoxyfw66zbgt7pl65apanveakfcl7a5aiuk4nvb7sfhkiy",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "New Orleans, Louisiana is in the central time zone",
+    "createdAt": "2026-03-30T04:31:58.765Z",
+    "indexedAt": "2026-03-30T04:31:59.094Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3mh4sbxmos22p",
+    "cid": "bafyreicvbxvq2m77wby4kkt6fwwjne76wq5m75umesv3p7hmuiazyy2zqi",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "Atlanta, Georgia is in the eastern time zone",
+    "createdAt": "2026-03-15T20:36:50.784Z",
+    "indexedAt": "2026-03-15T20:36:51.193Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3mgqrpybnus2w",
+    "cid": "bafyreiegzqn5cvfen7v7amb562unzq4g27m65vrpvbytgrkf4f2ukeai5q",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "Denver, Colorado is in the mountain time zone",
+    "createdAt": "2026-03-11T01:54:50.632Z",
+    "indexedAt": "2026-03-11T01:54:50.997Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3mgqgbibgf225",
+    "cid": "bafyreigk7ziaqdw52dcr2nfln7pltqkorby4oz35gqkz4xwgs2meoezevy",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "Atlanta, Georgia is in the eastern time zone",
+    "createdAt": "2026-03-10T22:29:52.925Z",
+    "indexedAt": "2026-03-10T22:29:53.097Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mgkmnzpkss2z",
+    "cid": "bafyreih3kjbsz4s6vzvch7hxykxo7wozmsgwt5em2nf3zr6rrcxlxvjqf4",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Ann Arbor, Michigan is in the Atlantic Standard Time Zone",
+    "createdAt": "2026-03-08T15:08:17.887Z",
+    "indexedAt": "2026-03-08T15:08:18.592Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"Standard Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:xwhsmuozq3mlsp56dyd7copv/app.bsky.feed.post/3mfw2k3jl6k2x",
+    "cid": "bafyreialdu2su2khenmd56vparbwu6wpg2twkbp52xhrizyaqk2zupz6ti",
+    "authorDid": "did:plc:xwhsmuozq3mlsp56dyd7copv",
+    "authorHandle": "paizuri.moe",
+    "text": "it's 2:50 AM in the Pacific Time Zone \n(i have flown through and in Atlanta so much that I'm so used to hearing the overhead airport announcement saying \"Atlanta is in the Eastern Time Zone. It is currently X:XX) \n\nanyway goodnight",
+    "createdAt": "2026-02-28T10:50:43.450Z",
+    "indexedAt": "2026-02-28T10:50:44.196Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:yz3jdbfe6dqqlquvna6n6rrb/app.bsky.feed.post/3mfffryu7i22d",
+    "cid": "bafyreibpivkewcr5f4jhfhiwiqw3zmgyflebvmdcai5vo4acuusgszxd7e",
+    "authorDid": "did:plc:yz3jdbfe6dqqlquvna6n6rrb",
+    "authorHandle": "gaurdro.net",
+    "text": "MSP is in the central time zone",
+    "createdAt": "2026-02-21T19:56:44.695Z",
+    "indexedAt": "2026-02-21T19:56:45.393Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3mfdtrhmv3s2u",
+    "cid": "bafyreibicoautmlr7ku2v5sbdvs745bhvkri3qppa4h7iy2g5mp6tzele4",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "New Orleans, Louisiana is in the central time zone",
+    "createdAt": "2026-02-21T05:01:39.540Z",
+    "indexedAt": "2026-02-21T05:01:39.991Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3mfdo437gjs2u",
+    "cid": "bafyreiabz6gzk7si2qhp5tebkfppcfmsmfo3gpepeptt2ymeskt6fdmy4a",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "Atlanta, Georgia is in the eastern time zone and so am I for like 25 minutes",
+    "createdAt": "2026-02-21T03:20:13.164Z",
+    "indexedAt": "2026-02-21T03:20:13.592Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mez5vqsufk24",
+    "cid": "bafyreids3rlqwqqiaoi6cm5cvjvgmo2gbxmjwyy663k6xa6qatjberdtsi",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Jackson Hole, Wyoming is in the Mountain Time Zone",
+    "createdAt": "2026-02-16T23:03:43.686Z",
+    "indexedAt": "2026-02-16T23:03:44.519Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:l52ugvccesgzh2bg7atncrpc/app.bsky.feed.post/3meffp2qk7k2b",
+    "cid": "bafyreie57ugj53sshcausix7efa4nh3twdztbqs46z34hl5dla4mgh47eq",
+    "authorDid": "did:plc:l52ugvccesgzh2bg7atncrpc",
+    "authorHandle": "megshensley.bsky.social",
+    "text": "It might not be eastern time in the image. Aaron is in the central time zone. And if Truth Social does what most other social media sites do, it displays the post time in the user's set time zone, not the poster's.",
+    "createdAt": "2026-02-09T02:29:54.382Z",
+    "indexedAt": "2026-02-09T02:29:54.498Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:u53kru4jau37bn5c6d4oxex4/app.bsky.feed.post/3meffeesln22m",
+    "cid": "bafyreigt7wvqeljusxhx4yakfaia6z2q55a4be2lumpwn55eihzt4wsb5u",
+    "authorDid": "did:plc:u53kru4jau37bn5c6d4oxex4",
+    "authorHandle": "66betty.bsky.social",
+    "text": "Aaron Rupar is in the central time zone, and he's the one who took the screen shot. His feed shows up in his own time zone. That means the post was timestamped at 9:00 eastern time.",
+    "createdAt": "2026-02-09T02:23:55.836Z",
+    "indexedAt": "2026-02-09T02:23:56.891Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mdyqwyvvjc2g",
+    "cid": "bafyreicxqwos5rhh72rgph66p6k62z4ou4wao4ay6cv5dsycpb43q7wvfy",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Jackson Hole, Wyoming is in the Mountain Time Zone",
+    "createdAt": "2026-02-04T01:46:35.458Z",
+    "indexedAt": "2026-02-04T01:46:54.892Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mdr2k3odvs2n",
+    "cid": "bafyreigwxil7pzxlipxoquwa7tsw3ocbut22cir5drjlvjzqsci6wevkvq",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Palm Springs, California is in the Pacific Time Zone",
+    "createdAt": "2026-02-01T00:17:01.657Z",
+    "indexedAt": "2026-02-01T00:17:05.099Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Pacific Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:gwuscbqoxztdlonsjcsfwxbs/app.bsky.feed.post/3mctdcycx222g",
+    "cid": "bafyreifdryfobsoj5o3mlvxabfhrsmg7feyqlf7axnpauwyunwmjmvdnbm",
+    "authorDid": "did:plc:gwuscbqoxztdlonsjcsfwxbs",
+    "authorHandle": "aldonadi.bsky.social",
+    "text": "Pensacola, Florida is in the Central Time Zone.",
+    "createdAt": "2026-01-20T04:34:14.780Z",
+    "indexedAt": "2026-01-20T04:34:15.300Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mbcpqvkc7s2o",
+    "cid": "bafyreia5s26mgrr5kp253kcxjnxgmzid2fbs3elvrm2bbf6wuwof3zclhu",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Jackson Hole, Wyoming is in the Mountain Time Zone",
+    "createdAt": "2025-12-31T20:36:19.362Z",
+    "indexedAt": "2025-12-31T20:36:20.597Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mbcc2iwvas2o",
+    "cid": "bafyreihmglomvqhwzsadmvlgggzf53vmhri2ulsc5tenod32vlxkerjhde",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Minneapolis, Minnesota is in the Central Time Zone",
+    "createdAt": "2025-12-31T16:31:09.304Z",
+    "indexedAt": "2025-12-31T16:31:10.499Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:7nguzszlvpdpdmtc47zp22ur/app.bsky.feed.post/3madamg7gp22j",
+    "cid": "bafyreibaamio5xemd4hyv6rv7gzyimc3tv6mmsjl37gryiwuawtsi64kky",
+    "authorDid": "did:plc:7nguzszlvpdpdmtc47zp22ur",
+    "authorHandle": "sillymickel.bsky.social",
+    "text": "#TruthWarriors❕#RainbowWarriors 🦋 #Planetmates 🐒\n\nEugene, Oregon is in the Pacific Time Zone (PT), which is UTC-8 in December (standard time, not daylight saving).\nSo, when it is 04:00 UTC on December 20, 2025, your local time will be:\nDecember 19, 2025 at 8:00 PM (20:00) PT.\n\nyoutu.be/ficGuvPxV0s",
+    "createdAt": "2025-12-19T08:12:51.045Z",
+    "indexedAt": "2025-12-19T08:12:53.096Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Pacific Time Zone\""
   },
   {
     "uri": "at://did:plc:prgirpu6za2df777ziwui4bj/app.bsky.feed.post/3m6v3nvnjtu2z",
@@ -22,6 +374,358 @@
     "matchedQuery": "\"is in the Eastern Time Zone\""
   },
   {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3m5sdqeum7226",
+    "cid": "bafyreickk4wmpvtbdwkqobb3sukxhr4gjzp4647zhzn2nlwbr7ah657m3u",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Jackson Hole, Wyoming is in the Mountain Time Zone",
+    "createdAt": "2025-11-17T04:03:06.277Z",
+    "indexedAt": "2025-11-17T04:03:06.726Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:pdf6zt3vghsx7bmb5wl6sbt3/app.bsky.feed.post/3m4vmzwps5x2v",
+    "cid": "bafyreigwicyhrzjozokau5453dpqy5asukdkbcshiqwllch3iyhilkmbjy",
+    "authorDid": "did:plc:pdf6zt3vghsx7bmb5wl6sbt3",
+    "authorHandle": "grumpa.ca",
+    "text": "Did you know that…\n\nCosta Rica is in the Central time zone. In addition, they never move the clocks forward or back, like in most places. #CostaRica",
+    "createdAt": "2025-11-05T18:02:18.074Z",
+    "indexedAt": "2025-11-05T18:02:19.224Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2hpxbwma6jg6zuwrj3qtqt4p/app.bsky.feed.post/3m4mcpudmbk2x",
+    "cid": "bafyreieg32wkuvfph7magmllody2aq533nfvtvfazuzi73nfwjgjy3phle",
+    "authorDid": "did:plc:2hpxbwma6jg6zuwrj3qtqt4p",
+    "authorHandle": "lambdinj.bsky.social",
+    "text": "Wait. Nebraska is in the Central time zone?",
+    "createdAt": "2025-11-02T01:03:45.143Z",
+    "indexedAt": "2025-11-02T01:03:47.426Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:6ce434323xvm2sglfgeueawc/app.bsky.feed.post/3m4ab3xt6hs2z",
+    "cid": "bafyreideqfwavcsnnak6juavwtipklzi4d6dveyzojkw4iykn5qb5o2hke",
+    "authorDid": "did:plc:6ce434323xvm2sglfgeueawc",
+    "authorHandle": "alexamadeo.com",
+    "text": "Toronto is in the eastern time zone so for these guys it’s like 2am",
+    "createdAt": "2025-10-28T06:02:47.108Z",
+    "indexedAt": "2025-10-28T06:02:47.425Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:cshlvjowfe5cypbysxgy7ghv/app.bsky.feed.post/3m3qd262z422y",
+    "cid": "bafyreifm4fqmp2k3tzhjkmmr35yhyw6wdumhxdnd3cdjrhjzwuwhhh4i3e",
+    "authorDid": "did:plc:cshlvjowfe5cypbysxgy7ghv",
+    "authorHandle": "all-rush-mix-tape.bsky.social",
+    "text": "Salt Lake City is in the Mountain time zone, so why the hell are they starting the game at 8 tonight?",
+    "createdAt": "2025-10-21T21:54:58.216Z",
+    "indexedAt": "2025-10-21T21:54:57.825Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:6khd3qearp2tb3xw4jlc64jn/app.bsky.feed.post/3m2k7qxruw22q",
+    "cid": "bafyreiaulvv24ex323lds6em4emqbkmzgrxncqtprmy3vlb22akxhde6pu",
+    "authorDid": "did:plc:6khd3qearp2tb3xw4jlc64jn",
+    "authorHandle": "twbrandt.net",
+    "text": "New York, New York is in the Eastern Time Zone.",
+    "createdAt": "2025-10-06T18:14:58.353Z",
+    "indexedAt": "2025-10-06T18:14:58.526Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3lz5vxz5rmc2a",
+    "cid": "bafyreidiect6dejyqmoqu53qxwhdjseocjsrmlnm2pajyf3477g5rb5ypm",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Jackson Hole, Wyoming is in the Mountain Time Zone",
+    "createdAt": "2025-09-19T03:22:48.765Z",
+    "indexedAt": "2025-09-19T03:22:49.968Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3lywbovnzf222",
+    "cid": "bafyreid3mra52bvba7dc5btna65zfwubjf2ikzpsi6gdjsu4g5hpz2zaoe",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Salt Lake City, Utah is in the Mountain Time Zone",
+    "createdAt": "2025-09-16T02:31:10.108Z",
+    "indexedAt": "2025-09-16T02:31:10.470Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:xqrqxxlnfnkyhkglpesr7dp7/app.bsky.feed.post/3lyd24impg225",
+    "cid": "bafyreie7cieeartihus37nr2bysdlmhbeq3ev5qhwl3hac5cfxfqj333ba",
+    "authorDid": "did:plc:xqrqxxlnfnkyhkglpesr7dp7",
+    "authorHandle": "artiemog.bsky.social",
+    "text": "Atlanta, Georgia is in the Eastern time zone. Please check a monitor for the current local time.",
+    "createdAt": "2025-09-08T10:55:01.233Z",
+    "indexedAt": "2025-09-08T10:55:04.968Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3lx35khorm227",
+    "cid": "bafyreic4yeje7usf2jk5lkehmaofjcm2txc73le4lzq6od2xsserqistni",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "New York, New York is in the Eastern Time Zone",
+    "createdAt": "2025-08-23T14:10:01.703Z",
+    "indexedAt": "2025-08-23T14:10:04.772Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:545f5dt75g7ryikhwww5xqdx/app.bsky.feed.post/3lvyyq2latk2t",
+    "cid": "bafyreibyue6qiy7grvxhs7itknsp25mf5ost6b5vggcbtztsyrwvbhvnxi",
+    "authorDid": "did:plc:545f5dt75g7ryikhwww5xqdx",
+    "authorHandle": "webbrthomas.bsky.social",
+    "text": "now if yall didn’t know\n\npurdue is in the eastern time zone",
+    "createdAt": "2025-08-10T00:13:09.471Z",
+    "indexedAt": "2025-08-10T00:13:09.966Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:z7d2cj6arupbiuyvjyk66657/app.bsky.feed.post/3ltdrw63d7s2g",
+    "cid": "bafyreih3n3tiyqy2xleqwzaxeu6y23lttxcwhlolhzjg5butuzqiqgd5fy",
+    "authorDid": "did:plc:z7d2cj6arupbiuyvjyk66657",
+    "authorHandle": "waybread.bsky.social",
+    "text": "Adam's body is in the Eastern time zone. But his mind is always in Mountain.",
+    "createdAt": "2025-07-07T02:55:00.515Z",
+    "indexedAt": "2025-07-07T02:55:01.104Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:6khd3qearp2tb3xw4jlc64jn/app.bsky.feed.post/3ls5awpeei22o",
+    "cid": "bafyreidmwmja2m5zpmnnydjosjunnquqtrzrsqyxb2unfhajsqj3p5m3wm",
+    "authorDid": "did:plc:6khd3qearp2tb3xw4jlc64jn",
+    "authorHandle": "twbrandt.net",
+    "text": "Chicago, Illinois, is in the Central time zone.",
+    "createdAt": "2025-06-21T19:09:54.969Z",
+    "indexedAt": "2025-06-21T19:09:55.306Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3ls2yrhsyds2p",
+    "cid": "bafyreidgmjywkykopjpstorsf5e6x3qavs2glh67r2orvspn5j2v5mh4ly",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Denver, Colorado is in the Mountain Time Zone",
+    "createdAt": "2025-06-20T21:38:29.876Z",
+    "indexedAt": "2025-06-20T21:38:31.104Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3lrok232spk2k",
+    "cid": "bafyreie6q7uv5wq73urqk4rhm3c6j56lfqmudzgdtc3ubg5wvklgtz4bxy",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "New Orleans is in the central time zone",
+    "createdAt": "2025-06-15T22:42:55.503Z",
+    "indexedAt": "2025-06-15T22:42:55.916Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3lqnewduoac2c",
+    "cid": "bafyreiafmwe7sasouxvlp72givw7xwrqjhn4kct5j4gyg74icew5rlnikq",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Nashville, Tennessee is in the Central Time Zone",
+    "createdAt": "2025-06-02T18:13:30.438Z",
+    "indexedAt": "2025-06-02T18:13:30.912Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:dg5vojx7tbosbmjybwimazff/app.bsky.feed.post/3lp5u4vovys2j",
+    "cid": "bafyreieb5yc5dymblc4evdelw6nnwojd62doiufktx3akscqd3f2e3wsym",
+    "authorDid": "did:plc:dg5vojx7tbosbmjybwimazff",
+    "authorHandle": "awbasil.bsky.social",
+    "text": "Anthony Edwards is in the Central Time Zone too & the #1 guy on a team about to make B2B conference finals.",
+    "createdAt": "2025-05-14T20:37:49.142Z",
+    "indexedAt": "2025-05-14T20:37:59.312Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:5734v6upc6gjahu6jyzysn2j/app.bsky.feed.post/3loz5g7fe4k2g",
+    "cid": "bafyreids6cbf3moewucjmasiqtmevk5fggvn4l7mu5pqbq2ae7kozkz6fq",
+    "authorDid": "did:plc:5734v6upc6gjahu6jyzysn2j",
+    "authorHandle": "foxpresso.bsky.social",
+    "text": "\"Atlanta Georgia is in the Eastern time zone. Please check the monitors for the current local time.\"",
+    "createdAt": "2025-05-12T23:40:46.291Z",
+    "indexedAt": "2025-05-12T23:40:46.618Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3loafesnnbs2c",
+    "cid": "bafyreieqrwflvjaoijqgosafvlfvrg6lo3uxgv7i6rttbv53ioxhwszy3q",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "Denver, Colorado is in the mountain time zone",
+    "createdAt": "2025-05-03T03:26:35.849Z",
+    "indexedAt": "2025-05-03T03:26:36.346Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:i5akxdtfrkb6vta5hmlqj5eh/app.bsky.feed.post/3lmzrpyz2rc2w",
+    "cid": "bafyreigfwsbg426yszhytjrq746l6aw3fuiip52msyvr5bn4vgqmaf7ncq",
+    "authorDid": "did:plc:i5akxdtfrkb6vta5hmlqj5eh",
+    "authorHandle": "nemox2001.bsky.social",
+    "text": "The calendar lets you set the time zone of the appointment/show. Las Vegas is in the Pacific time zone",
+    "createdAt": "2025-04-17T18:53:46.721Z",
+    "indexedAt": "2025-04-17T18:53:44.851Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Pacific Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:mvjrqehpefxlacanee5tyipq/app.bsky.feed.post/3lmftkork6c2y",
+    "cid": "bafyreifa3xy2xb7dhdq5e7v7fjhepoazhxozwh6rio74wfgy4sj2oycjtm",
+    "authorDid": "did:plc:mvjrqehpefxlacanee5tyipq",
+    "authorHandle": "iwait.club",
+    "text": "Texas is in the Central Time Zone, but the times listed are Mountain Time. Don't get confused!",
+    "createdAt": "2025-04-09T20:33:20.934Z",
+    "indexedAt": "2025-04-09T20:33:21.754Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:7umfekbckbssuyrtkg6n2lpa/app.bsky.feed.post/3llrw7sgd4s2x",
+    "cid": "bafyreicc7wn2l35pvzdseaylcjvvvwavt5z27qrpntllnlih3pxj4buopm",
+    "authorDid": "did:plc:7umfekbckbssuyrtkg6n2lpa",
+    "authorHandle": "pwdp.bsky.social",
+    "text": "Lol.  Everyone is wondering the same thing.  Wisconsin is in the central time zone.",
+    "createdAt": "2025-04-01T22:27:42.110Z",
+    "indexedAt": "2025-04-01T22:27:43.979Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:6khd3qearp2tb3xw4jlc64jn/app.bsky.feed.post/3lloox2tzqs2z",
+    "cid": "bafyreif32a5xozurng7sxxdv37fagu4m6edz7mx3lb3ctqtmlvmcpoq4ee",
+    "authorDid": "did:plc:6khd3qearp2tb3xw4jlc64jn",
+    "authorHandle": "twbrandt.net",
+    "text": "New York, New York, is in the Eastern time zone.",
+    "createdAt": "2025-03-31T15:39:33.560Z",
+    "indexedAt": "2025-03-31T15:39:34.868Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3ljx4ny2w5k2h",
+    "cid": "bafyreiewdizbhuvtxdvcovi47odcp76zax35a2jn263ga4nqg5tkk6gcwe",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Detroit, Michigan is in the Atlantic Standard Time Zone",
+    "createdAt": "2025-03-09T13:15:55.681Z",
+    "indexedAt": "2025-03-09T13:15:55.822Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"Standard Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:tpcvlolpsate6xovixgc646k/app.bsky.feed.post/3linmtygjvs2v",
+    "cid": "bafyreifqyhkywxq2gastzpnsltqborelvcnxzdnw3t62oyuiu3c3k2ihwa",
+    "authorDid": "did:plc:tpcvlolpsate6xovixgc646k",
+    "authorHandle": "rrocket87.bsky.social",
+    "text": "Lake Superior is in the Central time zone, so you are correct.",
+    "createdAt": "2025-02-21T01:13:48.252Z",
+    "indexedAt": "2025-02-21T01:13:48.826Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3liakhpav2c2w",
+    "cid": "bafyreidtwbofsmb635numax675p5sx3crhjpfzoej5mftqfgonzyc7epri",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "Jessica Quiroga is in the pacific time zone",
+    "createdAt": "2025-02-15T20:26:31.891Z",
+    "indexedAt": "2025-02-15T20:26:32.229Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Pacific Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:aef4ur3s6ism3rq3vs25xblb/app.bsky.feed.post/3lhfpt4boys2h",
+    "cid": "bafyreiemgggl6idapbyxaz666xhbwlxj4vwzstlibedbjnwzdzoiccbl24",
+    "authorDid": "did:plc:aef4ur3s6ism3rq3vs25xblb",
+    "authorHandle": "yonatans.bsky.social",
+    "text": "Chicago is in the central time zone. Ergo, it is a great time zone to be in.",
+    "createdAt": "2025-02-05T04:20:30.423Z",
+    "indexedAt": "2025-02-05T04:20:30.416Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:4mfehgb222d73ugc5bd2kjhr/app.bsky.feed.post/3lgpkrtrpjs2p",
+    "cid": "bafyreickkya64udcixpqkan5tuaihwy4iea2t7awwdydacqvtlfgg5vrw4",
+    "authorDid": "did:plc:4mfehgb222d73ugc5bd2kjhr",
+    "authorHandle": "jrw72.bsky.social",
+    "text": "In Chicago, which is in the Central Time zone, the sun was setting at 4:19. The disadvantage of living at the beginning of a time zone. Just 80 miles to the East, their sun sets at 5:19.",
+    "createdAt": "2025-01-27T08:51:44.999Z",
+    "indexedAt": "2025-01-27T08:51:45.516Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3lg5bvrhitk2j",
+    "cid": "bafyreihwnwqk6gmpft6h6w3zraj5kz3jq4njj5r75uwdrkr6zs3cqsotcm",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Salt Lake City, Utah is in the Mountain Time Zone",
+    "createdAt": "2025-01-20T02:24:57.822Z",
+    "indexedAt": "2025-01-20T02:24:59.619Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3lfs7spmpxs2t",
+    "cid": "bafyreigadvdoiq4mei33j5q6pidd5zbbwe2zjx47drvah72cwdumpi4jfu",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Boston, Massachusetts is in the Eastern Time Zone",
+    "createdAt": "2025-01-15T16:48:10.628Z",
+    "indexedAt": "2025-01-15T16:48:10.823Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:e2kvfxkhzkn47dj37c4radht/app.bsky.feed.post/3leoxmz7pbk2u",
+    "cid": "bafyreigspaso5zgrc25ek34qwp6o3d2alafgbw2lx3skd5uios5ee6aipi",
+    "authorDid": "did:plc:e2kvfxkhzkn47dj37c4radht",
+    "authorHandle": "krmckenney.bsky.social",
+    "text": "Puerto Rico is in the Atlantic time zone. So parts of the US spans from the Atlantic to Pacific time zones. Feel better.",
+    "createdAt": "2025-01-01T16:18:38.583Z",
+    "indexedAt": "2025-01-01T16:18:38.920Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Atlantic Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:oneslrdopxzanq6i6cstp3bd/app.bsky.feed.post/3lct7czepak2r",
+    "cid": "bafyreidp4oikj6o5vnb274uhefh6sk3r77roflsrr3mdrumn73vtfrwzgq",
+    "authorDid": "did:plc:oneslrdopxzanq6i6cstp3bd",
+    "authorHandle": "buffalovemom.bsky.social",
+    "text": "Bills defense is in the eastern time zone still",
+    "createdAt": "2024-12-08T21:56:28.835Z",
+    "indexedAt": "2024-12-08T21:56:29.123Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
     "uri": "at://did:plc:25vtkmtjwva4yvay7qkoms2t/app.bsky.feed.post/3l7h5x2itxm25",
     "cid": "bafyreihm6rujqwqmi4nycb7zkuiqdnc4agxcnhry5aw3v3s3pzz5nhuo3y",
     "authorDid": "did:plc:25vtkmtjwva4yvay7qkoms2t",
@@ -30,6 +734,17 @@
     "createdAt": "2024-10-26T22:44:22.454Z",
     "indexedAt": "2024-10-26T22:44:22.010Z",
     "firstSeenAt": "2026-08-22T21:03:38.173Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:6khd3qearp2tb3xw4jlc64jn/app.bsky.feed.post/3l5mn6pt2gw27",
+    "cid": "bafyreidgh42yydndpd76wls35v7vijxzfcc3cmauztpjbktdce3pxbuntu",
+    "authorDid": "did:plc:6khd3qearp2tb3xw4jlc64jn",
+    "authorHandle": "twbrandt.net",
+    "text": "Boston, Massachusetts, is in the Eastern time zone.",
+    "createdAt": "2024-10-03T16:10:00.619Z",
+    "indexedAt": "2024-10-03T16:10:00.619Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
     "matchedQuery": "\"is in the Eastern Time Zone\""
   },
   {
@@ -55,6 +770,61 @@
     "matchedQuery": "\"is in the Eastern Time Zone\""
   },
   {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3kuhpxcyeio2o",
+    "cid": "bafyreie6uz3shljo6thqxmxaw3rzqyo6i3rw2qv2w76rl4n5fs57p6iddy",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Jackson, Wyoming is in the Mountain Time Zone",
+    "createdAt": "2024-06-09T04:29:30.142Z",
+    "indexedAt": "2024-06-09T04:29:30.142Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3kszirnc2kl2j",
+    "cid": "bafyreicyhjkvxgg7qtjr7ckgowvgku7egpp5bemjv4kjm2bivqbvtsdcgy",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Fort Lauderdale, Florida is in the Eastern Time Zone",
+    "createdAt": "2024-05-21T19:18:34.320Z",
+    "indexedAt": "2024-05-21T19:18:34.320Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:s5g7v67sedc2dfoftm4tk3yj/app.bsky.feed.post/3kpxlzlthjn2c",
+    "cid": "bafyreiho3xift5kccwfipy5ooqq7tyb2aqc4smjtzcobwzettpiss2cchy",
+    "authorDid": "did:plc:s5g7v67sedc2dfoftm4tk3yj",
+    "authorHandle": "ohhleary.bsky.social",
+    "text": "Broke my 20-month, 90-flight, 150,000-mile streak of avoiding an ATL layover on Delta today. I kind of missed “Atlanta, Georgia is in the Eastern Time Zone. Please check a monitor for the current local time.”",
+    "createdAt": "2024-04-12T20:55:49.266Z",
+    "indexedAt": "2024-04-12T20:55:49.266Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:l4nttmvihosqvdmz36e6oa66/app.bsky.feed.post/3kfsdlhez2s2u",
+    "cid": "bafyreia7w54vfnhzskgqmzelyg6motfil3tvdtjf2ps4keplejsa4ucjym",
+    "authorDid": "did:plc:l4nttmvihosqvdmz36e6oa66",
+    "authorHandle": "nixon.computer",
+    "text": "Atlanta, Georgia is in the Eastern Time Zone.",
+    "createdAt": "2023-12-05T12:29:29.993Z",
+    "indexedAt": "2023-12-05T12:29:29.993Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3kfmjtd7lfb2d",
+    "cid": "bafyreib67vgo3w3i43aaclpzaraaz3xrjd6qchonn6wexdmhgt3ia6o2je",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Denver, Colorado is in the Mountain Time Zone",
+    "createdAt": "2023-12-03T05:05:18.038Z",
+    "indexedAt": "2023-12-03T05:05:18.038Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
     "uri": "at://did:plc:lexzlufqhfpr72ydhfzlgs4r/app.bsky.feed.post/3kdpcfnehsi2e",
     "cid": "bafyreid2lkxv6qljsc2owhw7f72ug2zvwj2axpt6oodvvo6tbgrzyjrggu",
     "authorDid": "did:plc:lexzlufqhfpr72ydhfzlgs4r",
@@ -63,6 +833,17 @@
     "createdAt": "2023-11-08T20:39:58.367Z",
     "indexedAt": "2023-11-08T20:39:58.367Z",
     "firstSeenAt": "2026-08-22T21:03:38.173Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3kcgwfupuch26",
+    "cid": "bafyreihayznte4fwij7xbpsxdbmn7p4owtqmbna7mdznp6prnm7gs5nk54",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Boston, Massachusetts is in the Eastern Time Zone",
+    "createdAt": "2023-10-23T19:18:51.466Z",
+    "indexedAt": "2023-10-23T19:18:51.466Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
     "matchedQuery": "\"is in the Eastern Time Zone\""
   },
   {
@@ -77,6 +858,17 @@
     "matchedQuery": "\"is in the Eastern Time Zone\""
   },
   {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3k5q7o5rr6q22",
+    "cid": "bafyreiari4qmhm3sxfdigmk5d4tdinsflpc2bvnvpnh6qszit5ygtm4j3y",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Atlanta, Georgia is in the Eastern Time Zone",
+    "createdAt": "2023-08-24T20:52:32.738Z",
+    "indexedAt": "2023-08-24T20:52:32.738Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
     "uri": "at://did:plc:o6qikgurzkb6yfvj6xof53io/app.bsky.feed.post/3k3ubuzlglh2i",
     "cid": "bafyreihxyjpokdf3d7upvzkwez4nqi6llqqjop4ikhlzjiviokjfp4juci",
     "authorDid": "did:plc:o6qikgurzkb6yfvj6xof53io",
@@ -86,5 +878,16 @@
     "indexedAt": "2023-08-01T00:52:26.294Z",
     "firstSeenAt": "2026-08-22T21:03:38.173Z",
     "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3jz4usa2eni26",
+    "cid": "bafyreifcdtn4k3gfyaoekklrlscmh6kxklrgqkvjk4lp3oy5lkf6ih4ybe",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "San Francisco, California is in the pacific time zone",
+    "createdAt": "2023-06-27T06:36:36.697Z",
+    "indexedAt": "2023-06-27T06:36:36.697Z",
+    "firstSeenAt": "2026-09-01T23:18:07.969Z",
+    "matchedQuery": "\"is in the Pacific Time Zone\""
   }
 ]
