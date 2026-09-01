@@ -86,15 +86,26 @@ const TOKEN = `(?:${WORD}|\\d[\\w.-]*)`;
  * see them.
  */
 const SHAPE = new RegExp(
-  // Start of post, or the start of a sentence, quotation or asterisked aside.
-  String.raw`(?:^|[.!?]["'”]?\s+|[\n"“'*]\s*)` +
+  // Start of post, sentence, line, or an opening quotation. A quote only opens
+  // a clause when it follows whitespace -- mid-word it is an apostrophe, and
+  // treating it as a boundary invents a clause start that skips PLACE_STOP.
+  String.raw`(^|[.!?]["'”]?\s+|\n\s*|(?<=^|\s)["“']\s*)` +
   // <Place>, optionally followed by <Region>.
   `(${WORD}(?:\\s+${TOKEN}){0,2}(?:,\\s*${WORD}(?:\\s+${TOKEN}){0,1})?)` +
   // "is in the <Zone> Time Zone", where <Zone> is one to three words. Three
   // covers "Hawaii-Aleutian Standard" and "Greenwich Mean".
-  String.raw`,?\s+is in the\s+((?:[\w-]+\s+){0,2}[\w-]+)\s+time\s?zone\b`,
+  String.raw`,?\s+is in the\s+((?:[\w-]+\s+){0,2}[\w-]+)\s+time\s*zone\b`,
   "gi",
 );
+
+/**
+ * Emphasis markers are removed rather than treated as clause boundaries. As a
+ * boundary, the closing "*" of "my *entire* family is in the eastern time zone"
+ * manufactures a clause start at "family" and hides "my" from PLACE_STOP --
+ * which is the one case that list is named after. Removing them instead leaves
+ * the real subject intact for it to reject.
+ */
+const EMPHASIS = /[*_]/g;
 
 /**
  * Words that cannot open a place name. Matching case-insensitively is what
@@ -111,7 +122,7 @@ const PLACE_STOP = new Set([
   "a", "an", "the", "this", "that", "these", "those",
   "all", "most", "much", "many", "some", "half", "none", "part", "everything",
   "here", "there", "now", "and", "but", "so", "if", "when", "why", "how",
-  "since", "til", "tho", "fyi", "til", "uh", "um", "well", "remember",
+  "since", "til", "tho", "fyi", "uh", "um", "well", "remember",
   "apparently", "fortunately", "unfortunately", "even", "to", "for", "because",
   "also", "still", "just", "only", "maybe", "probably", "honestly", "everyone",
 ]);
@@ -125,12 +136,20 @@ const bare = (w: string) => w.replace(/['’]\w*$/, "");
  * carry a real announcement in a later sentence.
  */
 function announcesAPlace(text: string): boolean {
-  for (const m of text.matchAll(SHAPE)) {
-    const [place = ""] = (m[1] ?? "").toLowerCase().split(/[\s,]+/);
-    const [zone = ""] = (m[2] ?? "").toLowerCase().split(/\s+/);
-    if (place === "" || zone === "") continue;
-    if (PLACE_STOP.has(bare(place)) || ZONE_STOP.has(zone)) continue;
-    return true;
+  const clean = text.replace(EMPHASIS, "");
+  SHAPE.lastIndex = 0;
+  for (let m = SHAPE.exec(clean); m !== null; m = SHAPE.exec(clean)) {
+    const [place = ""] = (m[2] ?? "").toLowerCase().split(/[\s,]+/);
+    const zone = (m[3] ?? "").toLowerCase().split(/\s+/);
+    if (place !== "" && !PLACE_STOP.has(bare(place)) && !zone.some((w) => ZONE_STOP.has(w))) {
+      return true;
+    }
+    // Resume *inside* the rejected span rather than after it. A rejected match
+    // swallows its own leading delimiter and place, so a clause boundary nested
+    // in it is consumed with them -- "Also\nOmaha, Nebraska is in the Central
+    // Time Zone" would never be tried. Advancing one character past the
+    // delimiter both re-exposes that boundary and guarantees progress.
+    SHAPE.lastIndex = m.index + (m[1] ?? "").length + 1;
   }
   return false;
 }

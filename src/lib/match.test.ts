@@ -115,6 +115,18 @@ describe("sincere posts are dropped, not queued", () => {
     // determiners that fill the same slot need excluding by name.
     ignore("Denver is in the wrong time zone");
     ignore("Phoenix is in the same time zone as us right now");
+    // Every captured zone word is checked. An adverb in front of the
+    // determiner would otherwise carry it past the list, and "the exact same
+    // time zone" is one of the commonest sincere phrasings in the corpus.
+    ignore("Denver is in the exact same time zone as us");
+    ignore("Boise is in the totally wrong time zone");
+  });
+
+  test("emphasis markers do not manufacture a clause boundary", () => {
+    // As a boundary, the closing "*" starts a clause at "family" and hides
+    // "my" from PLACE_STOP -- the case that list is named after.
+    ignore("my *entire* family is in the eastern time zone");
+    ignore("the *whole* state is in the eastern time zone");
   });
 
   test("text with no time zone phrase at all", () => {
@@ -198,6 +210,21 @@ describe("the announcement construction in another time zone", () => {
     // A capitalized-token run alone would break on the lowercase particle.
     variant("Coeur d\u2019Alene, Idaho is in the Pacific Time Zone");
     variant("Rio de Janeiro is in the Atlantic Time Zone");
+  });
+
+  test("a rejected match does not swallow a clause nested inside it", () => {
+    // The scan resumes inside a rejected span. Matching non-overlapping would
+    // consume the newline along with "Also", and a one-word hook on its own
+    // line is a common riff format.
+    variant("Also\nOmaha, Nebraska is in the Central Time Zone");
+    variant("Apparently\nBoise is in the Mountain Time Zone");
+    variant("Now\nBoise is in the Mountain Time Zone");
+  });
+
+  test("the frame tolerates doubled whitespace", () => {
+    // This rule reads raw text, so nothing else folds the spacing.
+    variant("Boise is in the Mountain Time  Zone");
+    variant("Boise is in the Mountain  Time Zone");
   });
 
   test("the clause may open a sentence, a quotation or an aside", () => {

@@ -63,8 +63,8 @@ export const EXACT_QUERIES = [
 /**
  * Broader queries used to surface variants for manual review. Swept in full
  * every run, like the exact queries: they paginate through years of sincere
- * timezone discussion, but authenticated that is one request each -- bar
- * "Standard Time Zone", which is four. See collect.ts.
+ * timezone discussion, but authenticated that is one request each bar the
+ * Eastern query (two) and "Standard Time Zone" (four). See collect.ts.
  *
  * The Eastern query was once a list of four. Narrower variants ("… michigan",
  * "… detroit", "… dtw") existed only to work around the anonymous single-page
@@ -91,8 +91,9 @@ export const EXACT_QUERIES = [
  * Deliberately absent, all measured rather than assumed:
  *
  * - "… Alaska …" and "… Hawaii …" return zero results. Not rare -- zero.
- * - "European Time Zone" returns 1182, which exceeds the MAX_PAGES cap in
- *   bsky.ts and would log a truncation warning on every run, for one post.
+ * - "European Time Zone" returns 1182. That is not truncated -- MAX_PAGES
+ *   allows 1200 -- but it spends the entire page budget, and every request of
+ *   it, on one post, one page short of silently dropping results.
  * - "Turkey Time Zone", and every other single-country zone. The matcher
  *   accepts any zone name, so these only need a query if someone other than us
  *   posts one; the archive gains ~40 posts a year, and a query list that tries
