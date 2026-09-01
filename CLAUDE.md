@@ -127,8 +127,23 @@ the UP) that read almost identically to the joke.
 - **variant** → review queue, requires a human decision.
 - **ignore** → dropped, not stored.
 
-Local terms match on **word boundaries**, not substrings: `mi` appears inside
-"admit", "midwest" and "miles", all of which occur in sincere posts.
+Two independent routes reach **variant**, and only the first is about Detroit:
+
+1. The eastern frame plus a **local term**. Local terms match on **word
+   boundaries**, not substrings: `mi` appears inside "admit", "midwest" and
+   "miles", all of which occur in sincere posts.
+2. The **announcement construction in any time zone** — "Jackson Hole, Wyoming
+   is in the Mountain Time Zone" (#4). This one reads *raw* text, not
+   `normalize()` output, because `normalize` collapses the punctuation the rule
+   depends on.
+
+The shape gate is deliberately case-insensitive, which costs it the free
+exclusion of "my family is in the eastern time zone". What separates it from
+sincere geography is instead: the place must **open a clause** (sincere posts
+bury it — "most of Indiana is in the…"), must be **at most three words** before
+an optional `, <Region>`, and must not **start with a determiner, quantifier or
+pronoun** (`PLACE_STOP`). Nothing here can return `exact`; a place-swap is
+always a human decision.
 
 `collect.ts` reclassifies the queue on load, so matcher changes apply retroactively
 to queued posts without re-querying. `denied.json` is applied at load and outranks
