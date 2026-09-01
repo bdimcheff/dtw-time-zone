@@ -140,10 +140,22 @@ Two independent routes reach **variant**, and only the first is about Detroit:
 The shape gate is deliberately case-insensitive, which costs it the free
 exclusion of "my family is in the eastern time zone". What separates it from
 sincere geography is instead: the place must **open a clause** (sincere posts
-bury it — "most of Indiana is in the…"), must be **at most three words** before
-an optional `, <Region>`, and must not **start with a determiner, quantifier or
-pronoun** (`PLACE_STOP`). Nothing here can return `exact`; a place-swap is
-always a human decision.
+bury it — "most of Indiana is in the…"), must be **at most three words**, then
+at most two more after an optional comma, and must not **start with a
+determiner, quantifier or pronoun** (`PLACE_STOP`). Nothing here can return
+`exact`; a place-swap is always a human decision.
+
+The zone slot is **open, with a blocklist** (`ZONE_STOP`), not a list of real
+time zones. An allowlist is a gazetteer that never finishes losing: the US-zone
+list it replaced dropped "Athens, Greece is in the Eastern European Time Zone"
+and "Istanbul, Turkey is in the Turkey Time Zone", and would have gone on
+dropping every zone nobody thought to add. The noise filling that slot is
+always a determiner — "is in the wrong time zone" — and *that* list is finite.
+
+`VARIANT_QUERIES` cannot be open the same way, since a phrase query is a
+literal substring. It is a handful of the highest-yield zones, each measured
+rather than guessed, and it is expected to miss creative ones — the documented
+answer there is to add the post by hand.
 
 `collect.ts` reclassifies the queue on load, so matcher changes apply retroactively
 to queued posts without re-querying. `denied.json` is applied at load and outranks

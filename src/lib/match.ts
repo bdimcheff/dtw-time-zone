@@ -40,16 +40,21 @@ const LOCAL_TERMS = [
 const LOCAL = new RegExp(`\\b(?:${LOCAL_TERMS.join("|")})\\b`);
 
 /**
- * Time zones the joke gets transplanted into (issue #4). A closed list rather
- * than "any word": the open form matches "is in the wrong time zone" and "is
- * in the same time zone", which carry no place at all.
+ * Words that are not a time zone name. The zone slot is otherwise open, which
+ * is the opposite of how this started: an allowlist of world time zones is a
+ * gazetteer that never finishes losing. "Athens, Greece is in the Eastern
+ * European Time Zone" and "Istanbul, Turkey is in the Turkey Time Zone" are
+ * both real posts that an allowlist of US zones dropped.
+ *
+ * A blocklist finishes, because the noise is always a determiner or an
+ * adjective -- "is in the wrong time zone" -- never a place's actual zone.
+ * Only the word next to "the" is checked; "the wrong damn time zone" is caught
+ * by "wrong".
  */
-const ZONES = [
-  "eastern", "central", "mountain", "pacific",
-  "alaska", "hawaii(?:[- ]aleutian)?", "atlantic",
-  "newfoundland", "greenwich mean", "british summer",
-  "central european", "india standard",
-];
+const ZONE_STOP = new Set([
+  "wrong", "same", "right", "other", "another", "different", "correct",
+  "local", "current", "best", "worst", "future", "past", "opposite", "next",
+]);
 
 /**
  * A word of a place name. Case-insensitive: the joke is typed in lowercase as
@@ -58,28 +63,36 @@ const ZONES = [
  * spelled out because the apostrophe would otherwise end the word.
  */
 const WORD = String.raw`(?:[a-z]|d['’](?=[a-z]))[\w.'’-]*`;
+/** Later words may be numeric: "ZIP Code 48242 is in the Eastern Time Zone". */
+const TOKEN = `(?:${WORD}|\\d[\\w.-]*)`;
 
 /**
  * The announcement construction with the place swapped out: "Jackson Hole,
  * Wyoming is in the Mountain Time Zone", "omaha nebraska is in the central time
- * zone". Two things keep it off sincere geography:
+ * zone". Three things keep it off sincere geography:
  *
  * - **Position.** The joke is an announcement, so the place opens a clause.
  *   Sincere posts bury it mid-sentence: "most of Indiana is in the...", "we
  *   found out the hard way that South Bend is in the...", "Now consider that
  *   Thunder Bay, Ontario is in the...". All three fail here.
- * - **Length.** At most three words before the optional ", <Region>". Long
- *   enough for "Salt Lake City, Utah", short enough to exclude "I admit that
- *   Indiana is in the eastern time zone".
+ * - **Length.** At most three words, then at most two more after an optional
+ *   comma. Long enough for "Salt Lake City, Utah", short enough to exclude "I
+ *   admit that Indiana is in the eastern time zone". The comma half is the
+ *   tighter of the two on purpose: as three-and-three it let six words through
+ *   ("It's absolutely bananas, especially when Alabama is in the...").
+ * - **PLACE_STOP / ZONE_STOP.** Below.
  *
- * The place is captured, not just matched, because PLACE_STOP has to see it.
+ * The place and the zone are both captured, because those two lists have to
+ * see them.
  */
 const SHAPE = new RegExp(
   // Start of post, or the start of a sentence, quotation or asterisked aside.
   String.raw`(?:^|[.!?]["'”]?\s+|[\n"“'*]\s*)` +
   // <Place>, optionally followed by <Region>.
-  `(${WORD}(?:\\s+${WORD}){0,2}(?:,\\s*${WORD}(?:\\s+${WORD}){0,2})?)` +
-  String.raw`,?\s+is in the\s+(?:${ZONES.join("|")})\s+time\s?zone\b`,
+  `(${WORD}(?:\\s+${TOKEN}){0,2}(?:,\\s*${WORD}(?:\\s+${TOKEN}){0,1})?)` +
+  // "is in the <Zone> Time Zone", where <Zone> is one to three words. Three
+  // covers "Hawaii-Aleutian Standard" and "Greenwich Mean".
+  String.raw`,?\s+is in the\s+((?:[\w-]+\s+){0,2}[\w-]+)\s+time\s?zone\b`,
   "gi",
 );
 
@@ -87,12 +100,10 @@ const SHAPE = new RegExp(
  * Words that cannot open a place name. Matching case-insensitively is what
  * makes this necessary: capitalization used to exclude "my family is in the
  * eastern time zone" and "Most of Indiana is in the eastern time zone" for
- * free, and every one of these is a real sincere opener from the corpus or its
- * near neighbours.
+ * free. Every entry is a real sincere opener seen in a live search.
  *
- * Only the first word is checked. A place name never starts with one of these,
- * and the sincere forms always do -- a determiner, a quantifier, or a subject
- * the writer is speaking about instead of announcing.
+ * Only the first word is checked, with a possessive or contraction clipped off
+ * first -- "It's absolutely bananas, ..." would otherwise slip past "it".
  */
 const PLACE_STOP = new Set([
   "i", "we", "you", "they", "he", "she", "it",
@@ -100,7 +111,13 @@ const PLACE_STOP = new Set([
   "a", "an", "the", "this", "that", "these", "those",
   "all", "most", "much", "many", "some", "half", "none", "part", "everything",
   "here", "there", "now", "and", "but", "so", "if", "when", "why", "how",
+  "since", "til", "tho", "fyi", "til", "uh", "um", "well", "remember",
+  "apparently", "fortunately", "unfortunately", "even", "to", "for", "because",
+  "also", "still", "just", "only", "maybe", "probably", "honestly", "everyone",
 ]);
+
+/** Trim a possessive or contraction so "it's" is recognised as "it". */
+const bare = (w: string) => w.replace(/['’]\w*$/, "");
 
 /**
  * True when the text opens a clause with a place and announces its time zone.
@@ -109,8 +126,11 @@ const PLACE_STOP = new Set([
  */
 function announcesAPlace(text: string): boolean {
   for (const m of text.matchAll(SHAPE)) {
-    const [first = ""] = (m[1] ?? "").toLowerCase().split(/[\s,]+/);
-    if (first !== "" && !PLACE_STOP.has(first)) return true;
+    const [place = ""] = (m[1] ?? "").toLowerCase().split(/[\s,]+/);
+    const [zone = ""] = (m[2] ?? "").toLowerCase().split(/\s+/);
+    if (place === "" || zone === "") continue;
+    if (PLACE_STOP.has(bare(place)) || ZONE_STOP.has(zone)) continue;
+    return true;
   }
   return false;
 }

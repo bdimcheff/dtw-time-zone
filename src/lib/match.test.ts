@@ -110,8 +110,9 @@ describe("sincere posts are dropped, not queued", () => {
   });
 
   test("a time zone that is not one", () => {
-    // Without the closed zone list, any word before "time zone" matches, and
-    // these are the sincere shapes that produces.
+    // ZONE_STOP. The zone slot is open -- an allowlist of world time zones
+    // dropped "Athens, Greece is in the Eastern European Time Zone" -- so the
+    // determiners that fill the same slot need excluding by name.
     ignore("Denver is in the wrong time zone");
     ignore("Phoenix is in the same time zone as us right now");
   });
@@ -155,6 +156,35 @@ describe("the announcement construction in another time zone", () => {
    * and clause position are the only things separating the joke from sincere
    * geography, and normalize() destroys both.
    */
+  test("any zone name, not a list of them", () => {
+    // Both real posts, both dropped by the US-zone allowlist this replaced.
+    variant("Athens, Greece is in the Eastern European Time Zone");
+    variant("Istanbul, Turkey is in the Turkey Time Zone");
+    // "<Zone> Standard/Daylight Time Zone" is the same construction.
+    variant("Ann Arbor, Michigan is in the Atlantic Standard Time Zone");
+    variant("Phocific Standard Time is in the Pacific Daylight Time Zone");
+  });
+
+  test("a later word of the place may be numeric", () => {
+    variant("ZIP Code 48242 is in the Eastern Time Zone");
+    // ...but a number cannot rescue a phrase that is not a place.
+    ignore("It is 500 miles away and is in the eastern time zone");
+  });
+
+  test("the comma half is bounded tighter than the first", () => {
+    // As three-and-three this let six words through.
+    ignore("It’s absolutely bananas, especially when Alabama is in the central time zone");
+    ignore("For example, Quintana Roo is in the Eastern Time Zone");
+  });
+
+  test("sentence openers that are not places", () => {
+    ignore("TIL Alabama is in the central time zone.");
+    ignore("FYI, Indianapolis is in the central time zone");
+    ignore("Apparently Ames is in the eastern time zone, too.");
+    ignore("Since Louisiana is in the Central Time Zone, the answer is simple");
+    ignore("Even though Arizona is in the Mountain Time Zone, it skips DST");
+  });
+
   test("the place is swapped and so is the zone", () => {
     variant("Jackson Hole, Wyoming is in the Mountain Time Zone");
     variant("Omaha, Nebraska is in the Central Time Zone");
