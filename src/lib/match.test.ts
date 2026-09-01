@@ -93,6 +93,42 @@ describe("sincere posts are dropped, not queued", () => {
     ignore("I'm looking for somebody who is an AI expert who is in the eastern time zone only");
   });
 
+  test("a place that is not in the announcement position", () => {
+    // The shape gate keys on a place opening a clause, so these stay out even
+    // though every other feature of the construction is present.
+    ignore("I think Omaha, Nebraska is in the Central Time Zone");
+    ignore("we found out that Boise is in the Mountain Time Zone");
+  });
+
+  test("a determiner or quantifier where the place would be", () => {
+    // PLACE_STOP. The shape gate reads case-insensitively, so these are no
+    // longer excluded by capitalization and each needs a real reason to fail.
+    ignore("Most of Indiana is in the eastern time zone");
+    ignore("Part of Oregon is in the mountain time zone");
+    ignore("The midwest is in the eastern time zone apparently");
+    ignore("My family is in the eastern time zone");
+  });
+
+  test("a time zone that is not one", () => {
+    // ZONE_STOP. The zone slot is open -- an allowlist of world time zones
+    // dropped "Athens, Greece is in the Eastern European Time Zone" -- so the
+    // determiners that fill the same slot need excluding by name.
+    ignore("Denver is in the wrong time zone");
+    ignore("Phoenix is in the same time zone as us right now");
+    // Every captured zone word is checked. An adverb in front of the
+    // determiner would otherwise carry it past the list, and "the exact same
+    // time zone" is one of the commonest sincere phrasings in the corpus.
+    ignore("Denver is in the exact same time zone as us");
+    ignore("Boise is in the totally wrong time zone");
+  });
+
+  test("emphasis markers do not manufacture a clause boundary", () => {
+    // As a boundary, the closing "*" starts a clause at "family" and hides
+    // "my" from PLACE_STOP -- the case that list is named after.
+    ignore("my *entire* family is in the eastern time zone");
+    ignore("the *whole* state is in the eastern time zone");
+  });
+
   test("text with no time zone phrase at all", () => {
     ignore("Only the real ones know");
     ignore("Detroit, Michigan");
@@ -120,5 +156,96 @@ describe("the MI abbreviation does not match inside longer words", () => {
   test("michigan is not matched by the mich abbreviation alternative", () => {
     // "mich" must not swallow "michigan" and change which branch fires.
     exact("Detroit, Michigan is in the Eastern Time Zone");
+  });
+});
+
+describe("the announcement construction in another time zone", () => {
+  /**
+   * Issue #4. These are riffs on the original form, so they are queued for a
+   * human and never auto-admitted — `classify` returns "variant", not "exact".
+   *
+   * Unlike every other rule here, the shape gate reads raw text: letter case
+   * and clause position are the only things separating the joke from sincere
+   * geography, and normalize() destroys both.
+   */
+  test("any zone name, not a list of them", () => {
+    // Both real posts, both dropped by the US-zone allowlist this replaced.
+    variant("Athens, Greece is in the Eastern European Time Zone");
+    variant("Istanbul, Turkey is in the Turkey Time Zone");
+    // "<Zone> Standard/Daylight Time Zone" is the same construction.
+    variant("Ann Arbor, Michigan is in the Atlantic Standard Time Zone");
+    variant("Phocific Standard Time is in the Pacific Daylight Time Zone");
+  });
+
+  test("a later word of the place may be numeric", () => {
+    variant("ZIP Code 48242 is in the Eastern Time Zone");
+    // ...but a number cannot rescue a phrase that is not a place.
+    ignore("It is 500 miles away and is in the eastern time zone");
+  });
+
+  test("the comma half is bounded tighter than the first", () => {
+    // As three-and-three this let six words through.
+    ignore("It’s absolutely bananas, especially when Alabama is in the central time zone");
+    ignore("For example, Quintana Roo is in the Eastern Time Zone");
+  });
+
+  test("sentence openers that are not places", () => {
+    ignore("TIL Alabama is in the central time zone.");
+    ignore("FYI, Indianapolis is in the central time zone");
+    ignore("Apparently Ames is in the eastern time zone, too.");
+    ignore("Since Louisiana is in the Central Time Zone, the answer is simple");
+    ignore("Even though Arizona is in the Mountain Time Zone, it skips DST");
+  });
+
+  test("the place is swapped and so is the zone", () => {
+    variant("Jackson Hole, Wyoming is in the Mountain Time Zone");
+    variant("Omaha, Nebraska is in the Central Time Zone");
+    variant("London, England is in the Greenwich Mean Time Zone");
+    variant("Honolulu, Hawaii is in the Hawaii-Aleutian Time Zone");
+  });
+
+  test("the place may be a bare city, abbreviated, or carry a particle", () => {
+    variant("Boise is in the Mountain Time Zone");
+    variant("St. Louis, Missouri is in the Central Time Zone");
+    // A capitalized-token run alone would break on the lowercase particle.
+    variant("Coeur d\u2019Alene, Idaho is in the Pacific Time Zone");
+    variant("Rio de Janeiro is in the Atlantic Time Zone");
+  });
+
+  test("a rejected match does not swallow a clause nested inside it", () => {
+    // The scan resumes inside a rejected span. Matching non-overlapping would
+    // consume the newline along with "Also", and a one-word hook on its own
+    // line is a common riff format.
+    variant("Also\nOmaha, Nebraska is in the Central Time Zone");
+    variant("Apparently\nBoise is in the Mountain Time Zone");
+    variant("Now\nBoise is in the Mountain Time Zone");
+  });
+
+  test("the frame tolerates doubled whitespace", () => {
+    // This rule reads raw text, so nothing else folds the spacing.
+    variant("Boise is in the Mountain Time  Zone");
+    variant("Boise is in the Mountain  Time Zone");
+  });
+
+  test("the clause may open a sentence, a quotation or an aside", () => {
+    variant("Fun fact. Omaha, Nebraska is in the Central Time Zone");
+    variant("\u201cOmaha, Nebraska is in the Central Time Zone\u201d");
+    variant("*airport voice* Omaha, Nebraska is in the Central Time Zone");
+    variant("flight update:\nOmaha, Nebraska is in the Central Time Zone");
+  });
+
+  test("zone casing and the timezone spelling both vary", () => {
+    variant("Boise, Idaho is in the Mountain time zone");
+    variant("Boise, Idaho is in the Mountain timezone");
+  });
+
+  test("case is not a signal — a lowercase riff is queued too", () => {
+    // The expensive half of the design. Reading raw text case-insensitively is
+    // what makes PLACE_STOP necessary above; in exchange, a riff typed the way
+    // most of them are typed reaches the queue instead of being dropped.
+    variant("omaha nebraska is in the central time zone");
+    variant("omaha, nebraska is in the central time zone");
+    variant("salt lake city, utah is in the mountain time zone");
+    variant("london england is in the greenwich mean time zone");
   });
 });

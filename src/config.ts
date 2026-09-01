@@ -61,17 +61,53 @@ export const EXACT_QUERIES = [
 ];
 
 /**
- * Broader query used to surface variants for manual review. Swept in full every
- * run, like the exact queries: it paginates through years of sincere timezone
- * discussion, but authenticated that is two requests. See collect.ts.
+ * Broader queries used to surface variants for manual review. Swept in full
+ * every run, like the exact queries: they paginate through years of sincere
+ * timezone discussion, but authenticated that is one request each bar the
+ * Eastern query (two) and "Standard Time Zone" (four). See collect.ts.
  *
- * This was once a list of four. Narrower variants ("… michigan", "… detroit",
- * "… dtw") existed only to work around the anonymous single-page cap: each
- * returned a different newest-100 window, so together they reached posts the
- * broad query could not. Authenticated, the broad query returns its complete
- * result set — measured at 170 results across 2 pages, untruncated — and the
- * narrow ones contributed zero unique posts. classify() only accepts a variant
- * containing the frame this query searches for, so the broad query is now a
- * strict superset.
+ * The Eastern query was once a list of four. Narrower variants ("… michigan",
+ * "… detroit", "… dtw") existed only to work around the anonymous single-page
+ * cap: each returned a different newest-100 window, so together they reached
+ * posts the broad query could not. Authenticated, the broad query returns its
+ * complete result set -- measured at 178 results across 2 pages, untruncated --
+ * and the narrow ones contributed zero unique posts.
+ *
+ * The rest are for riffs that transplant the announcement somewhere else (#4).
+ * classify() no longer requires the eastern frame, so unlike the list above
+ * these are not redundant with each other: a phrase query is a literal
+ * substring, and "Atlantic Standard Time Zone" does not contain "is in the
+ * Atlantic Time Zone".
+ *
+ * Measured yields, against the archive as it stood when these were added:
+ *
+ *     "is in the Central Time Zone"     54 results, 21 new candidates
+ *     "is in the Mountain Time Zone"    36 results, 18 new
+ *     "is in the Pacific Time Zone"     27 results,  7 new
+ *     "is in the Atlantic Time Zone"     7 results,  2 new
+ *     "Standard Time Zone"             345 results,  2 new
+ *     "Daylight Time Zone"              43 results,  1 new
+ *
+ * Deliberately absent, all measured rather than assumed:
+ *
+ * - "… Alaska …" and "… Hawaii …" return zero results. Not rare -- zero.
+ * - "European Time Zone" returns 1182. That is not truncated -- MAX_PAGES
+ *   allows 1200 -- but it spends the entire page budget, and every request of
+ *   it, on one post, one page short of silently dropping results.
+ * - "Turkey Time Zone", and every other single-country zone. The matcher
+ *   accepts any zone name, so these only need a query if someone other than us
+ *   posts one; the archive gains ~40 posts a year, and a query list that tries
+ *   to enumerate the world's time zones will lose to it anyway. Add such a post
+ *   by hand.
  */
-export const VARIANT_QUERIES = ['"is in the Eastern Time Zone"'];
+export const VARIANT_QUERIES = [
+  '"is in the Eastern Time Zone"',
+  '"is in the Central Time Zone"',
+  '"is in the Mountain Time Zone"',
+  '"is in the Pacific Time Zone"',
+  '"is in the Atlantic Time Zone"',
+  // Not "<Zone> Time Zone" -- these catch "Atlantic Standard", "Pacific
+  // Daylight" and anything else built the same way, in one query each.
+  '"Standard Time Zone"',
+  '"Daylight Time Zone"',
+];
