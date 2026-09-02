@@ -1,4 +1,4 @@
-name: Deploy feed function (code)
+name: Deploy feed function (push)
 
 # The function's code changes rarely; its data changes ~40 times a year. This
 # workflow covers the code, and it shares the data with update.yml, because the
@@ -50,7 +50,16 @@ jobs:
       contents: read
       id-token: write
     steps:
+      # main, not the SHA that triggered us -- which is what checkout defaults to
+      # for a push. update.yml holds a separate lock and can collect and deploy a
+      # post while this job is still running `npm ci`; shipping the trigger's tree
+      # would then overwrite that with an older archive. What the function serves
+      # is "main as of now", never "main as of the push". This narrows the race
+      # but cannot close it -- update.yml's staleness gate is what closes it.
+      # A manual dispatch deploys main for the same reason.
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: actions/setup-node@v4
         with:
@@ -85,3 +94,18 @@ jobs:
           --only functions:getFeedSkeleton
           --project dtw-time-zone
           --non-interactive --force
+
+      # The same post-deploy walk update.yml runs, for the same reason: this
+      # workflow ships the feed's *contents* now, not only its code, and the
+      # AppView hard-codes getFeedGenerator's isValid/isOnline to true, so the
+      # cursor walk is the only thing that can say the deploy landed.
+      #
+      # It asserts more than this job deploys -- did.json and
+      # describeFeedGenerator are hosting, which only update.yml pushes, and the
+      # feed record is published by hand. A PR that edits FEED_NAME or
+      # FEED_DESCRIPTION therefore reddens this run until `npm run
+      # publish-record` catches up. That is a true statement about the deployed
+      # system, and it is one the next scheduled run would make anyway; better
+      # said here, next to the change that caused it.
+      - name: Verify deployment
+        run: npm run verify

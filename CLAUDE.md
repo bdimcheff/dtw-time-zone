@@ -105,9 +105,9 @@ look like nothing happening.
   `paths`-filtered and covers pushes made by a human — code changes, and a merged
   review PR. The collector's own push is made with the bot's token, so that filter
   never fires for it, and `update.yml` deploys the function inline instead.
-  Neither covers both: `update.yml`'s gate reads the diff of the commit *that run*
-  made, and a run that collects nothing makes no commit, so it cannot notice a
-  post admitted by hand.
+  Its gate is deliberately not `data/posts.json changed in this run's commit` —
+  that is blind to everything the run did not commit itself, a merged review PR
+  first among them. It asks the deployed endpoint instead.
 - **Firebase's default `ignore` glob `**/.*` excludes `.well-known`**, which makes
   `did:web` resolution 404. `firebase.json` enumerates exclusions explicitly — do
   not reintroduce the glob.
@@ -198,22 +198,32 @@ into bugs:
 - **`Build` runs after the push**, since a rebase can pull in a review PR that
   admitted posts.
 
-- **`Deploy feed function (archive changed)` runs after the hosting deploy and
-  before `Verify`**, and only when `data/posts.json` changed. The archive is bundled
-  into the function, so `verify`'s cursor walk — which asserts the endpoint serves
-  exactly what `data/posts.json` holds — is only true once it has run.
+- **`Deploy feed function (archive stale)` runs after the hosting deploy and
+  before `Verify`**. The archive is bundled into the function, so `verify`'s cursor
+  walk — which asserts the endpoint serves exactly what `data/posts.json` holds —
+  is only true once it has run.
 
 The push-conflict path re-collects and re-checks; keep both.
 
 ### The other workflow
 
-`.github/workflows/deploy-functions.yml` ("Deploy feed function (code)") is the
+`.github/workflows/deploy-functions.yml` ("Deploy feed function (push)") is the
 second half of the same job: the two are split by *who pushed*, not by what
 changed. `update.yml`'s step covers the collector's own push, which triggers no
 workflow; this one covers every push a human makes, which is why `data/posts.json`
 is in its `paths` filter alongside the code. Admitting a post by hand is the case
 that needs it — merging that PR is the only way the archive changes without the
 collector committing anything.
+
+The two hold **separate** concurrency groups and can therefore deploy the function
+at the same time, last writer winning. Sharing one group is worse, not better: a
+merge's deploy would queue behind a running collection, and GitHub cancels a
+*pending* run when a newer one queues, so the next half-hourly tick would delete
+it outright. The race is settled after the fact instead — `update.yml` gates its
+deploy on asking the live endpoint whether it already serves `data/posts.json`,
+so any archive that reaches `main` undeployed, by any route, ships within thirty
+minutes. That gate, not the `paths` filter, is what makes the feed
+self-correcting; the filter only makes a merged review PR fast.
 
 Its `paths` filter is deliberately `src/**` rather than the function's import
 graph. The filter has to track two dependency graphs — what the bundle imports,

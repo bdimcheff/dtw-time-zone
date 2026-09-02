@@ -8,7 +8,7 @@ on:
   schedule:
     # Every half hour. This cadence *is* the feed's latency: the archive is
     # bundled into the skeleton function, so a post does not appear until a run
-    # collects it and redeploys (see "Deploy feed function (archive changed)").
+    # collects it and redeploys (see "Deploy feed function (archive stale)").
     # Every run is a full sweep of ~3 requests, so frequency is close to free.
     # Offset off the hour because scheduled runs queue at low priority and the
     # top of the hour is the worst time to ask.
@@ -51,6 +51,12 @@ jobs:
     # a long time under sustained rate limiting, and a run wedged for hours would
     # block the next scheduled window without producing anything.
     timeout-minutes: 45
+    # Deliberately NOT shared with deploy-functions.yml, even though both deploy
+    # getFeedSkeleton and both are now triggered by data/posts.json. Sharing a
+    # group would make a merge's deploy *pending* behind a running collection,
+    # and GitHub cancels a pending run when a newer one queues -- the next
+    # half-hourly tick would delete the deploy that ships the merged post. The
+    # two therefore race, and the staleness gate below is what settles it.
     concurrency:
       group: update-feed
       cancel-in-progress: false
@@ -222,22 +228,47 @@ jobs:
           projectId: dtw-time-zone
           channelId: live
 
+      # Asks the deployed endpoint whether it is already serving what this
+      # checkout holds, which is the actual precondition for the deploy below.
+      # `posts_changed` alone cannot answer that: it reads the diff of the commit
+      # *this run* made, so it is blind to a post admitted by a merged review PR,
+      # to one lost when that merge's deploy raced this workflow's, and to the
+      # rebase at the end of Commit data pulling either in after report() ran.
+      # Each of those leaves the archive committed and undeployed, with nothing
+      # here able to notice and every later run failing at Verify.
+      #
+      # verify's walk is exactly that comparison -- it asserts the endpoint
+      # serves precisely data/posts.json -- so it is reused as the gate rather
+      # than reimplemented. It also asserts things a function deploy cannot fix
+      # (did.json, the published feed record); those failing here costs one
+      # unnecessary ~2min deploy, which is the cheap direction to be wrong in.
+      #
+      # Skipped when this run's own commit already answers the question -- both
+      # so the ~40 runs a year that collect something do not pay for a probe they
+      # cannot learn anything from, and so those runs do not show a step that is
+      # red by construction.
+      - name: Is the deployed archive current?
+        id: deployed
+        if: steps.commit.outputs.posts_changed != '1'
+        continue-on-error: true
+        run: npm run verify
+
       # The skeleton is a function with the archive bundled into it, so a new post
       # is not reachable until the function itself is redeployed -- hosting only
-      # carries did.json and describeFeedGenerator now. Gated on posts.json actually
-      # changing, which is ~40 runs a year; the other ~17,500 skip it.
+      # carries did.json and describeFeedGenerator now. Still ~40 runs a year;
+      # the other ~17,500 find the gate above green and skip it.
       #
       # This lives here as well as in deploy-functions.yml's paths filter because
       # that workflow triggers on push, and the push this job makes is made with
       # GITHUB_TOKEN, which does not start a workflow run. The filter there
-      # covers the other writer of posts.json -- a review PR merged by hand --
-      # which this gate cannot see: it reads the diff of the commit this run
-      # made, and a run that collects nothing makes no commit at all.
+      # deploys a merged review PR immediately; this step is what makes that
+      # merely faster than waiting for the next tick, rather than the only way
+      # the post ever ships.
       #
       # Before Verify, deliberately: the walk in verify asserts the endpoint serves
       # exactly what data/posts.json holds, which is only true once this has run.
-      - name: Deploy feed function (archive changed)
-        if: steps.commit.outputs.posts_changed == '1'
+      - name: Deploy feed function (archive stale)
+        if: steps.commit.outputs.posts_changed == '1' || steps.deployed.outcome == 'failure'
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
