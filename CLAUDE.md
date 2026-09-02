@@ -101,10 +101,12 @@ look like nothing happening.
   walk is the health signal.
 - **A push made with `GITHUB_TOKEN` does not start a workflow run.** This is why
   the function is deployed from *two* places. `deploy-functions.yml` is
-  `paths`-filtered and covers code changes, which arrive as ordinary pushes. The
-  data deploy cannot work that way — the archive is pushed by the bot's own token,
-  so a filter on `data/` would silently never fire — and therefore lives as a step
-  inside `update.yml` instead.
+  `paths`-filtered and covers pushes made by a human — code changes, and a merged
+  review PR. The collector's own push is made with the bot's token, so that filter
+  never fires for it, and `update.yml` deploys the function inline instead.
+  Neither covers both: `update.yml`'s gate reads the diff of the commit *that run*
+  made, and a run that collects nothing makes no commit, so it cannot notice a
+  post admitted by hand.
 - **Firebase's default `ignore` glob `**/.*` excludes `.well-known`**, which makes
   `did:web` resolution 404. `firebase.json` enumerates exclusions explicitly — do
   not reintroduce the glob.
@@ -205,10 +207,12 @@ The push-conflict path re-collects and re-checks; keep both.
 ### The other workflow
 
 `.github/workflows/deploy-functions.yml` ("Deploy feed function (code)") is the
-second half of the same job: it redeploys the function when the *code* changes,
-where `update.yml`'s step redeploys it when the *data* changes. The split exists
-because a bot push does not trigger a workflow (see above), not because the two
-deploys differ.
+second half of the same job: the two are split by *who pushed*, not by what
+changed. `update.yml`'s step covers the collector's own push, which triggers no
+workflow; this one covers every push a human makes, which is why `data/posts.json`
+is in its `paths` filter alongside the code. Admitting a post by hand is the case
+that needs it — merging that PR is the only way the archive changes without the
+collector committing anything.
 
 Its `paths` filter is deliberately `src/**` rather than the function's import
 graph. The filter has to track two dependency graphs — what the bundle imports,

@@ -1,23 +1,37 @@
 name: Deploy feed function (code)
 
 # The function's code changes rarely; its data changes ~40 times a year. This
-# workflow covers the code, and the update workflow deploys the data when
-# data/posts.json changes -- it has to, because a push made with GITHUB_TOKEN
-# does not start a workflow run, so a paths filter on data/ would silently
-# never fire and the function would serve a frozen archive.
+# workflow covers the code, and it shares the data with update.yml, because the
+# archive reaches main by two routes and neither workflow can cover both:
+#
+#   - The collector's own push, made with GITHUB_TOKEN, which does not start a
+#     workflow run. The paths filter below therefore never fires for it, which
+#     is why update.yml deploys the function inline instead.
+#   - A review PR merged by hand, which is an ordinary push that this filter
+#     does catch. update.yml cannot cover this one: its deploy is gated on the
+#     diff of the commit *that run* made, and a run that collects nothing makes
+#     no commit at all, so it reports no change. Without data/posts.json below,
+#     an admitted post would sit in the archive undeployed until some unrelated
+#     collection happened to touch posts.json -- and every scheduled run's
+#     Verify would fail in the meantime, since its walk asserts the endpoint
+#     serves exactly what data/posts.json holds.
 on:
   push:
     branches: [main]
-    # Deliberately the whole of src/, not the function's import graph. The
-    # filter has to track two graphs at once: what the bundle imports
-    # (functions/index.ts, lib/skeleton.ts, config.ts) *and* what produces
-    # entries.json at build time (build.ts, lib/store.ts, lib/order.ts). Only
-    # the first is mechanical, and a change to the second that this list missed
-    # would leave the function serving a stale ordering with nothing failing --
-    # update.yml would not cover it either, since it gates on data/posts.json
-    # changing. The job is ~2 minutes and the code changes rarely, so
-    # over-triggering is the cheap side of the trade.
     paths:
+      # posts.json alone: pending.json and denied.json are review state and are
+      # not bundled into the function. See above for which of the two pushes
+      # that write this file can reach the filter.
+      - "data/posts.json"
+      # Deliberately the whole of src/, not the function's import graph. The
+      # filter has to track two graphs at once: what the bundle imports
+      # (functions/index.ts, lib/skeleton.ts, config.ts) *and* what produces
+      # entries.json at build time (build.ts, lib/store.ts, lib/order.ts). Only
+      # the first is mechanical, and a change to the second that this list
+      # missed would leave the function serving a stale ordering with nothing
+      # failing -- update.yml would not cover it either, since it gates on
+      # data/posts.json changing. The job is ~2 minutes and the code changes
+      # rarely, so over-triggering is the cheap side of the trade.
       - "src/**"
       - "functions/**"
       - "package.json"

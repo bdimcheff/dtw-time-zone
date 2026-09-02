@@ -227,9 +227,12 @@ jobs:
       # carries did.json and describeFeedGenerator now. Gated on posts.json actually
       # changing, which is ~40 runs a year; the other ~17,500 skip it.
       #
-      # This lives here rather than in deploy-functions.yml because that workflow
-      # triggers on push, and a push made with GITHUB_TOKEN does not start a
-      # workflow run -- a paths filter on data/ would silently never fire.
+      # This lives here as well as in deploy-functions.yml's paths filter because
+      # that workflow triggers on push, and the push this job makes is made with
+      # GITHUB_TOKEN, which does not start a workflow run. The filter there
+      # covers the other writer of posts.json -- a review PR merged by hand --
+      # which this gate cannot see: it reads the diff of the commit this run
+      # made, and a run that collects nothing makes no commit at all.
       #
       # Before Verify, deliberately: the walk in verify asserts the endpoint serves
       # exactly what data/posts.json holds, which is only true once this has run.
