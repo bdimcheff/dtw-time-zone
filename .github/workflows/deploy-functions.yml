@@ -1,23 +1,38 @@
-name: Deploy feed function (code)
+name: Deploy feed function (push)
 
 # The function's code changes rarely; its data changes ~40 times a year. This
-# workflow covers the code, and the update workflow deploys the data when
-# data/posts.json changes -- it has to, because a push made with GITHUB_TOKEN
-# does not start a workflow run, so a paths filter on data/ would silently
-# never fire and the function would serve a frozen archive.
+# workflow covers the code, and it shares the data with update.yml, because the
+# archive reaches main by two routes and neither workflow can cover both:
+#
+#   - The collector's own push, made with GITHUB_TOKEN, which does not start a
+#     workflow run. The paths filter below therefore never fires for it, which
+#     is why update.yml deploys the function inline instead.
+#   - A review PR merged by hand, which is an ordinary push that this filter
+#     does catch, and catches within a minute of the merge.
+#
+# update.yml's staleness gate would ship that merge too, at the next half-hourly
+# tick -- it asks the live endpoint whether it already serves data/posts.json,
+# so it notices an archive it did not commit itself. That gate is what makes the
+# feed self-correcting; the filter below is only what makes a review PR fast.
+# Neither is redundant: without the gate a lost race stays lost, and without the
+# filter an admitted post waits up to thirty minutes to appear.
 on:
   push:
     branches: [main]
-    # Deliberately the whole of src/, not the function's import graph. The
-    # filter has to track two graphs at once: what the bundle imports
-    # (functions/index.ts, lib/skeleton.ts, config.ts) *and* what produces
-    # entries.json at build time (build.ts, lib/store.ts, lib/order.ts). Only
-    # the first is mechanical, and a change to the second that this list missed
-    # would leave the function serving a stale ordering with nothing failing --
-    # update.yml would not cover it either, since it gates on data/posts.json
-    # changing. The job is ~2 minutes and the code changes rarely, so
-    # over-triggering is the cheap side of the trade.
     paths:
+      # posts.json alone: pending.json and denied.json are review state and are
+      # not bundled into the function. See above for which of the two pushes
+      # that write this file can reach the filter.
+      - "data/posts.json"
+      # Deliberately the whole of src/, not the function's import graph. The
+      # filter has to track two graphs at once: what the bundle imports
+      # (functions/index.ts, lib/skeleton.ts, config.ts) *and* what produces
+      # entries.json at build time (build.ts, lib/store.ts, lib/order.ts). Only
+      # the first is mechanical, and a change to the second that this list
+      # missed would leave the function serving a stale ordering with nothing
+      # failing -- update.yml would not cover it either, since it gates on
+      # data/posts.json changing. The job is ~2 minutes and the code changes
+      # rarely, so over-triggering is the cheap side of the trade.
       - "src/**"
       - "functions/**"
       - "package.json"
@@ -36,7 +51,16 @@ jobs:
       contents: read
       id-token: write
     steps:
+      # main, not the SHA that triggered us -- which is what checkout defaults to
+      # for a push. update.yml holds a separate lock and can collect and deploy a
+      # post while this job is still running `npm ci`; shipping the trigger's tree
+      # would then overwrite that with an older archive. What the function serves
+      # is "main as of now", never "main as of the push". This narrows the race
+      # but cannot close it -- update.yml's staleness gate is what closes it.
+      # A manual dispatch deploys main for the same reason.
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: actions/setup-node@v4
         with:
@@ -71,3 +95,26 @@ jobs:
           --only functions:getFeedSkeleton
           --project dtw-time-zone
           --non-interactive --force
+
+      # The same post-deploy walk update.yml runs, for the same reason: this
+      # workflow ships the feed's *contents* now, not only its code, and the
+      # AppView hard-codes getFeedGenerator's isValid/isOnline to true, so the
+      # cursor walk is the only thing that can say the deploy landed.
+      #
+      # It asserts more than this job deploys -- did.json and
+      # describeFeedGenerator are hosting, which only update.yml pushes, and the
+      # feed record is published by hand. A PR that edits FEED_NAME or
+      # FEED_DESCRIPTION therefore reddens this run until `npm run
+      # publish-record` catches up. That is a true statement about the deployed
+      # system, and it is one the next scheduled run would make anyway; better
+      # said here, next to the change that caused it.
+      #
+      # It can also go red for a race the design allows: update.yml holds its own
+      # lock and may deploy a newer archive between this job's Deploy and this
+      # step, at which point the walk compares a newer endpoint against this
+      # checkout and finds a post it does not know about. That run is red over a
+      # system that is correct, and rerunning it passes. Left as is -- a check
+      # that stays quiet when the archive and the endpoint disagree would have
+      # let the failure this whole file exists for go unnoticed.
+      - name: Verify deployment
+        run: npm run verify
