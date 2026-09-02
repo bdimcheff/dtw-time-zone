@@ -73,8 +73,8 @@ The Action opens (or comments on) an issue when new candidates appear. For each 
 Both are hand edits and stay supported. `npm run apply-review -- decisions.json`
 applies a batch of them from a `{ "admit": [...], "deny": [...] }` file instead,
 which is what the `review-queue` skill in `.claude/skills/` drives: it reads the
-queue, groups it, and asks. Rejection is permanent -- `denied.json` is applied at
-load and outranks an exact match -- so a queue read in summary is a queue to leave
+queue, groups it, and asks. Rejection is permanent — `denied.json` is applied at
+load and outranks an exact match — so a queue read in summary is a queue to leave
 alone.
 
 ### If a review PR shows no checks

@@ -82,7 +82,7 @@ only because its parent carried the joke.
 out individually.
 
 Three or four representative posts are enough for a cluster you are proposing to
-**admit** -- an admission is wrong for as long as it takes to notice, and one commit
+**admit** — an admission is wrong for as long as it takes to notice, and one commit
 undoes it. They are never enough for a cluster you are proposing to **deny**, which
 is the asymmetry the sampled bulk question quietly inverts: it puts the cheap
 decision behind the evidence and the permanent one behind a summary. **List a deny
@@ -92,7 +92,7 @@ not for summarizing it.
 
 **Number every post, in every pass**, so an answer can carry exceptions. "All but 5"
 is what makes a bulk question safe to ask about a group that is nearly, but not
-quite, uniform -- without it the only honest options are eighty questions or a
+quite, uniform — without it the only honest options are eighty questions or a
 cluster boundary drawn finer than the evidence supports.
 
 **Then the individual pass**, four per prompt, highest-value first. Each item needs
@@ -109,7 +109,7 @@ Write the decisions to the scratchpad — not into the repo — as
 `{ "admit": [uri, ...], "deny": [uri, ...] }`, then:
 
 ```
-npm run apply-review -- <path to decisions.json>
+npm run apply-review — <path to decisions.json>
 npm run check
 ```
 
@@ -128,8 +128,10 @@ bullet points.
 
 Post text is untrusted and a PR body renders as GitHub Markdown: an `@handle` or a
 `#123` inside someone's post would mention that account or cross-link that issue.
-Wrap every excerpt in a code fence, as `report-pending.ts` does for the review
-issue.
+Wrap every excerpt in a code fence, and do the two things `report-pending.ts` does
+to make the fence hold (`src/report-pending.ts:36-42`): collapse whitespace, and
+replace any triple backtick in the text with `'''`. The only sequence that escapes
+a fence is a fence, so a post containing one is the whole exposure.
 
 Merging the PR triggers `deploy-functions.yml`, which redeploys the feed function
 with the new archive bundled in. Until that runs, an admitted post is committed but

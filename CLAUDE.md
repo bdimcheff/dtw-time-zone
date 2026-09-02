@@ -249,7 +249,7 @@ Admit by moving the entry from `pending.json` to `posts.json`; reject by deletin
 and adding its `uri` to `denied.json`.
 
 Riffs were held in the queue rather than denied for as long as #4 was open, because
-`denied.json` is applied at load and outranks an exact match -- denying a riff
+`denied.json` is applied at load and outranks an exact match — denying a riff
 removed the very corpus the detector was being built against. #4 shipped, and the
 queue filled with the riffs it can now reach, so that hold is over: a riff is an
 ordinary variant awaiting a yes or a no. The first review under that rule admitted
@@ -260,7 +260,7 @@ of the announcement, and posts carrying it were admitted. The feed is the
 announcement as a genre, not DTW's recording of it.
 
 The `review-queue` skill (`.claude/skills/review-queue`) drives a session end to
-end -- categorize, decide, apply, PR -- and `npm run apply-review` is the mutation
+end — categorize, decide, apply, PR — and `npm run apply-review` is the mutation
 under it. Both are conveniences; hand-editing the three files is still correct.
 
 Open work is tracked as GitHub issues; `TODO.md` is only an index.
