@@ -245,8 +245,13 @@ to admit a post is to move its entry, which does not produce sorted output, and
 
 The Action opens or comments on a `pending-review` issue when new candidates appear.
 Admit by moving the entry from `pending.json` to `posts.json`; reject by deleting it
-and adding its `uri` to `denied.json`. Denying a *riff* forecloses it for issue #4,
-so riffs are left queued rather than denied.
+and adding its `uri` to `denied.json`.
+
+Riffs were held in the queue rather than denied for as long as #4 was open, because
+`denied.json` is applied at load and outranks an exact match -- denying a riff
+removed the very corpus the detector was being built against. #4 shipped, and the
+queue filled with the riffs it can now reach, so that hold is over: a riff is an
+ordinary variant awaiting a yes or a no. Three are already in the archive.
 
 Open work is tracked as GitHub issues; `TODO.md` is only an index.
 

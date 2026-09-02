@@ -139,5 +139,6 @@ the reasoning, under **Constraints that fail silently** in
 
 ## Ideas
 
-Tracked as GitHub issues — riff detection (#4), an archive page (#5), stats (#6).
+Tracked as GitHub issues — an archive page (#5), stats (#6), riffs that keep the
+zone but abandon the construction (#19).
 [`TODO.md`](TODO.md) is the index.
