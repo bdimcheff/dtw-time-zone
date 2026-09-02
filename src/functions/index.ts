@@ -13,7 +13,8 @@ import { BadCursor, paginate } from "../lib/skeleton.ts";
  *
  * The entry list is written by build.ts and deployed with this function, so a
  * request never touches the network. Freshness therefore comes from deploying,
- * which the update workflow does whenever data/posts.json changes.
+ * which both CI workflows do whenever data/posts.json changes -- update.yml for
+ * the collector's own commit, deploy-functions.yml for a merged review PR.
  */
 
 // Read once at module load, not per request. Deliberately a data file rather than

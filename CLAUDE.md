@@ -54,8 +54,9 @@ deploy   →  https://dtw.dimcheff.wtf   (Firebase Hosting)       │
 
 The function carries its own copy of the archive, so a new post is not reachable
 until the *function* is redeployed — hosting alone no longer ships the feed's
-contents. `update.yml` does that whenever `data/posts.json` changes, which is
-roughly 40 times a year.
+contents. Two workflows do that, split by who pushed: `update.yml` after the
+collector's own commit, `deploy-functions.yml` after any push a human makes.
+Between them it happens roughly 40 times a year.
 
 ### Identity is permanent
 

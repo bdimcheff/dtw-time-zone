@@ -33,8 +33,9 @@ await unlinkPublic("xrpc/app.bsky.feed.getFeedSkeleton");
 //
 // The function's data is deployed inside its bundle rather than fetched at request
 // time, so a request never touches the network and code and data cannot disagree
-// about which posts exist. Freshness comes from deploying, which the update
-// workflow does whenever data/posts.json changes.
+// about which posts exist. Freshness comes from deploying, which both CI
+// workflows do whenever data/posts.json changes -- update.yml for the
+// collector's own commit, deploy-functions.yml for a merged review PR.
 // entriesOf sorts rather than trusting file order: data/posts.json is hand-edited
 // during variant review, and a misplaced entry would otherwise reorder the feed.
 const entries = entriesOf(posts);
