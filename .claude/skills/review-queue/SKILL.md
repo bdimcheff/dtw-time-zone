@@ -78,8 +78,22 @@ only because its parent carried the joke.
 
 ## Ask
 
-**Bulk pass first.** One question per cluster, showing the count and three or four
-representative posts: admit all / deny all / break this one out individually.
+**Bulk pass first.** One question per cluster: admit all / deny all / break this one
+out individually.
+
+Three or four representative posts are enough for a cluster you are proposing to
+**admit** -- an admission is wrong for as long as it takes to notice, and one commit
+undoes it. They are never enough for a cluster you are proposing to **deny**, which
+is the asymmetry the sampled bulk question quietly inverts: it puts the cheap
+decision behind the evidence and the permanent one behind a summary. **List a deny
+cluster in full, verbatim, before asking about it**, however long that makes the
+message. If it is too long to read, that is an argument for splitting the cluster,
+not for summarizing it.
+
+**Number every post, in every pass**, so an answer can carry exceptions. "All but 5"
+is what makes a bulk question safe to ask about a group that is nearly, but not
+quite, uniform -- without it the only honest options are eighty questions or a
+cluster boundary drawn finer than the evidence supports.
 
 **Then the individual pass**, four per prompt, highest-value first. Each item needs
 enough to decide without leaving the terminal:
