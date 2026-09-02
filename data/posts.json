@@ -1,5 +1,15 @@
 [
   {
+    "uri": "at://did:plc:cvxm3fecfddayfmnazn5n6zu/app.bsky.feed.post/3mujth5hqbs25",
+    "cid": "bafyreicmrrrmnh4uxmvkipvyxtltarlsqu2itpihothrl4w7kir3grbufa",
+    "authorDid": "did:plc:cvxm3fecfddayfmnazn5n6zu",
+    "authorHandle": "mgoseth.bsky.social",
+    "text": "Good morning! I am happy to report Detroit is in the Eastern Time Zone.\n\nDefensive preview will initiate later this morning.",
+    "createdAt": "2026-09-02T11:29:46.050Z",
+    "indexedAt": "2026-09-02T11:29:58.806Z",
+    "firstSeenAt": "2026-09-02T11:42:11.565Z"
+  },
+  {
     "uri": "at://did:plc:7wwgdfholniexlglv3k4uyyg/app.bsky.feed.post/3mu7nqfkaic2c",
     "cid": "bafyreibkes6qcbvbir24gro5yt2nd5qrivcz6l45qjkubsxneydsjocm2m",
     "authorDid": "did:plc:7wwgdfholniexlglv3k4uyyg",
