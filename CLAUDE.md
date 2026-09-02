@@ -17,6 +17,7 @@ is in the Eastern Time Zone". Live at
 | `npm run build:functions` | Bundle `src/functions/` into `functions/index.js` |
 | `npm run verify` | Smoke-test the deployed endpoints |
 | `npm run pending-report` | Render the review queue as markdown |
+| `npm run apply-review` | Apply a review session's decisions to `data/` |
 | `npm run publish-record` | Publish the feed record (one-time, idempotent) |
 
 Run a single test file: `node --import tsx --test src/lib/match.test.ts`
@@ -245,8 +246,22 @@ to admit a post is to move its entry, which does not produce sorted output, and
 
 The Action opens or comments on a `pending-review` issue when new candidates appear.
 Admit by moving the entry from `pending.json` to `posts.json`; reject by deleting it
-and adding its `uri` to `denied.json`. Denying a *riff* forecloses it for issue #4,
-so riffs are left queued rather than denied.
+and adding its `uri` to `denied.json`.
+
+Riffs were held in the queue rather than denied for as long as #4 was open, because
+`denied.json` is applied at load and outranks an exact match — denying a riff
+removed the very corpus the detector was being built against. #4 shipped, and the
+queue filled with the riffs it can now reach, so that hold is over: a riff is an
+ordinary variant awaiting a yes or a no. The first review under that rule admitted
+most of them, so a large minority of the archive is now place-swaps.
+
+That review also settled a case the matcher cannot pose: ATL runs its own version
+of the announcement, and posts carrying it were admitted. The feed is the
+announcement as a genre, not DTW's recording of it.
+
+The `review-queue` skill (`.claude/skills/review-queue`) drives a session end to
+end — categorize, decide, apply, PR — and `npm run apply-review` is the mutation
+under it. Both are conveniences; hand-editing the three files is still correct.
 
 Open work is tracked as GitHub issues; `TODO.md` is only an index.
 

@@ -32,8 +32,17 @@ const deniedPath = join(DATA_DIR, "denied.json");
 export const readPosts = () => readJson<StoredPost[]>(postsPath, []);
 export const readPending = () => readJson<PendingPost[]>(pendingPath, []);
 
-/** URIs manually rejected; never re-enter pending. Hand-edited. */
+/** URIs manually rejected; never re-enter pending. Hand-edited, or by apply-review.ts. */
 export const readDenied = async () => new Set(await readJson<string[]>(deniedPath, []));
+
+/**
+ * Sorted and de-duplicated, because the file is a set and collect.ts reads it
+ * back as one. Sorting is what keeps a hand edit and a scripted write producing
+ * the same diff for the same content -- appending instead would make every
+ * review session's diff depend on which route wrote the file last.
+ */
+export const writeDenied = (denied: Iterable<string>) =>
+  writeJson(deniedPath, [...new Set(denied)].sort());
 
 export const writePosts = (posts: StoredPost[]) =>
   writeJson(postsPath, [...posts].sort(byNewest));

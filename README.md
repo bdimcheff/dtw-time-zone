@@ -48,6 +48,7 @@ and South Bend out of the feed.
 | `npm run check` | Typecheck and run the tests |
 | `npm run test` | Tests only |
 | `npm run pending-report` | Render the review queue as markdown |
+| `npm run apply-review` | Apply a review session's decisions to `data/` |
 
 ## Tests
 
@@ -68,6 +69,13 @@ The Action opens (or comments on) an issue when new candidates appear. For each 
 - **Admit** — move the entry into `data/posts.json`.
 - **Reject** — delete it and add its `uri` to `data/denied.json` so it is not
   re-queued.
+
+Both are hand edits and stay supported. `npm run apply-review -- decisions.json`
+applies a batch of them from a `{ "admit": [...], "deny": [...] }` file instead,
+which is what the `review-queue` skill in `.claude/skills/` drives: it reads the
+queue, groups it, and asks. Rejection is permanent — `denied.json` is applied at
+load and outranks an exact match — so a queue read in summary is a queue to leave
+alone.
 
 ### If a review PR shows no checks
 
@@ -139,5 +147,6 @@ the reasoning, under **Constraints that fail silently** in
 
 ## Ideas
 
-Tracked as GitHub issues — riff detection (#4), an archive page (#5), stats (#6).
+Tracked as GitHub issues — an archive page (#5), stats (#6), riffs that keep the
+zone but abandon the construction (#19).
 [`TODO.md`](TODO.md) is the index.
