@@ -239,6 +239,14 @@ so riffs are left queued rather than denied.
 
 Open work is tracked as GitHub issues; `TODO.md` is only an index.
 
+## Merging PRs
+
+Merge with a merge commit, never squash. A PR should already be a series of
+well-factored commits — split unrelated changes, keep noisy generated output
+(`data/` updates, `functions/entries.json`) separate from code changes — rather
+than one commit for Claude to squash flat later. Merge commits keep that
+factoring in `main`'s history instead of collapsing it.
+
 ## Removing a mechanism
 
 This repository documents itself in prose next to the code, which means a deleted
