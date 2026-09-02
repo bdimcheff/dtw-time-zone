@@ -17,6 +17,7 @@ is in the Eastern Time Zone". Live at
 | `npm run build:functions` | Bundle `src/functions/` into `functions/index.js` |
 | `npm run verify` | Smoke-test the deployed endpoints |
 | `npm run pending-report` | Render the review queue as markdown |
+| `npm run apply-review` | Apply a review session's decisions to `data/` |
 | `npm run publish-record` | Publish the feed record (one-time, idempotent) |
 
 Run a single test file: `node --import tsx --test src/lib/match.test.ts`
@@ -252,6 +253,10 @@ Riffs were held in the queue rather than denied for as long as #4 was open, beca
 removed the very corpus the detector was being built against. #4 shipped, and the
 queue filled with the riffs it can now reach, so that hold is over: a riff is an
 ordinary variant awaiting a yes or a no. Three are already in the archive.
+
+The `review-queue` skill (`.claude/skills/review-queue`) drives a session end to
+end -- categorize, decide, apply, PR -- and `npm run apply-review` is the mutation
+under it. Both are conveniences; hand-editing the three files is still correct.
 
 Open work is tracked as GitHub issues; `TODO.md` is only an index.
 
