@@ -12,7 +12,18 @@ import { readPosts } from "./lib/store.ts";
  * that is hard to trace from the Bluesky app: a wrong content type, a missing
  * .well-known, or a skeleton that ends after one page just renders as an empty,
  * unavailable, or mysteriously short feed.
+ *
+ * `--archive` runs only the cursor walk. update.yml uses it to decide whether
+ * the function needs redeploying, and that decision must turn on the one
+ * question a function deploy can answer: does the endpoint serve exactly
+ * data/posts.json? A full run also asserts hosting and the published feed
+ * record, neither of which a deploy of getFeedSkeleton can change -- gating on
+ * those would redeploy the function every half hour, forever, over a stale
+ * FEED_NAME. The full run still happens afterwards, so nothing goes unchecked.
  */
+
+/** Gate mode: the walk alone, for a caller asking "is the bundle current?" */
+const ARCHIVE_ONLY = process.argv.includes("--archive");
 
 const failures: string[] = [];
 const check = (ok: boolean, label: string, detail = "") => {
@@ -75,6 +86,7 @@ const ENDPOINTS = [
 ];
 
 for (const { name, path, extra } of ENDPOINTS) {
+  if (ARCHIVE_ONLY) break;
   const res = await getWithRetry(path);
   check(res.status === 200, `${name} reachable`, `HTTP ${res.status}`);
   check(isJson(res.type), `${name} content type`, res.type || "(none)");
@@ -84,7 +96,7 @@ for (const { name, path, extra } of ENDPOINTS) {
 // `feed` is required by the lexicon, so a request without it must be rejected --
 // and a feed we do not serve must be rejected as UnknownFeed rather than silently
 // answered with ours.
-{
+if (!ARCHIVE_ONLY) {
   const bare = await getJson(skeletonUrl({}, null));
   check(bare.status === 400, "rejects a request with no feed param", `HTTP ${bare.status}`);
   const wrong = await getJson(
@@ -155,7 +167,7 @@ for (const { name, path, extra } of ENDPOINTS) {
  * worth knowing -- still fails. Unlike isValid/isOnline below, this check can
  * say no.
  */
-{
+if (!ARCHIVE_ONLY) {
   const url = new URL("https://bsky.social/xrpc/com.atproto.repo.getRecord");
   url.searchParams.set("repo", PUBLISHER_DID);
   url.searchParams.set("collection", "app.bsky.feed.generator");

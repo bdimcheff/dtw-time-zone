@@ -8,13 +8,14 @@ name: Deploy feed function (push)
 #     workflow run. The paths filter below therefore never fires for it, which
 #     is why update.yml deploys the function inline instead.
 #   - A review PR merged by hand, which is an ordinary push that this filter
-#     does catch. update.yml cannot cover this one: its deploy is gated on the
-#     diff of the commit *that run* made, and a run that collects nothing makes
-#     no commit at all, so it reports no change. Without data/posts.json below,
-#     an admitted post would sit in the archive undeployed until some unrelated
-#     collection happened to touch posts.json -- and every scheduled run's
-#     Verify would fail in the meantime, since its walk asserts the endpoint
-#     serves exactly what data/posts.json holds.
+#     does catch, and catches within a minute of the merge.
+#
+# update.yml's staleness gate would ship that merge too, at the next half-hourly
+# tick -- it asks the live endpoint whether it already serves data/posts.json,
+# so it notices an archive it did not commit itself. That gate is what makes the
+# feed self-correcting; the filter below is only what makes a review PR fast.
+# Neither is redundant: without the gate a lost race stays lost, and without the
+# filter an admitted post waits up to thirty minutes to appear.
 on:
   push:
     branches: [main]
@@ -107,5 +108,13 @@ jobs:
       # publish-record` catches up. That is a true statement about the deployed
       # system, and it is one the next scheduled run would make anyway; better
       # said here, next to the change that caused it.
+      #
+      # It can also go red for a race the design allows: update.yml holds its own
+      # lock and may deploy a newer archive between this job's Deploy and this
+      # step, at which point the walk compares a newer endpoint against this
+      # checkout and finds a post it does not know about. That run is red over a
+      # system that is correct, and rerunning it passes. Left as is -- a check
+      # that stays quiet when the archive and the endpoint disagree would have
+      # let the failure this whole file exists for go unnoticed.
       - name: Verify deployment
         run: npm run verify

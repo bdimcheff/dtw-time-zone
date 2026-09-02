@@ -184,10 +184,28 @@ jobs:
           echo "could not push after 3 attempts"
           exit 1
 
-      # After the push, not before: the rebase can bring in a review PR that
-      # admitted posts, and building first would deploy a skeleton missing them
-      # while the commit log claimed they were live. public/ is gitignored, so
-      # nothing here needs committing.
+      # Everything below this line reads the working tree -- the bundle, the
+      # staleness gate, Verify -- so the tree has to be main, not main as of
+      # checkout. A review PR merging mid-run is the case: its own deploy ships
+      # the admitted post, and this job would then build an archive without it,
+      # find the endpoint "stale" for exactly that reason, and deploy the post
+      # back out of the feed. Both later Verifys would agree with each other and
+      # pass, because both read the same stale file.
+      #
+      # The commit paths above already rebase onto origin/main. The no-change
+      # path -- ~17,500 runs a year, and the only path the gate is active on --
+      # exits before reaching one, which is why this is a step of its own rather
+      # than a line inside Commit data. data/ is derived and public/ is
+      # gitignored, so there is nothing here for a hard reset to lose.
+      - name: Sync to main
+        run: |
+          git fetch origin main
+          git reset --hard FETCH_HEAD
+
+      # After the push and the sync, not before: either can bring in a review PR
+      # that admitted posts, and building first would deploy a skeleton missing
+      # them while the commit log claimed they were live. public/ is gitignored,
+      # so nothing here needs committing.
       - name: Build feed
         run: npm run build
 
@@ -239,9 +257,10 @@ jobs:
       #
       # verify's walk is exactly that comparison -- it asserts the endpoint
       # serves precisely data/posts.json -- so it is reused as the gate rather
-      # than reimplemented. It also asserts things a function deploy cannot fix
-      # (did.json, the published feed record); those failing here costs one
-      # unnecessary ~2min deploy, which is the cheap direction to be wrong in.
+      # than reimplemented. `--archive` is what keeps it an honest gate: a full
+      # run also asserts hosting and the published feed record, and a function
+      # deploy cannot change either, so gating on those would redeploy every
+      # half hour forever over a stale FEED_NAME. The full run still follows.
       #
       # Skipped when this run's own commit already answers the question -- both
       # so the ~40 runs a year that collect something do not pay for a probe they
@@ -251,7 +270,7 @@ jobs:
         id: deployed
         if: steps.commit.outputs.posts_changed != '1'
         continue-on-error: true
-        run: npm run verify
+        run: npm run verify -- --archive
 
       # The skeleton is a function with the archive bundled into it, so a new post
       # is not reachable until the function itself is redeployed -- hosting only
