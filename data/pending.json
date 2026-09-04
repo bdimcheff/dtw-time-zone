@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "uri": "at://did:plc:56oe4lt3sbgdhpbbf6bntsxa/app.bsky.feed.post/3mup4zc3uic2q",
+    "cid": "bafyreibbmmdjyf3cpzj4uhcyfxzj2gecn4twnxxgcujegy5ltgir3qikca",
+    "authorDid": "did:plc:56oe4lt3sbgdhpbbf6bntsxa",
+    "authorHandle": "rockshrimp.bsky.social",
+    "text": "It’s in my wedding vows my husband will never trick me into believing Michigan is in the eastern time zone",
+    "createdAt": "2026-09-04T14:04:17.390Z",
+    "indexedAt": "2026-09-04T14:04:20.482Z",
+    "firstSeenAt": "2026-09-04T14:21:48.474Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  }
+]
