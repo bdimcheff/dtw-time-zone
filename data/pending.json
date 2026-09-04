@@ -1,5 +1,16 @@
 [
   {
+    "uri": "at://did:plc:ae5ixxvdzgv7buf5k76jbg2b/app.bsky.feed.post/3mup6gwfm2c23",
+    "cid": "bafyreiena2zohmzpwailibosbtopt4b4q5xiep36bnnauaf3ooovsyn35e",
+    "authorDid": "did:plc:ae5ixxvdzgv7buf5k76jbg2b",
+    "authorHandle": "bluebarronphoto.bsky.social",
+    "text": "Atlanta, Georgia is in the eastern time zone",
+    "createdAt": "2026-09-04T14:29:48.626Z",
+    "indexedAt": "2026-09-04T14:29:48.883Z",
+    "firstSeenAt": "2026-09-04T14:42:53.998Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
     "uri": "at://did:plc:56oe4lt3sbgdhpbbf6bntsxa/app.bsky.feed.post/3mup4zc3uic2q",
     "cid": "bafyreibbmmdjyf3cpzj4uhcyfxzj2gecn4twnxxgcujegy5ltgir3qikca",
     "authorDid": "did:plc:56oe4lt3sbgdhpbbf6bntsxa",
