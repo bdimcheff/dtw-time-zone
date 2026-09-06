@@ -1,5 +1,16 @@
 [
   {
+    "uri": "at://did:plc:hyszri36usuuawks7s5viu5p/app.bsky.feed.post/3muuq3hs4622g",
+    "cid": "bafyreibzrqitvxd4lui2zoqftuo3zlm3ctxtabluoeps2o7kznt6dly5ba",
+    "authorDid": "did:plc:hyszri36usuuawks7s5viu5p",
+    "authorHandle": "chathamharrison.bsky.social",
+    "text": "Florida is in the Eastern Time Zone & counts its votes extremely quickly while California is in the Pacific Time Zone & counts its votes glacially slowly. This alone is, incredibly, a major driver of Election Day narratives that favor Trump & the Republican Party",
+    "createdAt": "2026-09-06T19:28:50.253Z",
+    "indexedAt": "2026-09-06T19:28:49.679Z",
+    "firstSeenAt": "2026-09-06T19:41:31.693Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
     "uri": "at://did:plc:ae5ixxvdzgv7buf5k76jbg2b/app.bsky.feed.post/3mup6gwfm2c23",
     "cid": "bafyreiena2zohmzpwailibosbtopt4b4q5xiep36bnnauaf3ooovsyn35e",
     "authorDid": "did:plc:ae5ixxvdzgv7buf5k76jbg2b",
