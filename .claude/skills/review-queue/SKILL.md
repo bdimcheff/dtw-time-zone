@@ -78,6 +78,12 @@ only because its parent carried the joke.
 
 ## Ask
 
+**Every post shown to the human, in any pass, carries its permalink** —
+`https://bsky.app/profile/<authorHandle>/post/<last segment of the uri>` — next to
+its text, even a single post cited as precedent or as a bulk-cluster example. A
+recommendation is not a substitute for the human being able to open the post
+themselves.
+
 **Bulk pass first.** One question per cluster: admit all / deny all / break this one
 out individually.
 
