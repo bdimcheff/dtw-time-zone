@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "uri": "at://did:plc:mgvyfskcnwvme663negewjb3/app.bsky.feed.post/3mv3zjwb2lc2r",
+    "cid": "bafyreigjs2fxcxxpd7ztnmzll3psvjcxhkprpr26ggvd2wgdkc3qik5sii",
+    "authorDid": "did:plc:mgvyfskcnwvme663negewjb3",
+    "authorHandle": "justokonline.bsky.social",
+    "text": "Here is a list of things I’m too pretty to have to know anything about:\n\nConstruction project procurement. \nRoko’s Basilisk. \nHow weather works. \nWhat time it is in the Mountain Time Zone. \nAnything about farming.\nAnything about gas mileage. \nHow any kind of vehicle works. \nMath.",
+    "createdAt": "2026-09-09T17:06:37.031Z",
+    "indexedAt": "2026-09-09T17:06:37.280Z",
+    "firstSeenAt": "2026-09-09T17:19:35.619Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  }
+]
