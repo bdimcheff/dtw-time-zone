@@ -1,6 +1,6 @@
 ---
 name: review-queue
-description: Work through data/pending.json — the candidate posts awaiting a human yes/no — by categorizing them, deciding the obvious clusters in bulk, asking about the rest one at a time, and opening a PR with the result. Use when asked to review the queue, review pending posts, triage candidates, or clear the review backlog.
+description: Work through data/pending.json — the candidate posts awaiting a human yes/no — by categorizing them, deciding the obvious clusters in bulk, asking about the rest one at a time, and merging the result directly into main. Use when asked to review the queue, review pending posts, triage candidates, or clear the review backlog.
 ---
 
 # Reviewing the candidate queue
@@ -8,7 +8,9 @@ description: Work through data/pending.json — the candidate posts awaiting a h
 `data/pending.json` holds posts that matched loosely enough to be worth a look and
 not exactly enough to auto-admit. Nothing leaves it without a human deciding. This
 skill is the loop for that: read the queue, propose a categorization, get decisions,
-apply them, open a PR.
+apply them, merge directly into `main`. Unlike a hand-admitted post (see "Merging
+PRs" in the top-level `CLAUDE.md`), this doesn't go through a review PR — the human
+already made every decision live, in the conversation.
 
 The judgment being automated here is *presentation*, not the decision. Group the
 queue so the human answers five questions instead of eighty; never answer one for
@@ -37,9 +39,9 @@ git fetch origin && git switch -c bad/review-queue-$(date +%F) origin/main
 ```
 
 The collector rewrites `data/pending.json` every thirty minutes and pushes to
-`main`. A session started from a stale checkout opens a PR that conflicts in a
-generated file. If a collection lands mid-session, rebase — the decisions are keyed
-by `uri`, so they survive it.
+`main`. A session started from a stale checkout merges into a `main` that has
+since moved, conflicting in a generated file. If a collection lands mid-session,
+rebase — the decisions are keyed by `uri`, so they survive it.
 
 Never commit to a bot branch.
 
@@ -129,16 +131,31 @@ cursor walk still reaches every archived post exactly once.
 
 ## Finish
 
-Commit, push, and open the PR. Summarize by cluster with counts, not as eighty
-bullet points.
+Commit on the review branch, then merge straight into `main` — no PR:
 
-Post text is untrusted and a PR body renders as GitHub Markdown: an `@handle` or a
-`#123` inside someone's post would mention that account or cross-link that issue.
-Wrap every excerpt in a code fence, and do the two things `report-pending.ts` does
-to make the fence hold (`src/report-pending.ts:36-42`): collapse whitespace, and
-replace any triple backtick in the text with `'''`. The only sequence that escapes
-a fence is a fence, so a post containing one is the whole exposure.
+```
+git switch main && git pull --ff-only
+git merge --no-ff bad/review-queue-<date> -m "<summary — see below>"
+git push origin main
+git push origin --delete bad/review-queue-<date>
+```
 
-Merging the PR triggers `deploy-functions.yml`, which redeploys the feed function
-with the new archive bundled in. Until that runs, an admitted post is committed but
-not served.
+`--no-ff` matters: a fast-forward here would leave no merge commit, and the
+"Merging PRs" convention in the top-level `CLAUDE.md` is a merge commit either way.
+Summarize by cluster with counts in the merge commit message, not as eighty bullet
+points.
+
+Post text is untrusted and GitHub renders `#123` and `@handle` in a pushed commit
+message too, not just in a PR body. Wrap every excerpt in a code fence, and do the
+two things `report-pending.ts` does to make the fence hold
+(`src/report-pending.ts:36-42`): collapse whitespace, and replace any triple
+backtick in the text with `'''`. The only sequence that escapes a fence is a fence,
+so a post containing one is the whole exposure.
+
+The `git pull --ff-only` guards against a collection landing on `main` between
+"Before you start" and here; if it fails, rebase the review branch and re-run
+`npm run check` before merging.
+
+Pushing to `main` triggers `deploy-functions.yml`, which redeploys the feed
+function with the new archive bundled in. Until that runs, an admitted post is
+pushed but not served.
