@@ -1,5 +1,15 @@
 [
   {
+    "uri": "at://did:plc:c4w7mqccqjla67asoydxrrzh/app.bsky.feed.post/3mvo5zj76oc2g",
+    "cid": "bafyreieffbkda7kpeeiewb3lmld324foyd4ad534f2hmzavqsygpnds3eq",
+    "authorDid": "did:plc:c4w7mqccqjla67asoydxrrzh",
+    "authorHandle": "hypomodern.com",
+    "text": "Detroit, Michigan, is in the Eastern Time Zone",
+    "createdAt": "2026-09-16T22:14:50.469Z",
+    "indexedAt": "2026-09-16T22:14:50.777Z",
+    "firstSeenAt": "2026-09-16T22:20:14.662Z"
+  },
+  {
     "uri": "at://did:plc:c4w7mqccqjla67asoydxrrzh/app.bsky.feed.post/3mvloaewtc226",
     "cid": "bafyreigoq3qei2x7ka7uddpn6ci3t7p72ezqzw3naxl25jcwugr5xz7phe",
     "authorDid": "did:plc:c4w7mqccqjla67asoydxrrzh",
