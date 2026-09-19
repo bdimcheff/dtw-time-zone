@@ -10,6 +10,36 @@
     "firstSeenAt": "2026-09-19T20:41:21.649Z"
   },
   {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mvvcxcijp227",
+    "cid": "bafyreic23mckx447n7bhwbesdi3vay5nhk5xfxmels4fxwji2a2qwoiium",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Jackson Hole, Wyoming is in the Mountain Time Zone",
+    "createdAt": "2026-09-19T18:31:43.204Z",
+    "indexedAt": "2026-09-19T18:31:44.185Z",
+    "firstSeenAt": "2026-09-19T18:43:46.789Z"
+  },
+  {
+    "uri": "at://did:plc:2acpw7jpr6fjyi7ipobrriea/app.bsky.feed.post/3mvvbhbokf22a",
+    "cid": "bafyreiaxayw6ixgs3axhr3ho7u3zqrxmww54givmnulp56ojes3jjqvbq4",
+    "authorDid": "did:plc:2acpw7jpr6fjyi7ipobrriea",
+    "authorHandle": "lengau.net",
+    "text": "Nashville, Tennessee is in the Central Time Zone.",
+    "createdAt": "2026-09-19T18:04:51.730Z",
+    "indexedAt": "2026-09-19T18:04:51.978Z",
+    "firstSeenAt": "2026-09-19T18:23:32.566Z"
+  },
+  {
+    "uri": "at://did:plc:2acpw7jpr6fjyi7ipobrriea/app.bsky.feed.post/3mvo7ioiids2s",
+    "cid": "bafyreibrzmjtdpxl4447e5c7yeabxazby332ambq2resoj56tqohweoije",
+    "authorDid": "did:plc:2acpw7jpr6fjyi7ipobrriea",
+    "authorHandle": "lengau.net",
+    "text": "Nashville, Tennessee, is in the Central Time Zone (but with 40 years of delay)",
+    "createdAt": "2026-09-16T22:41:13.071Z",
+    "indexedAt": "2026-09-16T22:41:11.481Z",
+    "firstSeenAt": "2026-09-16T22:41:40.948Z"
+  },
+  {
     "uri": "at://did:plc:c4w7mqccqjla67asoydxrrzh/app.bsky.feed.post/3mvo5zj76oc2g",
     "cid": "bafyreieffbkda7kpeeiewb3lmld324foyd4ad534f2hmzavqsygpnds3eq",
     "authorDid": "did:plc:c4w7mqccqjla67asoydxrrzh",
