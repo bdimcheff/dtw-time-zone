@@ -1,5 +1,15 @@
 [
   {
+    "uri": "at://did:plc:6khd3qearp2tb3xw4jlc64jn/app.bsky.feed.post/3mwbetrsyok2i",
+    "cid": "bafyreicnh5mge26nessmo3w27xgm44bcsrgozuitmbtxvxj6igd4qi72lm",
+    "authorDid": "did:plc:6khd3qearp2tb3xw4jlc64jn",
+    "authorHandle": "twbrandt.net",
+    "text": "Glasgow, Scotland, is in the Western European Time Zone.",
+    "createdAt": "2026-09-24T13:37:29.400Z",
+    "indexedAt": "2026-09-24T13:37:29.967Z",
+    "firstSeenAt": "2026-09-24T15:01:47.000Z"
+  },
+  {
     "uri": "at://did:plc:2acpw7jpr6fjyi7ipobrriea/app.bsky.feed.post/3mvvjrirj622p",
     "cid": "bafyreiemiamsvvme4nezoy6y5rs3az4gkcvidrux2m6hszh2zrzfs43pkq",
     "authorDid": "did:plc:2acpw7jpr6fjyi7ipobrriea",
@@ -1608,15 +1618,5 @@
     "createdAt": "2009-10-16T17:25:46.000Z",
     "indexedAt": "2024-11-11T20:40:46.112Z",
     "firstSeenAt": "2026-08-22T18:05:40.750Z"
-  },
-  {
-    "uri": "at://did:plc:6khd3qearp2tb3xw4jlc64jn/app.bsky.feed.post/3mwbetrsyok2i",
-    "cid": "bafyreicnh5mge26nessmo3w27xgm44bcsrgozuitmbtxvxj6igd4qi72lm",
-    "authorDid": "did:plc:6khd3qearp2tb3xw4jlc64jn",
-    "authorHandle": "twbrandt.net",
-    "text": "Glasgow, Scotland, is in the Western European Time Zone.",
-    "createdAt": "2026-09-24T13:37:29.400Z",
-    "indexedAt": "2026-09-24T13:37:29.967Z",
-    "firstSeenAt": "2026-09-24T15:01:47.000Z"
   }
 ]
