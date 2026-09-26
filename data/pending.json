@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3mwf6v72pcs22",
+    "cid": "bafyreiczzveskjvdl3lmybhilenrje3szgnl2i45ktnduki7sfw5jgqr2a",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "New York City, New York is in the eastern time zone",
+    "createdAt": "2026-09-26T02:01:33.342Z",
+    "indexedAt": "2026-09-26T02:01:35.481Z",
+    "firstSeenAt": "2026-09-26T02:29:53.614Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  }
+]
