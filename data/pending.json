@@ -1,5 +1,16 @@
 [
   {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mwubojiots2q",
+    "cid": "bafyreid6ngqah3cocg3s53otvnrz3svijxkzj7fo7f33viy7fx7cuzwsce",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Jackson Hole, Wyoming is in the Mountain Time Zone",
+    "createdAt": "2026-10-02T02:01:26.708Z",
+    "indexedAt": "2026-10-02T02:01:27.680Z",
+    "firstSeenAt": "2026-10-02T02:33:58.193Z",
+    "matchedQuery": "\"is in the Mountain Time Zone\""
+  },
+  {
     "uri": "at://did:plc:56oe4lt3sbgdhpbbf6bntsxa/app.bsky.feed.post/3mwny3fbua22b",
     "cid": "bafyreihptxty3fduatzgk7fhqe4f7jbsqniab75qs4cw3bed2by5qn6ria",
     "authorDid": "did:plc:56oe4lt3sbgdhpbbf6bntsxa",
