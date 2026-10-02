@@ -1,5 +1,16 @@
 [
   {
+    "uri": "at://did:plc:sbzqpbnrvsnm5s2vs6tn57uy/app.bsky.feed.post/3mwweaxcjec2q",
+    "cid": "bafyreih2z3eipuvu5l5rebeb77bl43wc4uu5y4vsnvr2pq7gzrgdlcv6vm",
+    "authorDid": "did:plc:sbzqpbnrvsnm5s2vs6tn57uy",
+    "authorHandle": "sstrudeau.bsky.social",
+    "text": "Detroit is in the eastern time zone",
+    "createdAt": "2026-10-02T21:52:52.124Z",
+    "indexedAt": "2026-10-02T21:52:52.484Z",
+    "firstSeenAt": "2026-10-02T22:22:23.343Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
     "uri": "at://did:plc:5duxufunkq3f3gnr62iurcbi/app.bsky.feed.post/3mwvkegyjws2x",
     "cid": "bafyreicmeu6m22664gqq6ykrdhjskm7rovddidusgwjdadmkig2w2nqpgy",
     "authorDid": "did:plc:5duxufunkq3f3gnr62iurcbi",
