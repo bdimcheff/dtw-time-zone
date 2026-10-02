@@ -1,5 +1,16 @@
 [
   {
+    "uri": "at://did:plc:5duxufunkq3f3gnr62iurcbi/app.bsky.feed.post/3mwvkegyjws2x",
+    "cid": "bafyreicmeu6m22664gqq6ykrdhjskm7rovddidusgwjdadmkig2w2nqpgy",
+    "authorDid": "did:plc:5duxufunkq3f3gnr62iurcbi",
+    "authorHandle": "quinnhasadhd.bsky.social",
+    "text": "Like that's less than a 4 hour drive!! Detroit is in the eastern time zone! I will even extend this annoyance on the Frost's behalf!! THIS IS SO DUMB",
+    "createdAt": "2026-10-02T14:09:31.951Z",
+    "indexedAt": "2026-10-02T14:09:30.883Z",
+    "firstSeenAt": "2026-10-02T14:26:32.974Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  },
+  {
     "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mwubojiots2q",
     "cid": "bafyreid6ngqah3cocg3s53otvnrz3svijxkzj7fo7f33viy7fx7cuzwsce",
     "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
