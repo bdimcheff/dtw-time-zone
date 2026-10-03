@@ -1,5 +1,45 @@
 [
   {
+    "uri": "at://did:plc:sbzqpbnrvsnm5s2vs6tn57uy/app.bsky.feed.post/3mwweaxcjec2q",
+    "cid": "bafyreih2z3eipuvu5l5rebeb77bl43wc4uu5y4vsnvr2pq7gzrgdlcv6vm",
+    "authorDid": "did:plc:sbzqpbnrvsnm5s2vs6tn57uy",
+    "authorHandle": "sstrudeau.bsky.social",
+    "text": "Detroit is in the eastern time zone",
+    "createdAt": "2026-10-02T21:52:52.124Z",
+    "indexedAt": "2026-10-02T21:52:52.484Z",
+    "firstSeenAt": "2026-10-02T22:22:23.343Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mwubojiots2q",
+    "cid": "bafyreid6ngqah3cocg3s53otvnrz3svijxkzj7fo7f33viy7fx7cuzwsce",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Jackson Hole, Wyoming is in the Mountain Time Zone",
+    "createdAt": "2026-10-02T02:01:26.708Z",
+    "indexedAt": "2026-10-02T02:01:27.680Z",
+    "firstSeenAt": "2026-10-02T02:33:58.193Z"
+  },
+  {
+    "uri": "at://did:plc:2zwqewi6t7coiohtmpfzz2wd/app.bsky.feed.post/3mwmgihibq22b",
+    "cid": "bafyreighzojpm5zjdmj2x5y4gv2dgjkxyatkz67qkndy5wijtlngewlklq",
+    "authorDid": "did:plc:2zwqewi6t7coiohtmpfzz2wd",
+    "authorHandle": "dimcheff.wtf",
+    "text": "Phoenix, Arizona is in the Mountain Standard Time Zone",
+    "createdAt": "2026-09-28T23:06:14.068Z",
+    "indexedAt": "2026-09-28T23:06:14.577Z",
+    "firstSeenAt": "2026-09-28T23:21:52.135Z"
+  },
+  {
+    "uri": "at://did:plc:o3f7agaa2soz5x6k2w43ipmr/app.bsky.feed.post/3mwf6v72pcs22",
+    "cid": "bafyreiczzveskjvdl3lmybhilenrje3szgnl2i45ktnduki7sfw5jgqr2a",
+    "authorDid": "did:plc:o3f7agaa2soz5x6k2w43ipmr",
+    "authorHandle": "jqnotjq.lol",
+    "text": "New York City, New York is in the eastern time zone",
+    "createdAt": "2026-09-26T02:01:33.342Z",
+    "indexedAt": "2026-09-26T02:01:35.481Z",
+    "firstSeenAt": "2026-09-26T02:29:53.614Z"
+  },
+  {
     "uri": "at://did:plc:6khd3qearp2tb3xw4jlc64jn/app.bsky.feed.post/3mwbetrsyok2i",
     "cid": "bafyreicnh5mge26nessmo3w27xgm44bcsrgozuitmbtxvxj6igd4qi72lm",
     "authorDid": "did:plc:6khd3qearp2tb3xw4jlc64jn",
