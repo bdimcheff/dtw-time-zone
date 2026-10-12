@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "uri": "at://did:plc:pab3hsnaup7dejcqog6ksoq3/app.bsky.feed.post/3mxornsqfgc2d",
+    "cid": "bafyreigyakrjbar2734sg2tc5kezbqikflfwbxylbojk3dy2lcpilarp4e",
+    "authorDid": "did:plc:pab3hsnaup7dejcqog6ksoq3",
+    "authorHandle": "beanders.bsky.social",
+    "text": "Detroit is in the Eastern time zone",
+    "createdAt": "2026-10-12T14:56:35.903Z",
+    "indexedAt": "2026-10-12T14:56:42.681Z",
+    "firstSeenAt": "2026-10-12T15:26:42.497Z",
+    "matchedQuery": "\"is in the Eastern Time Zone\""
+  }
+]
