@@ -1,5 +1,16 @@
 [
   {
+    "uri": "at://did:plc:6ulypwexav6e5ftfxdibwv77/app.bsky.feed.post/3mxwlgmh6xs25",
+    "cid": "bafyreibpomnccjcey42lerb3jq4su52uj7thuxlwsocf5mdhszsrowibx4",
+    "authorDid": "did:plc:6ulypwexav6e5ftfxdibwv77",
+    "authorHandle": "joleneandgrant.bsky.social",
+    "text": "Northwestern Ontario is in the central time zone, It makes sense to align with Manitoba \nThe rest of Ontario is keeping the biannual clock change because the provincial government refuses to scrap it unless Quebec and New York State do the same\n\nyoutu.be/4ICiIpxwzEc?...",
+    "createdAt": "2026-10-15T17:26:29.891Z",
+    "indexedAt": "2026-10-15T17:26:31.978Z",
+    "firstSeenAt": "2026-10-15T17:44:34.764Z",
+    "matchedQuery": "\"is in the Central Time Zone\""
+  },
+  {
     "uri": "at://did:plc:pab3hsnaup7dejcqog6ksoq3/app.bsky.feed.post/3mxornsqfgc2d",
     "cid": "bafyreigyakrjbar2734sg2tc5kezbqikflfwbxylbojk3dy2lcpilarp4e",
     "authorDid": "did:plc:pab3hsnaup7dejcqog6ksoq3",
