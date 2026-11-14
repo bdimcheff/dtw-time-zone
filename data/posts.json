@@ -1,5 +1,15 @@
 [
   {
+    "uri": "at://did:plc:b4qn7b3sejibh4i3hbqocbi2/app.bsky.feed.post/3n2akpk57ik2t",
+    "cid": "bafyreignwozw4t2tv772wft5honehi3xo5moiu4eugbnxlgjhqvo4rdaki",
+    "authorDid": "did:plc:b4qn7b3sejibh4i3hbqocbi2",
+    "authorHandle": "kula.tproa.net",
+    "text": "As you bask in the soothing sounds of our laminar fountain you will be serene in the knowledge that Detroit, Michigan is in the eastern time zone.",
+    "createdAt": "2026-11-14T03:30:36.354Z",
+    "indexedAt": "2026-11-14T03:30:36.765Z",
+    "firstSeenAt": "2026-11-14T03:41:34.977Z"
+  },
+  {
     "uri": "at://did:plc:2acpw7jpr6fjyi7ipobrriea/app.bsky.feed.post/3mz77si6jkc2v",
     "cid": "bafyreibeapore2mbi57lxklgvbg2qpaprjj4uzdsjigj2c7i7kvbeiowga",
     "authorDid": "did:plc:2acpw7jpr6fjyi7ipobrriea",
